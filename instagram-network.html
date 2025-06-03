@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<title>Instagram Network Analysis — Samantha Pease</title>
+<!-- Bootstrap and Fonts -->
+<link href="bootstrap.min.css" rel="stylesheet"/>
+<link href="all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:500,700" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css?family=Muli:400,400i,800,800i" rel="stylesheet"/>
+<link href="resume.min.css" rel="stylesheet"/>
+</head>
+<body id="page-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav">
+<a class="navbar-brand js-scroll-trigger" href="index.html#page-top">
+<span class="d-block d-lg-none">Sam Pease</span>
+<span class="d-none d-lg-block">
+<img alt="" class="img-fluid img-profile rounded-circle mx-auto mb-2" src="profile.png"/>
+</span>
+</a>
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+<ul class="navbar-nav">
+
+<li class="nav-item">
+  <a class="nav-link js-scroll-trigger" href="index.html#about" id="about-toggle-link" onclick="toggleAboutMenu()">About ▸</a>
+  <ul class="pl-3" id="about-submenu" style="display: none; margin-left: 1.5rem; border-left: 2px solid #6c757d; padding-left: 1rem; margin-top: 0.5rem; background-color: #f8f9fa; border-radius: 0.25rem;">
+    <li>
+      <a class="nav-link js-scroll-trigger" href="index.html#about" style="font-size: 90%; color: #333; padding: 0.2rem 0;">
+        <i class="fas fa-user" style="width: 1.2em;"></i> About Me
+      </a>
+    </li>
+    <li>
+      <a class="nav-link" href="https://github.com/sampease" target="_blank" style="font-size: 90%; color: #333; padding: 0.2rem 0;">
+        <i class="fab fa-github" style="width: 1.2em;"></i> GitHub
+      </a>
+    </li>
+    <li>
+      <a class="nav-link" href="https://www.linkedin.com/in/sam-pease/" target="_blank" style="font-size: 90%; color: #333; padding: 0.2rem 0;">
+        <i class="fab fa-linkedin" style="width: 1.2em;"></i> LinkedIn
+      </a>
+    </li>
+    <li>
+      <a class="nav-link" href="mailto:sam@walking-stick.com" style="font-size: 90%; color: #333; padding: 0.2rem 0;">
+        <i class="fas fa-envelope" style="width: 1.2em;"></i> Email
+      </a>
+    </li>
+  </ul>
+</li>
+
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="index.html#research">
+       Research
+      </a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="#projects" id="projects-toggle-link" onclick="toggleSubmenu()">Projects ▸</a>
+<ul class="pl-3" id="project-submenu" style="display: none; margin-left: 1.5rem; border-left: 2px solid #6c757d; padding-left: 1rem; margin-top: 0.5rem; background-color: #f8f9fa; border-radius: 0.25rem;">
+<li>
+<a class="nav-link js-scroll-trigger" href="instagram-network.html" style="font-size: 90%; color: #333; padding: 0.2rem 0; display: block;">
+         Instagram Network Analysis
+        </a>
+</li>
+<li>
+<a class="nav-link js-scroll-trigger" href="Final Presentation.pptx" style="font-size: 90%; color: #333; padding: 0.2rem 0; display: block;" target="_blank">
+         Cat Identification
+        </a>
+</li>
+<li>
+<a class="nav-link js-scroll-trigger" href="Topology final project.pdf" style="font-size: 90%; color: #333; padding: 0.2rem 0; display: block;" target="_blank">
+         Canopy Architecture (TDA)
+        </a>
+</li>
+<li>
+<a class="nav-link js-scroll-trigger" href="Project info.pdf" style="font-size: 90%; color: #333; padding: 0.2rem 0; display: block;" target="_blank">
+         Wind Turbine Monitor
+        </a>
+</li>
+</ul>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="index.html#teaching">
+       Teaching
+      </a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="index.html#interests">
+       Interests
+      </a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="SamPeaseResume1-24.pdf" target="_blank">
+       Resume
+      </a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="SamPeaseCV1-24.pdf" target="_blank">
+       Curriculum Vitae
+      </a>
+</li>
+</ul>
+</div>
+</nav>
+<div class="container-fluid p-0">
+<section class="resume-section p-3 p-lg-5 d-flex align-items-center">
+<div class="w-100">
+<h2 class="mb-5">Instagram Network Analysis</h2>
+<p class="lead mb-4">
+          This project explores the structure of my Instagram social network by modeling mutual connections as a graph. Using tools like <code>Playwright</code> and <code>Instaloader</code>, I scraped my follow/follower data and constructed a directed graph representing who follows whom. I then used NetworkX for analysis and PyVis for interactive visualization.
+        </p>
+<h4>Highlights:</h4>
+<ul>
+<li>Scraped my Instagram network using automated browser tools and APIs</li>
+<li>Built a directed graph of user relationships using <code>networkx</code></li>
+<li>Applied community detection using the Louvain method</li>
+<li>Calculated centrality metrics: in-degree, out-degree, clustering coefficient, etc.</li>
+<li>Visualized the graph with color-coded communities using <code>PyVis</code></li>
+</ul>
+<h4 class="mt-4">View the Interactive Graph</h4>
+<p>
+    <iframe src="mutuals_graph_pyvis.html" width="100%" height="600px" style="border:none;"></iframe>
+
+</p>
+<h4>Reflection</h4>
+<p>
+          This project taught me how social connections cluster into communities—and how some nodes (people!) play bridging roles between them. It also showed me how useful graph theory can be in modeling real-world data, and the importance of scalable tooling when working with platform APIs.
+        </p>
+<p>
+          You can find the full source code on <a href="https://github.com/sampease" target="_blank">GitHub</a>, or read more about my data visualization and ML work in the <a href="index.html#projects">projects section</a> of my site.
+        </p>
+</div>
+</section>
+</div>
+<footer class="text-center">
+<div class="footer-above">
+<div class="container">
+<div class="row">
+<div class="footer-col col-md-4"></div>
+<div class="footer-col col-md-4">
+<font size="1">Website template from <a href="https://startbootstrap.com/themes/resume/" target="_blank">Start Bootstrap</a></font>
+</div>
+</div>
+</div>
+</div>
+</footer>
+<script src="jquery.min.js"></script>
+<script src="bootstrap.bundle.min.js"></script>
+<script src="jquery.easing.min.js"></script>
+<script src="resume.min.js"></script>
+<script>
+  function toggleSubmenu() {
+    const submenu = document.getElementById("project-submenu");
+    const toggleLink = document.getElementById("projects-toggle-link");
+    const aboutSubmenu = document.getElementById("about-submenu");
+    const aboutToggleLink = document.getElementById("about-toggle-link");
+
+    const expanded = submenu.style.display === "block";
+    submenu.style.display = expanded ? "none" : "block";
+    toggleLink.textContent = expanded ? "Projects ▸" : "Projects ▼";
+
+    if (aboutSubmenu && aboutSubmenu.style.display === "block") {
+      aboutSubmenu.style.display = "none";
+      aboutToggleLink.textContent = "About ▸";
+    }
+  }
+
+  function toggleAboutMenu() {
+    const submenu = document.getElementById("about-submenu");
+    const toggleLink = document.getElementById("about-toggle-link");
+    const projectSubmenu = document.getElementById("project-submenu");
+    const projectToggleLink = document.getElementById("projects-toggle-link");
+
+    const expanded = submenu.style.display === "block";
+    submenu.style.display = expanded ? "none" : "block";
+    toggleLink.textContent = expanded ? "About ▸" : "About ▼";
+
+    if (projectSubmenu && projectSubmenu.style.display === "block") {
+      projectSubmenu.style.display = "none";
+      projectToggleLink.textContent = "Projects ▸";
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const projectSubmenu = document.getElementById("project-submenu");
+    const projectToggleLink = document.getElementById("projects-toggle-link");
+    const aboutSubmenu = document.getElementById("about-submenu");
+    const aboutToggleLink = document.getElementById("about-toggle-link");
+
+    // Auto-expand project menu on this page
+    if (projectSubmenu) {
+      projectSubmenu.style.display = "block";
+      projectToggleLink.textContent = "Projects ▼";
+    }
+
+    // Collapse both menus if a standard nav link is clicked
+    const links = document.querySelectorAll(".nav-link.js-scroll-trigger:not(#projects-toggle-link):not(#about-toggle-link)");
+    links.forEach(link => {
+      link.addEventListener("click", () => {
+        if (projectSubmenu && projectSubmenu.style.display === "block") {
+          projectSubmenu.style.display = "none";
+          projectToggleLink.textContent = "Projects ▸";
+        }
+        if (aboutSubmenu && aboutSubmenu.style.display === "block") {
+          aboutSubmenu.style.display = "none";
+          aboutToggleLink.textContent = "About ▸";
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
