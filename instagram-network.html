@@ -22,33 +22,31 @@
 </a>
 <div class="collapse navbar-collapse" id="navbarSupportedContent">
 <ul class="navbar-nav">
-
 <li class="nav-item">
-  <a class="nav-link js-scroll-trigger" href="index.html#about" id="about-toggle-link" onclick="toggleAboutMenu()">About ▸</a>
-  <ul class="pl-3" id="about-submenu" style="display: none; margin-left: 1.5rem; border-left: 2px solid #6c757d; padding-left: 1rem; margin-top: 0.5rem; background-color: #f8f9fa; border-radius: 0.25rem;">
-    <li>
-      <a class="nav-link js-scroll-trigger" href="index.html#about" style="font-size: 90%; color: #333; padding: 0.2rem 0;">
-        <i class="fas fa-user" style="width: 1.2em;"></i> About Me
+<a class="nav-link js-scroll-trigger" href="index.html#about" id="about-toggle-link" onclick="toggleAboutMenu()">About ▸</a>
+<ul class="pl-3" id="about-submenu" style="display: none; margin-left: 1.5rem; border-left: 2px solid #6c757d; padding-left: 1rem; margin-top: 0.5rem; background-color: #f8f9fa; border-radius: 0.25rem;">
+<li>
+<a class="nav-link js-scroll-trigger" href="index.html#about" style="font-size: 90%; color: #333; padding: 0.2rem 0;">
+<i class="fas fa-user" style="width: 1.2em;"></i> About Me
       </a>
-    </li>
-    <li>
-      <a class="nav-link" href="https://github.com/sampease" target="_blank" style="font-size: 90%; color: #333; padding: 0.2rem 0;">
-        <i class="fab fa-github" style="width: 1.2em;"></i> GitHub
-      </a>
-    </li>
-    <li>
-      <a class="nav-link" href="https://www.linkedin.com/in/sam-pease/" target="_blank" style="font-size: 90%; color: #333; padding: 0.2rem 0;">
-        <i class="fab fa-linkedin" style="width: 1.2em;"></i> LinkedIn
-      </a>
-    </li>
-    <li>
-      <a class="nav-link" href="mailto:sam@walking-stick.com" style="font-size: 90%; color: #333; padding: 0.2rem 0;">
-        <i class="fas fa-envelope" style="width: 1.2em;"></i> Email
-      </a>
-    </li>
-  </ul>
 </li>
-
+<li>
+<a class="nav-link" href="https://github.com/sampease" style="font-size: 90%; color: #333; padding: 0.2rem 0;" target="_blank">
+<i class="fab fa-github" style="width: 1.2em;"></i> GitHub
+      </a>
+</li>
+<li>
+<a class="nav-link" href="https://www.linkedin.com/in/sam-pease/" style="font-size: 90%; color: #333; padding: 0.2rem 0;" target="_blank">
+<i class="fab fa-linkedin" style="width: 1.2em;"></i> LinkedIn
+      </a>
+</li>
+<li>
+<a class="nav-link" href="mailto:sam@walking-stick.com" style="font-size: 90%; color: #333; padding: 0.2rem 0;">
+<i class="fas fa-envelope" style="width: 1.2em;"></i> Email
+      </a>
+</li>
+</ul>
+</li>
 <li class="nav-item">
 <a class="nav-link js-scroll-trigger" href="index.html#research">
        Research
@@ -119,8 +117,7 @@
 </ul>
 <h4 class="mt-4">View the Interactive Graph</h4>
 <p>
-    <iframe src="mutuals_graph_pyvis.html" width="100%" height="600px" style="border:none;"></iframe>
-
+<iframe height="600px" src="mutuals_graph_pyvis.html" style="border:none;" width="100%"></iframe>
 </p>
 <h4>Reflection</h4>
 <p>
@@ -129,7 +126,7 @@
 <p>
           You can find the full source code on <a href="https://github.com/sampease" target="_blank">GitHub</a>, or read more about my data visualization and ML work in the <a href="index.html#projects">projects section</a> of my site.
         </p>
-</div>
+<section class="resume-section p-3 p-lg-5"><div class="w-100"><h4>Local Network Statistics</h4><ul><li>degree_centrality: Measures how many connections a node has relative to all other nodes.</li><li>in_degree_centrality: Counts how many edges point toward the node.</li><li>out_degree_centrality: Counts how many edges originate from the node.</li><li>closeness_centrality: Measures how close a node is to all other nodes in terms of shortest paths.</li><li>betweenness_centrality: Measures how often a node appears on the shortest paths between other nodes.</li><li>pagerank: Determines the importance of nodes based on incoming links, similar to Google's PageRank.</li><li>load_centrality: Similar to betweenness, based on load of shortest paths passing through a node.</li><li>hits_hub: HITS algorithm: Scores nodes as hubs based on links to authoritative nodes.</li><li>hits_auth: HITS algorithm: Scores nodes as authorities based on how many hubs point to them.</li><li>clustering: Measures the tendency of a node's neighbors to also be connected.</li><li>triangles: Counts the number of triangles a node is part of.</li><li>eigenvector_centrality: Measures influence by considering the importance of a node’s neighbors.</li><li>square_clustering: Captures how likely neighbors of a node form squares (4-cycles).</li></ul></div></section><section class="resume-section p-3 p-lg-5"><div class="w-100"><h4>Global Network Statistics</h4><ul><li>is_directed: Indicates whether the graph is directed (edges have direction).</li><li>number_of_nodes: Total number of nodes in the graph.</li><li>number_of_edges: Total number of edges in the graph.</li><li>density: Ratio of actual edges to possible edges.</li><li>avg_in_degree: Average number of incoming edges per node.</li><li>avg_out_degree: Average number of outgoing edges per node.</li><li>avg_total_degree: Average total degree (in + out) per node.</li><li>max_in_degree: Maximum number of incoming edges for any node.</li><li>max_out_degree: Maximum number of outgoing edges for any node.</li><li>average_clustering: Average local clustering coefficient across all nodes.</li><li>transitivity: Ratio of triangles to connected triplets in the whole graph.</li><li>average_neighbor_degree: Average degree of a node’s neighbors.</li><li>reciprocity: Ratio of mutual edges to total edges in a directed graph.</li><li>degree_assortativity: Correlation between the degrees of connected nodes.</li><li>global_efficiency: Average inverse shortest path length across all pairs.</li><li>num_triangles: Total number of triangles in the graph.</li><li>diameter: Longest shortest path between any two nodes.</li><li>avg_shortest_path_length: Average length of shortest paths between all pairs.</li><li>radius: Minimum eccentricity of any node in the graph.</li><li>avg_eccentricity: Average maximum shortest path length from each node.</li><li>degree_entropy: Entropy of the degree distribution, showing variability.</li><li>num_weakly_connected_components: Number of components if edge direction is ignored.</li><li>num_strongly_connected_components: Number of components where all nodes are mutually reachable.</li></ul></div></section></div>
 </section>
 </div>
 <footer class="text-center">
