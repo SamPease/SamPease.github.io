@@ -103,30 +103,184 @@
 <div class="container-fluid p-0">
 <section class="resume-section p-3 p-lg-5 d-flex align-items-center">
 <div class="w-100">
-<h2 class="mb-5">Instagram Network Analysis</h2>
-<p class="lead mb-4">
-          This project explores the structure of my Instagram social network by modeling mutual connections as a graph. Using tools like <code>Playwright</code> and <code>Instaloader</code>, I scraped my follow/follower data and constructed a directed graph representing who follows whom. I then used NetworkX for analysis and PyVis for interactive visualization.
-        </p>
-<h4>Highlights:</h4>
-<ul>
-<li>Scraped my Instagram network using automated browser tools and APIs</li>
-<li>Built a directed graph of user relationships using <code>networkx</code></li>
-<li>Applied community detection using the Louvain method</li>
-<li>Calculated centrality metrics: in-degree, out-degree, clustering coefficient, etc.</li>
-<li>Visualized the graph with color-coded communities using <code>PyVis</code></li>
+<h4>Overview:</h4>
+<p>
+  This project explores the structure of an individual's Instagram social graph by identifying and analyzing mutual connections among followed users. I primarily looked at the data for my own Instagram network but also examined my sister's network. Future work would include comparing more diverse networks. The pipeline integrates web scraping and network science to uncover community structures, central users, and hidden patterns in online social behavior, as well as graph neural networks to predict potential future connections. The main goals were to make interesting visualizations of social networks, analyze local and global network statistics, and explore how a network can used as a basis for a graph neural network to predict future connections.
+</p><p>
+  Code for this project is available on my GitHub: <a href="https://github.com/SamPease/instagram_network_analysis" target="_blank">instagram_network_analysis</a>. The main analysis is in the Jupyter notebook <code>graph_vis3.ipynb</code>, which includes detailed visualizations and network statistics. This idea came from a wolfram alpha tool that was available a decade ago that drew network graphs of facebook friends. I then found and initially cloned  <a href="https://medium.com/@maximpiessen/how-i-visualised-my-instagram-network-and-what-i-learned-from-it-d7cc125ef297" target="_blank">Max Impiessen's blog post</a> on Medium. But in the end all of my code was written from scratch as his required significant modifications to work with the current Instagram API and Playwright.
+</p> 
+<h4>Tech Stack:</h4>
+<ul>  
+<li>Python — core programming language
+</li>
+<li>Playwright — automated browser control for web scraping
+</li>
+<li>JSON — data storage format for scraped network data
+</li>
+<li>NetworkX — graph construction, centrality metrics, and global network analysis
+</li>
+<li>python-louvain — community detection via Louvain algorithm
+</li>
+<li>PyTorch Geometric — graph neural networks and link prediction
+</li>
+<li>Pyvis — interactive HTML visualizations of graph data
+</li>
+<li>Matplotlib — static visualizations and graph metrics plotting
+</li>
+<li>Seaborn — heatmaps and enhanced visual analytics
+</li>
+<li>Pandas — tabular data manipulation
+</li>
+<li>NumPy — numerical computations and array processing
+</li>
+<li>Scikit-learn (optional/implicit) — for evaluation metrics and normalization
+</li>
 </ul>
 <h4 class="mt-4">View the Interactive Graph</h4>
 <p>
 <iframe height="600px" src="mutuals_graph_pyvis.html" style="border:none;" width="100%"></iframe>
 </p>
-<h4>Reflection</h4>
-<p>
-          This project taught me how social connections cluster into communities—and how some nodes (people!) play bridging roles between them. It also showed me how useful graph theory can be in modeling real-world data, and the importance of scalable tooling when working with platform APIs.
-        </p>
-<p>
-          You can find the full source code on <a href="https://github.com/sampease" target="_blank">GitHub</a>, or read more about my data visualization and ML work in the <a href="index.html#projects">projects section</a> of my site.
-        </p>
-<section class="resume-section p-3 p-lg-5"><div class="w-100"><h4>Local Network Statistics</h4><ul><li>degree_centrality: Measures how many connections a node has relative to all other nodes.</li><li>in_degree_centrality: Counts how many edges point toward the node.</li><li>out_degree_centrality: Counts how many edges originate from the node.</li><li>closeness_centrality: Measures how close a node is to all other nodes in terms of shortest paths.</li><li>betweenness_centrality: Measures how often a node appears on the shortest paths between other nodes.</li><li>pagerank: Determines the importance of nodes based on incoming links, similar to Google's PageRank.</li><li>load_centrality: Similar to betweenness, based on load of shortest paths passing through a node.</li><li>hits_hub: HITS algorithm: Scores nodes as hubs based on links to authoritative nodes.</li><li>hits_auth: HITS algorithm: Scores nodes as authorities based on how many hubs point to them.</li><li>clustering: Measures the tendency of a node's neighbors to also be connected.</li><li>triangles: Counts the number of triangles a node is part of.</li><li>eigenvector_centrality: Measures influence by considering the importance of a node’s neighbors.</li><li>square_clustering: Captures how likely neighbors of a node form squares (4-cycles).</li></ul></div></section><section class="resume-section p-3 p-lg-5"><div class="w-100"><h4>Global Network Statistics</h4><ul><li>is_directed: Indicates whether the graph is directed (edges have direction).</li><li>number_of_nodes: Total number of nodes in the graph.</li><li>number_of_edges: Total number of edges in the graph.</li><li>density: Ratio of actual edges to possible edges.</li><li>avg_in_degree: Average number of incoming edges per node.</li><li>avg_out_degree: Average number of outgoing edges per node.</li><li>avg_total_degree: Average total degree (in + out) per node.</li><li>max_in_degree: Maximum number of incoming edges for any node.</li><li>max_out_degree: Maximum number of outgoing edges for any node.</li><li>average_clustering: Average local clustering coefficient across all nodes.</li><li>transitivity: Ratio of triangles to connected triplets in the whole graph.</li><li>average_neighbor_degree: Average degree of a node’s neighbors.</li><li>reciprocity: Ratio of mutual edges to total edges in a directed graph.</li><li>degree_assortativity: Correlation between the degrees of connected nodes.</li><li>global_efficiency: Average inverse shortest path length across all pairs.</li><li>num_triangles: Total number of triangles in the graph.</li><li>diameter: Longest shortest path between any two nodes.</li><li>avg_shortest_path_length: Average length of shortest paths between all pairs.</li><li>radius: Minimum eccentricity of any node in the graph.</li><li>avg_eccentricity: Average maximum shortest path length from each node.</li><li>degree_entropy: Entropy of the degree distribution, showing variability.</li><li>num_weakly_connected_components: Number of components if edge direction is ignored.</li><li>num_strongly_connected_components: Number of components where all nodes are mutually reachable.</li></ul></div></section></div>
+
+<section id="step0">
+  <h4>Step 0: Data Collection</h4>
+  <p>
+    The first challenge in this project was gathering data from Instagram—a platform known for its aggressive anti-scraping measures. Initial attempts using traditional tools like <code>Selenium</code> proved unreliable due to frequent timeouts, dynamic content loading, and detection. Similarly, <code>Instaloader</code>, while powerful, was quickly throttled and lacked the flexibility needed for collecting mutual follow data at scale.
+  </p>
+  <p>
+    The solution was to use <code>Playwright</code>, a modern browser automation tool that mimics human behavior more effectively. Even with Playwright, rate-limiting and throttling became a serious issue when collecting data from more than a few dozen users. Strategies such as introducing randomized delays, error handling, and saving intermediate progress were critical to make the process sustainable.
+  </p>
+  <p>
+    The core data collected was each user's "following" list—who they follow on Instagram. By crawling this data across a target list of users, I constructed a directed graph where an edge from user A to user B represents A following B. Mutual connections were identified as bidirectional edges. The resulting graph structure was saved as a JSON adjacency list, serving as the foundation for all further network analysis and visualization.
+  </p>
+</section>
+
+<section id="step1">
+  <h4>Step 1: Graph Construction</h4>
+  <p>
+    After collecting the raw data, the next step was building a visual and analyzable representation of the Instagram network. Using <code>NetworkX</code>, I constructed a directed graph where nodes represent users and edges represent follow relationships. To position nodes meaningfully in 2D space, I used graph viz's scalable force-directed placement, which is well-suited for visualizing large, organic graphs with natural clustering.
+  </p>
+  <p>
+    To uncover the underlying social structure, I applied the <strong>Louvain community detection algorithm</strong>. This grouped users into communities based on follow patterns, allowing for deeper analysis of subgroups and social clusters within the network.
+  </p>
+  <p>
+    For visualization, I initially experimented with <code>Dash</code> and <code>Dash Cytoscape</code> to create an interactive dashboard that allowed for filtering, highlighting, and analysis in the browser. However, integrating and hosting a Dash app on a static website introduced significant challenges. As a result, I returned to <code>Pyvis</code>, which offered a clean and interactive HTML-based visualization that was easier to embed and share without requiring a backend server.
+  </p>
+</section>
+
+
+
+
+
+<section id="step2">
+  <h4>Step 2: Local Network Statistics</h4>
+  <p>
+    With the graph constructed, I calculated a variety of local network statistics to understand individual user roles and relationships within the network. This was particularly fun as it involved looking at which of my friends played what roles in my greater social network. Key metrics included:
+  </p>
+  <ul>
+    <li><strong>Degree Centrality</strong>: Measures how many connections a node has relative to all other nodes.</li>
+    <li><strong>In-Degree Centrality</strong>: Counts how many edges point toward the node.</li>
+    <li><strong>Out-Degree Centrality</strong>: Counts how many edges originate from the node.</li>
+    <li><strong>Closeness Centrality</strong>: Measures how close a node is to all other nodes in terms of shortest paths.</li>
+    <li><strong>Betweenness Centrality</strong>: Measures how often a node appears on the shortest paths between other nodes.</li>
+    <li><strong>PageRank</strong>: Determines the importance of nodes based on incoming links, similar to Google's PageRank algorithm.</li>
+    <li><strong>Load Centrality</strong>: Similar to betweenness, but based on load of shortest paths passing through a node.</li>
+    <li><strong>HITS Hub and Authority Scores</strong>: HITS algorithm scores nodes as hubs based on links to authoritative nodes and vice versa.</li>
+    <li><strong>Clustering Coefficient</strong>: Measures the tendency of a node's neighbors to also be connected.</li>
+    <li><strong>Triangles Count</strong>: Counts the number of triangles a node is part of.</li>
+    <li><strong>Eigenvector Centrality</strong>: Measures influence by considering the importance of a node’s neighbors.</li>
+    <li><strong>Square Clustering Coefficient</strong>: Captures how likely neighbors of a node form squares (4-cycles).</li>
+  </ul>
+  <p>
+    These metrics provided insights into user influence, community structure, and potential roles within the network. Here is a sample of the top and bottom users for each local metric. 
+  </p>  
+
+    <div style="max-width: 100%; overflow-x: auto; background-color: #ffffff; color: #eee; padding: 1em; border-radius: 8px; font-family: monospace; font-size: 0.85em;">
+      <pre>
+        Full ASCII Leaderboard (Sorted Columns):
+                                  degree_centrality                                in_degree_centrality                               out_degree_centrality                                closeness_centrality                              betweenness_centrality                                            pagerank                                     load_centrality                                            hits_hub                                           hits_auth                                          clustering                                             triangles                              eigenvector_centrality                                   square_clustering
+              itsthejukeofyork: 0.4198 [##########]               itsthejukeofyork: 0.2084 [##########]               itsthejukeofyork: 0.2114 [##########]               itsthejukeofyork: 0.4802 [##########]               itsthejukeofyork: 0.2079 [##########]               itsthejukeofyork: 0.0053 [##########]               itsthejukeofyork: 0.1964 [##########]                       ruopuj22: 0.0111 [##########]                      greilly16: 0.0112 [##########]                    itskellyrac: 1.0000 [##########]                     greilly16: 3528.0000 [##########]                      greilly16: 0.1380 [##########]                    helen_girod: 0.8627 [##########]
+                   willbrodner: 0.3793 [#########-]                    willbrodner: 0.1889 [#########-]                    willbrodner: 0.1904 [#########-]               imalittleman_ish: 0.4392 [#########-]                  abigail.pease: 0.1680 [########--]                      ec__davis: 0.0046 [########--]                  abigail.pease: 0.1715 [########--]                      greilly16: 0.0110 [#########-]                       ruopuj22: 0.0112 [#########-]             collins.elizabetha: 1.0000 [##########]                      ruopuj22: 3462.0000 [#########-]                       ruopuj22: 0.1376 [#########-]             collins.elizabetha: 0.7182 [########--]
+                      ruopuj22: 0.3748 [########--]                       ruopuj22: 0.1874 [########--]                       ruopuj22: 0.1874 [########--]                  abigail.pease: 0.4377 [#########-]                      ec__davis: 0.1366 [######----]                  abigail.pease: 0.0045 [########--]                      ec__davis: 0.1228 [######----]                    willbrodner: 0.0110 [#########-]                    willbrodner: 0.0109 [#########-]                     mira_beans: 1.0000 [##########]                   willbrodner: 3453.0000 [#########-]                    willbrodner: 0.1348 [#########-]   cheesedoodle.lilwingwongwang: 0.5936 [######----]
+                     greilly16: 0.3673 [########--]                      greilly16: 0.1844 [########--]                      greilly16: 0.1829 [########--]                      ec__davis: 0.4325 [#########-]                     sam.4.samm: 0.0916 [####------]                     sam.4.samm: 0.0045 [########--]                     sam.4.samm: 0.0873 [####------]                     grant__mak: 0.0108 [#########-]                     grant__mak: 0.0108 [#########-]                       dakshaat: 1.0000 [##########]                    grant__mak: 3322.0000 [#########-]                     grant__mak: 0.1334 [#########-]                  harrycondonjr: 0.5935 [######----]
+                wyatt_jernigan: 0.3613 [########--]                 wyatt_jernigan: 0.1814 [########--]                 wyatt_jernigan: 0.1799 [########--]                    kristieskim: 0.4266 [########--]                         nlat98: 0.0756 [###-------]               imalittleman_ish: 0.0040 [#######---]                         nlat98: 0.0714 [###-------]                    jferrante21: 0.0107 [#########-]                 wyatt_jernigan: 0.0107 [#########-]                 zerotobrooklyn: 1.0000 [##########]                wyatt_jernigan: 3273.0000 [#########-]               a_global_globule: 0.1314 [#########-]                   maddiewooood: 0.5935 [######----]
+                    grant__mak: 0.3583 [########--]                     grant__mak: 0.1814 [########--]                     grant__mak: 0.1769 [########--]                  charliedracos: 0.4178 [########--]               imalittleman_ish: 0.0674 [###-------]                    kristieskim: 0.0040 [#######---]               imalittleman_ish: 0.0673 [###-------]               a_global_globule: 0.0107 [#########-]                   jasonbrovich: 0.0106 [#########-]                       amberyil: 1.0000 [##########]                   jferrante21: 3225.0000 [#########-]                 wyatt_jernigan: 0.1312 [#########-]                       chibbs50: 0.5607 [######----]
+              imalittleman_ish: 0.3418 [########--]               imalittleman_ish: 0.1739 [########--]                    jferrante21: 0.1739 [########--]                    culbertalex: 0.4160 [########--]                    kristieskim: 0.0556 [##--------]                    willbrodner: 0.0039 [#######---]                    kristieskim: 0.0571 [##--------]                 wyatt_jernigan: 0.0105 [#########-]               a_global_globule: 0.0106 [#########-]                    maddieolive: 1.0000 [##########]              a_global_globule: 3220.0000 [#########-]                   jasonbrovich: 0.1312 [#########-]                      kogabeatz: 0.5518 [######----]
+                  jasonbrovich: 0.3358 [########--]                   jasonbrovich: 0.1694 [########--]               imalittleman_ish: 0.1679 [#######---]                  kyle.ockerman: 0.4100 [########--]                    canosynapse: 0.0306 [#---------]                     grant__mak: 0.0038 [#######---]                    canosynapse: 0.0310 [#---------]                      nicocrino: 0.0104 [#########-]                        d_munt_: 0.0106 [#########-]                        lhaliko: 1.0000 [##########]                  jasonbrovich: 3148.0000 [########--]                        d_munt_: 0.1301 [#########-]                       __mlilli: 0.5401 [######----]
+              a_global_globule: 0.3313 [#######---]               a_global_globule: 0.1649 [#######---]                     sam.4.samm: 0.1679 [#######---]                rachels_letters: 0.4092 [########--]                        alvamao: 0.0296 [#---------]                       ruopuj22: 0.0037 [######----]                        alvamao: 0.0290 [#---------]                   jasonbrovich: 0.0104 [#########-]                        akib_35: 0.0101 [#########-]          selmonious_patronious: 1.0000 [##########]                     nicocrino: 3129.0000 [########--]                    bazefferton: 0.1248 [#########-]                  grantgreene97: 0.5398 [######----]
+                    sam.4.samm: 0.3313 [#######---]                     sam.4.samm: 0.1634 [#######---]               a_global_globule: 0.1664 [#######---]                 donde_esta_ban: 0.4087 [########--]                    hunterhutch: 0.0270 [#---------]                      greilly16: 0.0037 [######----]                    hunterhutch: 0.0288 [#---------]                        d_munt_: 0.0103 [#########-]                    bazefferton: 0.0101 [########--]                      cindystee: 1.0000 [##########]                       d_munt_: 3121.0000 [########--]                    kabewebster: 0.1246 [#########-]                         mermcv: 0.5346 [######----]
+                   jferrante21: 0.3223 [#######---]                 conradical1309: 0.1634 [#######---]                   jasonbrovich: 0.1664 [#######---]                     mollsprobs: 0.4066 [########--]                  charliedracos: 0.0250 [#---------]                   lesbiancedar: 0.0037 [######----]                  charliedracos: 0.0286 [#---------]                    kabewebster: 0.0102 [#########-]                    kabewebster: 0.0101 [########--]                    clemsonkeri: 1.0000 [##########]                    vedderrise: 2956.0000 [########--]                      nicocrino: 0.1242 [#########-]                    sydneycolee: 0.5199 [######----]
+                  winstonyau99: 0.3193 [#######---]                   winstonyau99: 0.1604 [#######---]                   winstonyau99: 0.1589 [#######---]                     grant__mak: 0.4059 [########--]                    martin_cala: 0.0243 [#---------]                 wyatt_jernigan: 0.0037 [######----]               nickynickynickyt: 0.0231 [#---------]                 mitchberger106: 0.0099 [########--]              conradmitchell465: 0.0101 [########--]                     ariscumara: 1.0000 [##########]                   kabewebster: 2933.0000 [########--]                        akib_35: 0.1240 [########--]                      dj_stxtch: 0.5152 [#####-----]
+                       d_munt_: 0.3163 [#######---]                        d_munt_: 0.1589 [#######---]                        d_munt_: 0.1574 [#######---]                   winstonyau99: 0.4044 [########--]               nickynickynickyt: 0.0229 [#---------]                 conradical1309: 0.0036 [######----]                    martin_cala: 0.0226 [#---------]                     vedderrise: 0.0098 [########--]                      nicocrino: 0.0101 [########--]                 elizabethkattt: 1.0000 [##########]             conradmitchell465: 2921.0000 [########--]                       adhuffie: 0.1239 [########--]                     chin4dawin: 0.5128 [#####-----]
+                  nickhibshman: 0.3133 [#######---]                   nickhibshman: 0.1589 [#######---]                   nickhibshman: 0.1544 [#######---]                 conradical1309: 0.4041 [########--]                     mollsprobs: 0.0228 [#---------]                        annag.g: 0.0036 [######----]                    culbertalex: 0.0225 [#---------]                andysmithereens: 0.0097 [########--]                       adhuffie: 0.0100 [########--]                     kc.bergman: 1.0000 [##########]                      adhuffie: 2889.0000 [########--]              conradmitchell465: 0.1238 [########--]                    jordynkapis: 0.5110 [#####-----]
+                conradical1309: 0.3103 [#######---]                  charliedracos: 0.1544 [#######---]                      nicocrino: 0.1544 [#######---]                  lordhavemorcy: 0.4034 [########--]                    culbertalex: 0.0215 [#---------]                    mo_ackerman: 0.0035 [######----]                     mollsprobs: 0.0214 [#---------]                       adhuffie: 0.0097 [########--]                  charliedracos: 0.0100 [########--]                        emmvlea: 1.0000 [##########]                   bazefferton: 2856.0000 [########--]                  charliedracos: 0.1237 [########--]                       raruller: 0.5079 [#####-----]
+                   culbertalex: 0.3043 [#######---]                       adhuffie: 0.1529 [#######---]                    culbertalex: 0.1529 [#######---]                     chipsiduke: 0.4034 [########--]                   maggieeluong: 0.0213 [#---------]                   forman.katie: 0.0035 [######----]                   maggieeluong: 0.0207 [#---------]              conradmitchell465: 0.0097 [########--]                   nickhibshman: 0.0099 [########--]                        r_doubs: 1.0000 [##########]                       akib_35: 2836.0000 [########--]                 mitchberger106: 0.1217 [########--]                       blexisvs: 0.5060 [#####-----]
+                     nicocrino: 0.3028 [#######---]                    bazefferton: 0.1514 [#######---]                        jhg1217: 0.1499 [#######---]                 wyatt_jernigan: 0.4031 [########--]                 pingshan.zhang: 0.0199 [----------]                   jasonbrovich: 0.0035 [######----]                 pingshan.zhang: 0.0204 [#---------]                  charliedracos: 0.0097 [########--]                 mitchberger106: 0.0099 [########--]            cardboardchopsticks: 1.0000 [##########]                    jmangold11: 2831.0000 [########--]                   nickhibshman: 0.1212 [########--]                  undependentme: 0.5057 [#####-----]
+                 charliedracos: 0.3028 [#######---]                    culbertalex: 0.1514 [#######---]               alex_weckingball: 0.1499 [#######---]                 jillian.taylor: 0.4004 [########--]             christiana.maimone: 0.0184 [----------]                   winstonyau99: 0.0034 [######----]                         torguh: 0.0184 [----------]                     jmangold11: 0.0096 [########--]                     vedderrise: 0.0099 [########--]                 sushionthemoon: 1.0000 [##########]                mitchberger106: 2820.0000 [#######---]                     vedderrise: 0.1212 [########--]                  nickmandalari: 0.5022 [#####-----]
+                      adhuffie: 0.2999 [#######---]                        akib_35: 0.1499 [#######---]                      qferrante: 0.1484 [#######---]                jessicadilustro: 0.4002 [########--]                         torguh: 0.0178 [----------]                  charliedracos: 0.0033 [######----]                   winstonyau99: 0.0180 [----------]                   nickhibshman: 0.0095 [########--]               imalittleman_ish: 0.0098 [########--]                earlofcleveland: 1.0000 [##########]                 charliedracos: 2798.0000 [#######---]               imalittleman_ish: 0.1208 [########--]                   bpecial_bops: 0.5006 [#####-----]
+                     qferrante: 0.2984 [#######---]                      qferrante: 0.1499 [#######---]                  charliedracos: 0.1484 [#######---]                       ruopuj22: 0.3992 [########--]                     a.ustinhua: 0.0172 [----------]                      qferrante: 0.0033 [######----]             christiana.maimone: 0.0178 [----------]               imalittleman_ish: 0.0095 [########--]                     jmangold11: 0.0097 [########--]                lead_foot_betty: 1.0000 [##########]                  nickhibshman: 2784.0000 [#######---]                      qferrante: 0.1197 [########--]               andrewdoesstuff4: 0.4973 [#####-----]
+                       jhg1217: 0.2969 [#######---]              conradmitchell465: 0.1484 [#######---]                    kabewebster: 0.1484 [#######---]               a_global_globule: 0.3985 [########--]                   winstonyau99: 0.0168 [----------]             christiana.maimone: 0.0033 [######----]                     a.ustinhua: 0.0177 [----------]                        jhg1217: 0.0095 [########--]                      qferrante: 0.0097 [########--]            elizabethdavismusic: 1.0000 [##########]               andysmithereens: 2695.0000 [#######---]                     jmangold11: 0.1193 [########--]                    noah.citron: 0.4970 [#####-----]
+                   kristieskim: 0.2954 [#######---]                    jferrante21: 0.1484 [#######---]                   lesbiancedar: 0.1484 [#######---]                     bridget_w_: 0.3985 [########--]                      stoked.18: 0.0158 [----------]              you_are_aurorable: 0.0033 [######----]                   lesbiancedar: 0.0173 [----------]                    bazefferton: 0.0095 [########--]                alexblumenstock: 0.0095 [########--]                     s.jaspal14: 1.0000 [##########]               alexblumenstock: 2670.0000 [#######---]                alexblumenstock: 0.1167 [########--]                   mad.lad.crad: 0.4930 [#####-----]
+...
+                     tiffiniez: 0.0000 [----------]                oliviamckinley_: 0.0000 [----------]                      tiffiniez: 0.0000 [----------]                   _spinsta_666: 0.0000 [----------]                earlofcleveland: 0.0000 [----------]                     yujiasun31: 0.0002 [----------]                toph.and.kublai: 0.0000 [----------]                  _spinsta_666: -0.0000 [----------]               oliviamckinley_: -0.0000 [----------]                    thaidermath: 0.0000 [----------]                      logandiener: 0.0000 [----------]                    thaidermath: 0.0000 [----------]                      lifansers: 0.0000 [----------]
+                  _spinsta_666: 0.0000 [----------]                      tiffiniez: 0.0000 [----------]                  baejaeyun7353: 0.0000 [----------]                    thaidermath: 0.0000 [----------]                        r_doubs: 0.0000 [----------]                   _spinsta_666: 0.0002 [----------]                oliviamckinley_: 0.0000 [----------]               oliviamckinley_: -0.0000 [----------]                     tiffiniez: -0.0000 [----------]                oliviamckinley_: 0.0000 [----------]                        lifansers: 0.0000 [----------]                      tiffiniez: 0.0000 [----------]            elizabethdavismusic: 0.0000 [----------]
+               oliviamckinley_: 0.0000 [----------]                   _spinsta_666: 0.0000 [----------]                apoutfitarchive: 0.0000 [----------]                     yujiasun31: 0.0000 [----------]          selmonious_patronious: 0.0000 [----------]                      tiffiniez: 0.0002 [----------]                jaunts_of_jenny: 0.0000 [----------]               apoutfitarchive: -0.0000 [----------]                  _spinsta_666: -0.0000 [----------]            cookingwithklaassen: 0.0000 [----------]                       thekarozee: 0.0000 [----------]                     yujiasun31: 0.0000 [----------]                   myacarrizosa: 0.0000 [----------]
+                    yujiasun31: 0.0000 [----------]                    thaidermath: 0.0000 [----------]                oliviamckinley_: 0.0000 [----------]                      tiffiniez: 0.0000 [----------]                lead_foot_betty: 0.0000 [----------]                oliviamckinley_: 0.0002 [----------]                     cliodhnawl: 0.0000 [----------]                     tiffiniez: -0.0000 [----------]                   thaidermath: -0.0000 [----------]                     yujiasun31: 0.0000 [----------]                  oliviamckinley_: 0.0000 [----------]                oliviamckinley_: 0.0000 [----------]                      mle_quinn: 0.0000 [----------]
+      </pre>
+    </div>
+  
+    <p>
+      A full spreadsheet of local metrics is available in this 
+      <a href="https://github.com/SamPease/instagram_network_analysis/blob/master/node_metrics_with_community.csv" target="_blank">CSV file</a>. 
+      These metrics, along with community labels, provide a comprehensive view of each user’s role within the network. Notably, the densest community corresponds to my college friend group, which contributes to my college partner, <strong>itsthejukeofyork</strong>, ranking at the top of several metrics—including degree centrality and PageRank. This reflects their central position in my social graph, likely due to their strong mutual ties with many of my close friends during a period when I was highly active on Instagram.
+    </p>
+    <p>
+      Other standout users include <strong>ec__davis</strong>, a college friend who later joined the same queer sports league as I did. I've also visited her hometown and met many of her friends, reinforcing her strong cross-community presence in the graph.
+    </p>
+    <p>
+      Another notable node is my sister, <strong>abigail.pease</strong>. While she’s not especially active on Instagram, she appears connected to friends across nearly all areas of my life, making her a quiet but widespread bridge in the network.
+    </p>
+    <p>
+      Many of the other top-ranked users are simply highly active Instagram users who serve as local hubs within their respective community clusters.
+    </p>
+</section>
+<section id="step3">
+  <h4>Step 3: Global Network Statistics</h4>
+  <p>
+    After analyzing individual users, I turned to the overall structure of the Instagram network. Using NetworkX, I calculated a variety of global statistics that provide insights into the network's connectivity, clustering, and overall structure. Key metrics included:
+  </p>
+  <ul>
+    <li><strong>is_directed</strong>: Indicates whether the graph is directed (edges have direction).</li>
+    <li><strong>number_of_nodes</strong>: Total number of nodes in the graph.</li>
+    <li><strong>number_of_edges</strong>: Total number of edges in the graph.</li>
+    <li><strong>density</strong>: Ratio of actual edges to possible edges.</li>
+    <li><strong>avg_in_degree</strong>: Average number of incoming edges per node.</li>
+    <li><strong>avg_out_degree</strong>: Average number of outgoing edges per node.</li>
+    <li><strong>avg_total_degree</strong>: Average total degree (in + out) per node.</li>
+    <li><strong>max_in_degree</strong>: Maximum number of incoming edges for any node.</li>
+    <li><strong>max_out_degree</strong>: Maximum number of outgoing edges for any node.</li>
+    <li><strong>average_clustering</strong>: Average local clustering coefficient across all nodes.</li>
+    <li><strong>transitivity</strong>: Ratio of triangles to connected triplets in the whole graph.</li>
+    <li><strong>average_neighbor_degree</strong>: Average degree of a node’s neighbors.</li>
+    <li><strong>reciprocity</strong>: Ratio of mutual edges to total edges in a directed graph.</li>
+    <li><strong>degree_assortativity</strong>: Correlation between the degrees of connected nodes.</li>
+    <li><strong>global_efficiency</strong>: Average inverse shortest path length across all pairs.</li>
+    <li><strong>num_triangles</strong>: Total number of triangles in the graph.</li>
+    <li><strong>diameter</strong>: Longest shortest path between any two nodes.</li>
+    <li><strong>avg_shortest_path_length</strong>: Average length of shortest paths between all pairs.</li>
+    <li><strong>radius</strong>: Minimum eccentricity of any node in the graph.</li>
+    <li><strong>avg_eccentricity</strong>: Average maximum shortest path length from each node.</li>
+    <li><strong>degree_entropy</strong>: Entropy of the degree distribution, showing variability.</li>
+    <li><strong>num_weakly_connected_components</strong>: Number of components if edge direction is ignored.</li>
+    <li><strong>num_strongly_connected_components</strong>: Number of components where all nodes are mutually reachable.</li>
+  </ul>
+  <p> 
+    These metrics provided a comprehensive view of the network's structure and connectivity. Here is a sample of the global statistics:
+  </p>             
+  <img src="image.png" width="100%"/>
+
+
+
+<section class="resume-section p-3 p-lg-5"><div class="w-100"></div></section><section class="resume-section p-3 p-lg-5"><div class="w-100"></div></section></div>
 </section>
 </div>
 <footer class="text-center">
