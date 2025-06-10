@@ -102,101 +102,91 @@
 </nav>
 <div class="container-fluid p-0">
 <section class="resume-section p-3 p-lg-5 d-flex align-items-center">
-<div class="w-100">
-<h1 class="mb-0">Instagram Network Analysis</h1>
-<h4>Overview:</h4>
-<p>
-  This project explores the structure of an individual's Instagram social graph by identifying and analyzing mutual connections among followed users. I primarily looked at the data for my own Instagram network but also examined my sister's and roommate's networks for a comparison point. Future work would include comparing more diverse networks. The pipeline integrates web scraping and network science to uncover community structures, central users, and hidden patterns in online social behavior, as well as graph neural networks to predict potential future connections. The main goals were to make interesting visualizations of social networks, analyze local and global network statistics, and explore how a network can used as a basis for a graph neural network to predict future connections.
-</p><p>
-  Code for this project is available on my GitHub: <a href="https://github.com/SamPease/instagram_network_analysis" target="_blank">instagram_network_analysis</a>. The main analysis is in the Jupyter notebook <code>graph_vis3.ipynb</code>, which includes detailed visualizations and network statistics. This idea came from a wolfram alpha tool that was available a decade ago that drew network graphs of facebook friends. I then found and initially cloned  <a href="https://medium.com/@maximpiessen/how-i-visualised-my-instagram-network-and-what-i-learned-from-it-d7cc125ef297" target="_blank">Max Impiessen's blog post</a> on Medium. But in the end all of my code was written from scratch as his required significant modifications to work with the current Instagram API and Playwright.
-</p> 
-<h4>Tech Stack:</h4>
-<ul>  
-<li><strong>Python</strong> — core programming language
-</li>
-<li><strong>Playwright</strong> — automated browser control for web scraping
-</li>
-<li><strong>NetworkX</strong> — graph construction, centrality metrics, and global network analysis
-</li>
-<li><strong>python-louvain</strong> — community detection via Louvain algorithm
-</li>
-<li><strong>PyTorch Geometric</strong> — graph neural networks and link prediction
-</li>
-<li><strong>Pyvis</strong> — interactive HTML visualizations of graph data
-</li>
-<li><strong>Pandas</strong> — tabular data manipulation
-</li>
-<li><strong>NumPy</strong> — numerical computations and array processing
-</li>
-<li><strong>Scikit-learn</strong> (optional/implicit) — for evaluation metrics and normalization
-</li>
-<li><strong>Jupyter</strong>  — interactive notebook environment for analysis and visualization
-</li>
-<li><strong>Dash</strong> (initially considered) — for interactive web dashboards, but replaced by Pyvis for simplicity
-</li>
-<li><strong>GitHub</strong> — version control and code sharing
-</li>
-<li><strong>HTML/CSS</strong> — for embedding visualizations in web pages
-</li>
-
-</ul>
-<h4 class="mt-4">View the Interactive Graph</h4>
-<p>
-<iframe height="600px" src="mutuals_graph_pyvis.html" style="border:none;" width="100%"></iframe>
-</p>
-
-<section id="step0">
-  <h4>Step 0: Data Collection</h4>
+  <div class="w-100">
+    <h1 class="mb-0">Instagram Network Analysis</h1>
+    
+    <h4>Overview:</h4>
+    <p>
+      This project explores the structure of my Instagram social graph by identifying and analyzing the following relationships between my followers. I focused primarily on my own account but also examined the networks of my sister and roommate for comparison. The analysis integrates web scraping, network science, and graph neural networks (GNNs) to reveal community structures, central users, and latent social patterns. My goals were to produce compelling visualizations, compute both local and global network statistics, and demonstrate how a social graph can be leveraged for predictive modeling using GNNs.
+    </p>
+    <p>
+      Code for the full pipeline is available on GitHub: <a href="https://github.com/SamPease/instagram_network_analysis" target="_blank">instagram_network_analysis</a>. The primary analysis is in the Jupyter notebook <code>graph_vis3.ipynb</code>, which contains detailed visualizations and metric computations. This project was originally inspired by a now-defunct Wolfram Alpha tool that visualized Facebook friend graphs. I also referenced <a href="https://medium.com/@maximpiessen/how-i-visualised-my-instagram-network-and-what-i-learned-from-it-d7cc125ef297" target="_blank">Max Impiessen's blog post</a>, but ultimately rewrote the entire codebase to adapt to Instagram's current API limitations and modern scraping tools like Playwright.
+    </p>
+    
+    <h4>Tech Stack:</h4>
+    <ul>  
+    <li><strong>Python</strong> — primary programming language for all data processing</li>
+    <li><strong>Playwright</strong> — browser automation for robust web scraping</li>
+    <li><strong>NetworkX</strong> — graph construction, centrality measures, global network statistics</li>
+    <li><strong>python-louvain</strong> — community detection using the Louvain method</li>
+    <li><strong>PyTorch Geometric</strong> — implementation of GNNs for link and community prediction</li>
+    <li><strong>Pyvis</strong> — interactive visualization of network data in HTML</li>
+    <li><strong>Pandas</strong> — tabular data management and transformation</li>
+    <li><strong>NumPy</strong> — numerical computation and matrix operations</li>
+    <li><strong>Scikit-learn</strong> — auxiliary tools for normalization and model evaluation</li>
+    <li><strong>Jupyter Notebook</strong> — exploratory analysis and visualization environment</li>
+    <li><strong>Dash</strong> — initially used for dashboarding, replaced by Pyvis for better static web integration</li>
+    <li><strong>GitHub</strong> — version control and public project sharing</li>
+    <li><strong>HTML/CSS</strong> — for embedding and styling visual outputs</li>
+    </ul>
+    
+    <h4 class="mt-4">View the Interactive Graph</h4>
+    <p>
+    <iframe height="600px" src="mutuals_graph_pyvis.html" style="border:none;" width="100%"></iframe>
+    </p>
+    
+    <section id="step0">
+      <h4>Step 0: Data Collection</h4>
+    
   <p>
-    The first challenge in this project was gathering data from Instagram—a platform known for its aggressive anti-scraping measures. Initial attempts using traditional tools like <code>Selenium</code> proved unreliable due to frequent timeouts, dynamic content loading, and detection. Similarly, <code>Instaloader</code>, while powerful, was quickly throttled and lacked the flexibility needed for collecting mutual follow data at scale.
+    The first major challenge was extracting data from Instagram, a platform without public apis for my purpose and well known for aggressive anti-scraping mechanisms. Early efforts using tools like <code>Selenium</code> failed due to dynamic content loading, long load times, and bot detection. I also experimented with <code>Instaloader</code>, a CLI tool tailored for Instagram, but it was too frequently throttled and lacked the flexibility to capture mutual connection data at scale.
   </p>
   <p>
-    The solution was to use <code>Playwright</code>, a modern browser automation tool that mimics human behavior more effectively. Even with Playwright, rate-limiting and throttling became a serious issue when collecting data from more than a few dozen users. Strategies such as introducing randomized delays, error handling, and saving intermediate progress were critical to make the process sustainable.
+    I ultimately switched to <code>Playwright</code>, a modern headless browser automation tool that better mimics real user behavior. Even with Playwright, I faced significant rate-limiting after scraping a few dozen users. To make scraping sustainable, I implemented randomized delays, robust error handling, and progressive data checkpointing.
   </p>
   <p>
-    The core data collected was each user's "following" list—who they follow on Instagram. By crawling this data across a target list of users, I constructed a directed graph where an edge from user A to user B represents A following B. Mutual connections were identified as bidirectional edges. The resulting graph structure was saved as a JSON adjacency list, serving as the foundation for all further network analysis and visualization.
+    The core dataset consisted of all of the users who both followed me and I followed them. Then I found each user's "following" list — that is, who they follow on Instagram. I crawled a user's following list until no more users from my mutuals list were showing up. This optimization allowed me to reduce the amount of time to scrape each user, instead of hacing to scrape the entire following list. This data was used to build a directed graph, where an edge from A to B indicates that user A follows user B. Mutual connections were identified as reciprocal edges. This adjacency information was stored in JSON format and served as the basis for all further graph analysis and modeling.
   </p>
   <p>
-    Scope was inheritantly limited by Instagram's API restrictions and the need to avoid detection. I would've loved to have scrapped ALL of the followers from each user, but this was not feasible. Instead, I focused on a smaller set of users, primarily my own network to ensure the data was manageable and meaningful. This also allowed for a more focused analysis of mutual connections and community structures within a smaller social circle.
+    Due to API limitations and the need to avoid detection, I restricted the scope of the data. Ideally, I would have scraped all followers for each user, but this was not feasible. Instead, I focused on a smaller sample centered around my own network to ensure the data remained tractable, interpretable, and relevant. This design choice allowed for a more focused analysis of mutual ties and community overlap within a manageable subset of Instagram.
   </p></section>
 
-<section id="step1">
-  <h4>Step 1: Graph Construction</h4>
-  <p>
-    After collecting the raw data, the next step was building a visual and analyzable representation of the Instagram network. Using <code>NetworkX</code>, I constructed a directed graph where nodes represent users and edges represent follow relationships. To position nodes meaningfully in 2D space, I used <strong>graph viz</strong>'s scalable force-directed placement, which is well-suited for visualizing large, organic graphs with natural clustering.
-  </p>
-  <p>
-    To uncover the underlying social structure, I applied the <strong>Louvain community detection algorithm</strong>. This grouped users into communities based on follow patterns, allowing for deeper analysis of subgroups and social clusters within the network.
-  </p>
-  <p>
-    For visualization, I initially experimented with <code>Dash</code> and <code>Dash Cytoscape</code> to create an interactive dashboard that allowed for filtering, highlighting, and analysis in the browser. However, integrating and hosting a Dash app on a static website introduced significant challenges. As a result, I returned to <code>Pyvis</code>, which offered a clean and interactive HTML-based visualization that was easier to embed and share without requiring a backend server.
-  </p>
-</section>
+  <section id="step1">
+    <h4>Step 1: Graph Construction</h4>
+    <p>
+      Once the raw data was collected, the next step was to construct a network representation of the Instagram graph. Using <code>NetworkX</code>, I built a directed graph where nodes represent individual users and edges represent follow relationships. To visualize the graph meaningfully, I applied <strong>Graphviz</strong>'s scalable force-directed layout algorithm, which is particularly effective for displaying organic structures with natural clusters.
+    </p>
+    <p>
+      To uncover community structures within the graph, I used the <strong>Louvain community detection algorithm</strong>. This modularity-based method grouped users into communities based on follow patterns, revealing sub-networks that often reflected real-life social circles such as college friends, coworkers, or sports league teammates.
+    </p>
+    <p>
+      Initially, I explored using <code>Dash</code> and <code>Dash Cytoscape</code> to create an interactive visualization with filtering and community highlighting features. While powerful, hosting a Dash app proved difficult on a static website. I ultimately opted for <code>Pyvis</code>, which provided smooth, interactive, embeddable HTML graphs without requiring a server backend. This made it easier to share visualizations and integrate them into my portfolio.
+    </p>
+  </section>
 
 
-<section id="step2">
-  <h4>Step 2: Local Network Statistics</h4>
-  <p>
-    With the graph constructed, I calculated a variety of local network statistics to understand individual user roles and relationships within the network. This was particularly fun as it involved looking at which of my friends played what roles in my greater social network. Key metrics included:
-  </p>
-  <ul>
-    <li><strong>Degree Centrality</strong>: Measures how many connections a node has relative to all other nodes.</li>
-    <li><strong>In-Degree Centrality</strong>: Counts how many edges point toward the node. That is how many people in the graph follow them.</li>
-    <li><strong>Out-Degree Centrality</strong>: Counts how many edges originate from the node. That is how many people in the graph they follow.</li>
-    <li><strong>Closeness Centrality</strong>: Is the reciprocal of the sum of the shortest path distances from a node to all other nodes.</li>
-    <li><strong>Betweenness Centrality</strong>: Measures how often a node appears on the shortest paths between other nodes. It highlights nodes that act as bridges or intermediaries within the network, focusing on the number of shortest paths passing through the node.</li>
-    <li><strong>PageRank</strong>: Determines the importance of nodes based on incoming links, similar to Google's PageRank algorithm. It assigns higher scores to nodes that are linked by other high-scoring nodes.</li>
-    <li><strong>Load Centrality</strong>: Similar to betweenness centrality, but instead of counting the number of shortest paths, it considers the load or weight of those paths passing through a node. The load is determined by the relative importance or frequency of the paths, emphasizing the flow of information or traffic within the network.</li>
-    <li><strong>HITS Hub Scores</strong>: Measure how well a node serves as a hub by linking to authoritative nodes. This is determined by iteratively assigning higher scores to nodes that point to nodes with high authority scores.</li>
-    <li><strong>HITS Authority Scores</strong>: Measure how authoritative a node is based on links from hub nodes. This is determined by iteratively assigning higher scores to nodes that are linked by nodes with high hub scores.</li>
-    <li><strong>Clustering Coefficient</strong>: Measures the tendency of a node's neighbors to also be connected.</li>
-    <li><strong>Triangles Count</strong>: Counts the number of triangles a node is part of.</li>
-    <li><strong>Eigenvector Centrality</strong>: Measures influence by considering the importance of a node’s neighbors.</li>
-    <li><strong>Square Clustering Coefficient</strong>: Captures how likely neighbors of a node form squares (4-cycles).</li>
-  </ul>
-  <p>
-    These metrics provided insights into user influence, community structure, and potential roles within the network. Here is a sample of the top and bottom users for each local metric in my graph.
-  </p>  
+  <section id="step2">
+    <h4>Step 2: Local Network Statistics</h4>
+    <p>
+      With the graph constructed, I calculated a variety of node-level ("local") metrics to better understand each user's position within the network. These statistics offer insight into individual influence, social reach, and structural roles within the graph. This part of the project was particularly engaging because it allowed me to see how my friends functioned in the broader social structure.
+    </p>
+    <ul>
+      <li><strong>Degree Centrality</strong>: Total number of connections a user has.</li>
+      <li><strong>In-Degree Centrality</strong>: Number of users who follow a given user.</li>
+      <li><strong>Out-Degree Centrality</strong>: Number of users a given user follows.</li>
+      <li><strong>Closeness Centrality</strong>: Is the reciprocal of the sum of the shortest path distances from a node to all other nodes.</li>
+      <li><strong>Betweenness Centrality</strong>: Quantifies how often a user sits on the shortest paths between others, highlighting users who serve as bridges.</li>
+      <li><strong>PageRank</strong>: Assigns importance to users based on how many high-ranking users follow them.</li>
+      <li><strong>Load Centrality</strong>: Similar to betweenness, but weights paths by their flow or frequency.</li>
+      <li><strong>HITS Hub/Authority Scores</strong>: Measures how well a user connects to influential users (hub) and how often they are followed by hubs (authority).</li>
+      <li><strong>Clustering Coefficient</strong>: Indicates how interconnected a user’s neighbors are.</li>
+      <li><strong>Triangle Count</strong>: Number of triangle relationships the user participates in.</li>
+      <li><strong>Eigenvector Centrality</strong>: Evaluates a user's influence based on the importance of their neighbors.</li>
+      <li><strong>Square Clustering</strong>: Measures how likely a user's neighbors form 4-node cycles.</li>
+    </ul>
+    <p>
+      Below is a leaderboard of the top users in each metric, shown with an ASCII bar to represent normalized values. These rankings illustrate the diversity of roles different users play in the network — from connectors and hubs to tightly clustered community members.
+    </p>
 
     <div style="max-width: 100%; overflow-x: auto; background-color: #ffffff; color: #eee; padding: 1em; border-radius: 8px; font-family: monospace; font-size: 0.85em;">
       <pre>
@@ -233,64 +223,142 @@
     </div>
   
     <p>
-      A full spreadsheet of local metrics is available in this 
-      <a href="https://github.com/SamPease/instagram_network_analysis/blob/master/node_metrics_with_community.csv" target="_blank">CSV file</a>. 
-      These metrics, along with community labels, provide a comprehensive view of each user’s role within the network. Notably, the densest community corresponds to my college friend group, which contributes to my college partner, <strong>itsthejukeofyork</strong>, ranking at the top of several metrics—including degree centrality and PageRank. This reflects their central position in my social graph, likely due to their strong mutual ties with many of my close friends during a period when I was highly active on Instagram.
+      A full CSV export of all local metrics and community IDs is available <a href="https://github.com/SamPease/instagram_network_analysis/blob/master/node_metrics_with_community.csv" target="_blank">here</a>.
     </p>
     <p>
-      Other standout users include <strong>ec__davis</strong>, a college friend who later joined the same queer sports league as I did. I've also visited her hometown and met many of her friends, reinforcing her strong cross-community presence in the graph.
+      For example, my college partner <strong>itsthejukeofyork</strong> ranks highest in multiple categories including degree centrality and PageRank — reflecting their central position in my college-era social life. Similarly, <strong>ec__davis</strong> stands out for her cross-community ties, likely reflecting the overlapping roles she plays as both a college friend and a teammate in a queer sports league. My sister, <strong>abigail.pease</strong>, appears as a quiet connector: not highly active on Instagram but linked to many disparate parts of my social life.
     </p>
     <p>
-      Another notable node is my sister, <strong>abigail.pease</strong>. While she’s not especially active on Instagram, she appears connected to friends across nearly all areas of my life, making her a quiet but widespread bridge in the network.
+      Many of the other top-ranked users are simply very active Instagram users who function as hubs within specific community clusters.
     </p>
-    <p>
-      Many of the other top-ranked users are simply highly active Instagram users who serve as local hubs within their respective community clusters.
-    </p>
-</section>
+  </section>
 <section id="step3">
   <h4>Step 3: Global Network Statistics</h4>
   <p>
-    After analyzing individual users, I turned to the overall structure of the Instagram network. Using NetworkX, I calculated a variety of global statistics that provide insights into the network's connectivity, clustering, and overall structure. Key metrics included:
+    After analyzing individual users, I turned to global metrics to assess the overall structure of the network. These statistics describe connectivity, cohesion, and macro-level patterns that emerge from the graph. Using <code>NetworkX</code>, I computed the following key metrics:
   </p>
   <ul>
-    <li><strong>is_directed</strong>: Indicates whether the graph is directed (edges have direction).</li>
-    <li><strong>number_of_nodes</strong>: Total number of nodes in the graph.</li>
-    <li><strong>number_of_edges</strong>: Total number of edges in the graph.</li>
-    <li><strong>density</strong>: Ratio of actual edges to possible edges.</li>
-    <li><strong>avg_in_degree</strong>: Average number of incoming edges per node.</li>
-    <li><strong>avg_out_degree</strong>: Average number of outgoing edges per node.</li>
-    <li><strong>avg_total_degree</strong>: Average total degree (in + out) per node.</li>
-    <li><strong>max_in_degree</strong>: Maximum number of incoming edges for any node.</li>
-    <li><strong>max_out_degree</strong>: Maximum number of outgoing edges for any node.</li>
+    <li><strong>is_directed</strong>: Whether the graph treats edges as directional (true in this case).</li>
+    <li><strong>number_of_nodes / number_of_edges</strong>: Total users and connections.</li>
+    <li><strong>density</strong>: Ratio of observed edges to all possible edges.</li>
+    <li><strong>avg_in/out/total_degree</strong>: Average number of incoming, outgoing, and total connections per user.</li>
+    <li><strong>max_in/out_degree</strong>: Maximum follower and following counts in the graph.</li>
     <li><strong>average_clustering</strong>: Average local clustering coefficient across all nodes.</li>
     <li><strong>transitivity</strong>: Ratio of triangles to connected triplets in the whole graph.</li>
-    <li><strong>average_neighbor_degree</strong>: Average degree of a node’s neighbors.</li>
-    <li><strong>reciprocity</strong>: Ratio of mutual edges to total edges in a directed graph.</li>
+    <li><strong>average_neighbor_degree</strong>: How connected a typical neighbor is.</li>
+    <li><strong>reciprocity</strong>: Proportion of edges that are mutual.</li>
     <li><strong>degree_assortativity</strong>: Correlation between the degrees of connected nodes.</li>
     <li><strong>global_efficiency</strong>: Average inverse shortest path length across all pairs.</li>
-    <li><strong>num_triangles</strong>: Total number of triangles in the graph.</li>
+    <li><strong>num_triangles</strong>: Total triangle formations.</li>
     <li><strong>diameter</strong>: Longest shortest path between any two nodes.</li>
-    <li><strong>avg_shortest_path_length</strong>: Average length of shortest paths between all pairs.</li>
-    <li><strong>radius</strong>: Minimum eccentricity of any node in the graph where eccentricity is the greatest distance from a node to any other node in the graph.</li>
-    <li><strong>avg_eccentricity</strong>: Average maximum shortest path length from each node.</li>
-    <li><strong>degree_entropy</strong>: Entropy of the degree distribution, showing variability.</li>
-    <li><strong>num_weakly_connected_components</strong>: Number of components if edge direction is ignored.</li>
-    <li><strong>num_strongly_connected_components</strong>: Number of components where all nodes are mutually reachable.</li>
+    <li><strong>avg_shortest_path_length</strong>: Mean of all shortest paths.</li>
+    <li><strong>radius</strong>: Minimum eccentricity (max shortest path from a node).</li>
+    <li><strong>avg_eccentricity</strong>: Mean of each node’s maximum distance to others.</li>
+    <li><strong>degree_entropy</strong>: Entropy of the degree distribution.</li>
+    <li><strong>num_weakly/strongly_connected_components</strong>: Number of disconnected subnetworks, with and without direction.
+    </li>
   </ul>
-  <p> 
-    These metrics provided a comprehensive view of the network's structure and connectivity and are usfeul to compare the different subcommunityies within the graph. Here is they are in heatmap form for my Instagram network. Its interesting 
-  </p>             
+  <p>
+    These metrics help compare different parts of the network and identify unique structures across communities. Because I only had access to three personal networks (mine, my sister’s, and my roommate’s), I also computed these global statistics at the community level within each graph to better compare subsets of users.
+  </p>
+  <p>
+    One interesting finding: the overall network had a reciprocity of 0.94, meaning 94% of edges were mutual. This aligns with expectations — most Instagram relationships between close connections tend to be bidirectional. While slightly lower than I anticipated, this could reflect data loss due to scraping inconsistencies. Importantly, errors in scraping tend to affect edge direction rather than existence, so the network’s topology remains relatively robust.
+  </p>
+  <p>
+    Another insight came from comparing communities. The largest community (181 users) wasn’t the most interconnected. A smaller community (140 users) showed a higher edge count and clustering coefficient. Upon inspection, the denser group corresponded to a tight-knit college cohort, while the larger one represented my adult sports league — a broader, less densely linked group. This pattern supports the Louvain algorithm’s ability to detect denser substructures within broader social groups.
+  </p>
+  <p>
+    Below is a heatmap of community-level global metrics within my network, followed by similar visualizations for my sister’s and roommate’s networks. Despite different social contexts, all three graphs exhibit similar structural properties: diameter between 6–7, average clustering around 0.55–0.57, and high reciprocity. I’m curious whether this consistency reflects a broader pattern for mid-20s Instagram users — or just our specific circles. I’d love to compare more datasets if available.
+  </p>
   <img src="image.png" width="100%"/>
-<p>  For comparison sake here is the same heatmap for both my sisters and roommate's Instagram networks. Their full networks can be viewed at 
-  <a href="https://sampease.github.io/abigail_mutuals_graph_pyvis.html" target="_blank">Abigail's Network</a> and 
-  <a href="https://sampease.github.io/austin_mutuals_graph_pyvis.html" target="_blank">Austin's Network</a> respectively.
-</p>
+  <p>
+    For comparison, here are heatmaps for:
+    <a href="https://sampease.github.io/abigail_mutuals_graph_pyvis.html" target="_blank">Abigail’s Network</a> and
+    <a href="https://sampease.github.io/austin_mutuals_graph_pyvis.html" target="_blank">Austin’s Network</a>.
+  </p>
   <img src="abigail_image.png" width="45%"/>
   <img src="austin_image.png" width="45%"/>
-
-
-
 </section>
+
+<section id="step4">
+  <h4>Step 4: Graph Neural Networks (GNNs)</h4>
+
+  <h5>Community Prediction</h5>
+  <p> To evaluate how well the graph structure alone could predict user communities, I trained a Graph Convolutional Network (GCN) to perform <strong>node classification</strong> using community labels derived from <strong>Louvain community detection</strong> as targets. I first filtered out tiny communities (fewer than two users), re-ran Louvain on the cleaned graph, and computed a set of <strong>structural node features</strong>: in-degree, out-degree, total degree, clustering coefficient, PageRank, and a normalized community ID. These features were standardized and converted into a PyTorch Geometric <code>Data</code> object. </p>
+  <p> The model architecture consisted of a two-layer GCN with ReLU activation and a hidden layer of 16 units, followed by a log-softmax output for multiclass classification. To preserve label distribution across splits, I used <strong>stratified sampling</strong> to divide the nodes into training and test sets. The model was trained for 100 epochs using <strong>negative log-likelihood loss</strong>, with performance tracked via both training loss and test set accuracy. </p> 
+  <p> To interpret the model’s learned embeddings, I used <strong>t-SNE</strong> to project the output logits into 2D space and color-coded the points by their true community labels. I also generated a <strong>confusion matrix</strong> and calculated <strong>per-community accuracy scores</strong> to assess which communities were most consistently predicted and which remained ambiguous. </p>
+  <img src="t-SNE.png" width="45%"/>
+  <img src="confusion_matrix.png" width="45%"/>
+  <div style="max-width: 100%; overflow-x: auto; background-color: #ffffff; color: #000; padding: 1em; border-radius: 8px; font-family: monospace; font-size: 0.85em;">
+    <pre>
+  Per-Community Accuracy:
+  Community 0: 82.14%
+  Community 1: 88.89%
+  Community 2: 82.86%
+  Community 3: 59.09%
+  Community 4: 57.14%
+  Community 5: 100.00%
+  Community 6: 0.00%
+  Community 7: 94.12%
+    </pre>
+  </div>
+
+  <h5>Link Prediction</h5>
+  <p> I trained a Graph Convolutional Network (GCN) for <strong>link prediction</strong>—the task of inferring whether an edge (i.e., a relationship) exists between two users in a social network graph. Using PyTorch Geometric’s <code>RandomLinkSplit</code> transform, I split the graph’s edges into training, validation, and test sets, each including both positive (true) and negative (sampled nonexistent) edges to enable supervised binary classification. </p> 
+  <p> The model consisted of a two-layer GCN encoder with a hidden dimension of 32, which learned node embeddings based on structural features and neighborhood context. To predict links, I used a <strong>dot product decoder</strong> that computes the similarity between node embeddings. The training objective was binary cross-entropy loss over the predicted edge probabilities, optimized for 200 epochs using the Adam optimizer. </p> 
+  <p> Evaluation was performed on held-out edges using <strong>AUC</strong> (Area Under the ROC Curve) and <strong>Average Precision</strong>—both standard metrics for imbalanced binary classification. The resulting node embeddings and predicted edge scores can be used to uncover missing or likely future connections in the network. </p>
+  <div style="max-width: 100%; overflow-x: auto; background-color: #ffffff; color: #000; padding: 1em; border-radius: 8px; font-family: monospace; font-size: 0.85em;">
+    <pre>
+🔍 Predicted Link Analysis
+
+🔝 Top 10 Predicted Links:
+user1           user2               score       label
+nicocrino       a_global_globule    0.999760    1
+vedderrise      nicocrino           0.999738    1
+grant__mak      nicocrino           0.999654    1
+vanessadnk      gulago              0.999629    1
+nicocrino       mitchberger106      0.999603    1
+kabewebster     conradmitchell465   0.999599    1
+willbrodner     d_munt_             0.999595    1
+alexblumenstock a_global_globule    0.999564    1
+nicocrino       jhg1217             0.999514    1
+joro214         vanessadnk          0.999501    1
+
+❌ Top False Positives (Predicted link, doesn’t exist):
+user1           user2               score       label
+jimliu905       jhg1217             0.997747    0
+tonyteleky      winstonyau99        0.992560    0
+clamzhaoder     jeremysfertig       0.989794    0
+mle_quinn       minhanhtoo          0.988810    0
+chipsiduke      thuantrn            0.988103    0
+
+⚠️ Top False Negatives (True link, model missed it):
+user1               user2               score       label
+nicocrino           its_knott_zach      0.284143    1
+nikhilvdk           nickynickynickyt    0.286394    1
+abigail.pease       itsthejukeofyork    0.289419    1
+callie_huffmannn    sajkader            0.292563    1
+evelyngarciaphotos  a_global_globule    0.304193    1
+    </pre>
+  </div>
+</section>
+<section id="conclusion">
+  <h4>Conclusion</h4>
+  <p>
+    This project was a deep dive into the structure and predictive modeling of social networks, grounded in real Instagram data. From scraping and cleaning data, to constructing and analyzing network graphs, to applying machine learning with GNNs, each step provided valuable insights into how social structures can be quantitatively explored and visualized.
+  </p>
+  <p>
+    I gained hands-on experience with network analysis tools like NetworkX and Pyvis, learned to navigate the challenges of web scraping at scale with Playwright, and applied graph neural networks using PyTorch Geometric for both classification and link prediction tasks. In particular, the ability of the GNN to learn from graph topology alone — without any textual or image-based features — underscored the strength of structural data in modeling social relationships.
+  </p>
+  <p>
+    The biggest limitation was access to data. Instagram’s restrictions on scraping and API usage limited both the size and diversity of networks I could analyze. Expanding this work to include more users — and especially users outside of my direct social circles — would allow for stronger generalization and more meaningful comparisons. I’m also interested in combining this type of structural analysis with other modalities, such as post metadata or profile descriptions, to create richer models of online social behavior.
+  </p>
+  <p>
+    Looking ahead, I’d love to extend this pipeline to other platforms or public datasets where data collection is more feasible and less ethically fraught. Social graphs have immense potential in fields like recommendation systems, behavioral analysis, and even community health. If you know of any interesting network data — or are interested in collaborating — feel free to reach out!
+  </p>
+</section>
+
+
 </div>
 <script src="jquery.min.js"></script>
 <script src="bootstrap.bundle.min.js"></script>
