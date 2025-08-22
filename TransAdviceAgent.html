@@ -57,7 +57,7 @@
   <div class="spinner-border text-primary" role="status">
     <span class="sr-only">Loading...</span>
   </div>
-  <span class="ml-2">Generating answer...</span>
+  <span class="ml-2" id="loadingLabel">Loading...</span>
 </div>
 
 <div class="mt-4" id="answerSection" style="display:none;">
@@ -78,24 +78,57 @@ document.getElementById("questionForm").addEventListener("submit", async functio
     const answerText = document.getElementById("answerText");
     const sourcesText = document.getElementById("sourcesText");
     const spinner = document.getElementById("loadingSpinner");
+    const loadingLabel = document.getElementById("loadingLabel");
 
-    // Show spinner and hide previous answer
+    // Reset UI
     spinner.style.display = "inline-flex";
+    loadingLabel.textContent = "Server is waking…";
     answerSection.style.display = "none";
+    answerText.textContent = "";
+    sourcesText.textContent = "";
 
     try {
-        const response = await fetch("https://transadviceagent.onrender.com/ask", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ question })
-        });
+        // 1️⃣ Wake the server first
+        await fetch("https://transadviceagent.onrender.com/").catch(() => {});
+
+        const maxWaitTimeMs = 120000; // 2 minutes
+        const delayMs = 5000;         // 5 seconds retry
+        const startTime = Date.now();
+        let response;
+
+        // 2️⃣ Retry until server responds
+        while (Date.now() - startTime < maxWaitTimeMs) {
+            try {
+                response = await fetch("https://transadviceagent.onrender.com/ask", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ question })
+                });
+
+                if (response.ok) break; // success
+            } catch (_) {
+                // ignore errors while server wakes
+            }
+
+            console.log("Server still waking, retrying in 5s...");
+            loadingLabel.textContent = "Server is waking…";
+            await new Promise(resolve => setTimeout(resolve, delayMs));
+        }
+
+        if (!response || !response.ok) {
+            throw new Error("Server did not respond within 2 minutes.");
+        }
+
+        // 3️⃣ Server awake, LLM generating answer
+        loadingLabel.textContent = "Generating answer…";
 
         const data = await response.json();
         answerText.textContent = data.answer || "No answer returned.";
         sourcesText.textContent = data.sources || "No sources available.";
         answerSection.style.display = "block";
+
     } catch (error) {
-        answerText.textContent = "Error fetching answer.";
+        answerText.textContent = "Error fetching answer. The server might still be waking or busy — try again in a few seconds.";
         sourcesText.textContent = "";
         answerSection.style.display = "block";
         console.error(error);
