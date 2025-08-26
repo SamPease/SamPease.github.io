@@ -70,9 +70,17 @@
 </div>
 </section>
 
+<style>
+  /* Ensure LLM answers preserve line breaks */
+  #answerText {
+    white-space: pre-line;
+  }
+</style>
+
 <script>
 document.getElementById("questionForm").addEventListener("submit", async function(e) {
     e.preventDefault();
+
     const question = document.getElementById("questionInput").value;
     const answerSection = document.getElementById("answerSection");
     const answerText = document.getElementById("answerText");
@@ -82,61 +90,66 @@ document.getElementById("questionForm").addEventListener("submit", async functio
 
     // Reset UI
     spinner.style.display = "inline-flex";
-    loadingLabel.textContent = "Server is waking…";
+    loadingLabel.textContent = "Waking server (this may take up to a minute)…";
     answerSection.style.display = "none";
     answerText.textContent = "";
     sourcesText.textContent = "";
 
     try {
-        // 1️⃣ Wake the server first
-        await fetch("https://transadviceagent.onrender.com/").catch(() => {});
-
+        // --- Step 1: Wake server ---
         const maxWaitTimeMs = 120000; // 2 minutes
-        const delayMs = 5000;         // 5 seconds retry
+        const delayMs = 5000;         // 5s retry
         const startTime = Date.now();
-        let response;
+        let serverAwake = false;
 
-        // 2️⃣ Retry until server responds
         while (Date.now() - startTime < maxWaitTimeMs) {
             try {
-                response = await fetch("https://transadviceagent.onrender.com/ask", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ question })
-                });
-
-                if (response.ok) break; // success
+                const res = await fetch("https://transadviceagent.onrender.com/", { method: "GET" });
+                if (res.ok) {
+                    serverAwake = true;
+                    break;
+                }
             } catch (_) {
-                // ignore errors while server wakes
+                // ignore failures until retry
             }
-
             console.log("Server still waking, retrying in 5s...");
-            loadingLabel.textContent = "Server is waking…";
             await new Promise(resolve => setTimeout(resolve, delayMs));
         }
 
-        if (!response || !response.ok) {
-            throw new Error("Server did not respond within 2 minutes.");
+        if (!serverAwake) {
+            throw new Error("Server did not wake within 2 minutes.");
         }
 
-        // 3️⃣ Server awake, LLM generating answer
+        // --- Step 2: Query backend for answer ---
         loadingLabel.textContent = "Generating answer…";
+
+        const response = await fetch("https://transadviceagent.onrender.com/ask", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question })
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch answer from backend.");
 
         const data = await response.json();
         answerText.textContent = data.answer || "No answer returned.";
-        sourcesText.textContent = data.sources || "No sources available.";
+        sourcesText.textContent = (data.sources && data.sources.length > 0)
+            ? data.sources.join("\n")
+            : "No sources available.";
         answerSection.style.display = "block";
 
     } catch (error) {
+        console.error(error);
         answerText.textContent = "Error fetching answer. The server might still be waking or busy — try again in a few seconds.";
         sourcesText.textContent = "";
         answerSection.style.display = "block";
-        console.error(error);
     } finally {
         spinner.style.display = "none";
     }
 });
 </script>
+
+
 
 
 </div>
