@@ -23,79 +23,36 @@
 <div class="collapse navbar-collapse" id="navbarSupportedContent">
 <ul class="navbar-nav">
 <li class="nav-item">
-<a class="nav-link js-scroll-trigger" href="index.html#about" id="about-toggle-link" onclick="toggleAboutMenu()">About ▸</a>
-<ul class="pl-3" id="about-submenu" style="display: none; margin-left: 1.5rem; border-left: 2px solid #6c757d; padding-left: 1rem; margin-top: 0.5rem; background-color: #f8f9fa; border-radius: 0.25rem;">
-<li>
-<a class="nav-link js-scroll-trigger" href="index.html#about" style="font-size: 90%; color: #333; padding: 0.2rem 0;">
-<i class="fas fa-user" style="width: 1.2em;"></i> About Me
-      </a>
-</li>
-<li>
-<a class="nav-link" href="https://github.com/sampease" style="font-size: 90%; color: #333; padding: 0.2rem 0;" target="_blank">
-<i class="fab fa-github" style="width: 1.2em;"></i> GitHub
-      </a>
-</li>
-<li>
-<a class="nav-link" href="https://www.linkedin.com/in/sam-pease/" style="font-size: 90%; color: #333; padding: 0.2rem 0;" target="_blank">
-<i class="fab fa-linkedin" style="width: 1.2em;"></i> LinkedIn
-      </a>
-</li>
-<li>
-<a class="nav-link" href="mailto:sam@walking-stick.com" style="font-size: 90%; color: #333; padding: 0.2rem 0;">
-<i class="fas fa-envelope" style="width: 1.2em;"></i> Email
-      </a>
-</li>
-</ul>
+<a class="nav-link js-scroll-trigger" href="index.html">
+<i class="fas fa-home"></i> Home
+</a>
 </li>
 <li class="nav-item">
-<a class="nav-link js-scroll-trigger" href="index.html#research">
-       Research
-      </a>
+<a class="nav-link js-scroll-trigger" href="#page-top">Overview</a>
 </li>
 <li class="nav-item">
-<a class="nav-link js-scroll-trigger" href="#projects" id="projects-toggle-link" onclick="toggleSubmenu()">Projects ▸</a>
-<ul class="pl-3" id="project-submenu" style="display: none; margin-left: 1.5rem; border-left: 2px solid #6c757d; padding-left: 1rem; margin-top: 0.5rem; background-color: #f8f9fa; border-radius: 0.25rem;">
-<li>
-<a class="nav-link js-scroll-trigger" href="instagram-network.html" style="font-size: 90%; color: #333; padding: 0.2rem 0; display: block;">
-         Instagram Network Analysis
-        </a>
-</li>
-<li>
-<a class="nav-link js-scroll-trigger" href="Final Presentation.pptx" style="font-size: 90%; color: #333; padding: 0.2rem 0; display: block;" target="_blank">
-         Cat Identification
-        </a>
-</li>
-<li>
-<a class="nav-link js-scroll-trigger" href="Topology final project.pdf" style="font-size: 90%; color: #333; padding: 0.2rem 0; display: block;" target="_blank">
-         Canopy Architecture (TDA)
-        </a>
-</li>
-<li>
-<a class="nav-link js-scroll-trigger" href="Project info.pdf" style="font-size: 90%; color: #333; padding: 0.2rem 0; display: block;" target="_blank">
-         Wind Turbine Monitor
-        </a>
-</li>
-</ul>
+<a class="nav-link js-scroll-trigger" href="#tech-stack">Tech Stack</a>
 </li>
 <li class="nav-item">
-<a class="nav-link js-scroll-trigger" href="index.html#teaching">
-       Teaching
-      </a>
+<a class="nav-link" href="mutuals_graph_pyvis.html" target="_blank">Interactive Graph</a>
 </li>
 <li class="nav-item">
-<a class="nav-link js-scroll-trigger" href="index.html#interests">
-       Interests
-      </a>
+<a class="nav-link js-scroll-trigger" href="#step0">Data Collection</a>
 </li>
 <li class="nav-item">
-<a class="nav-link js-scroll-trigger" href="SamPeaseResume1-24.pdf" target="_blank">
-       Resume
-      </a>
+<a class="nav-link js-scroll-trigger" href="#step1">Graph Construction</a>
 </li>
 <li class="nav-item">
-<a class="nav-link js-scroll-trigger" href="SamPeaseCV1-24.pdf" target="_blank">
-       Curriculum Vitae
-      </a>
+<a class="nav-link js-scroll-trigger" href="#step2">Local Network Statistics</a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="#step3">Global Network Statistics</a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="#step4">Graph Neural Networks</a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="#conclusion">Conclusion</a>
 </li>
 </ul>
 </div>
@@ -112,7 +69,7 @@
     <p>
       Code for the full pipeline is available on GitHub: <a href="https://github.com/SamPease/instagram_network_analysis" target="_blank">instagram_network_analysis</a>. The primary analysis is in the Jupyter notebook <code>graph_vis3.ipynb</code>, which contains detailed visualizations and metric computations. This project was originally inspired by a now-defunct Wolfram Alpha tool that visualized Facebook friend graphs. I also referenced <a href="https://medium.com/@maximpiessen/how-i-visualised-my-instagram-network-and-what-i-learned-from-it-d7cc125ef297" target="_blank">Max Impiessen's blog post</a>, but ultimately rewrote the entire codebase to adapt to Instagram's current API limitations and modern scraping tools like Playwright.
     </p>
-    
+    <section id="tech-stack">
     <h4>Tech Stack:</h4>
     <ul>  
     <li><strong>Python</strong> — primary programming language for all data processing</li>
@@ -129,8 +86,8 @@
     <li><strong>GitHub</strong> — version control and public project sharing</li>
     <li><strong>HTML/CSS</strong> — for embedding and styling visual outputs</li>
     </ul>
-    
-    <h4 class="mt-4">View the Interactive Graph</h4>
+    </section>
+    <h4 class="mt-4" id="interactive-graph">View the Interactive Graph</h4>
     <p>
     <iframe height="600px" src="mutuals_graph_pyvis.html" style="border:none;" width="100%"></iframe>
     </p>
@@ -256,6 +213,8 @@
     <li><strong>num_weakly/strongly_connected_components</strong>: Number of disconnected subnetworks, with and without direction.
     </li>
   </ul>
+  <section id="step3">
+  <h4>Step 3: Global Network Statistics</h4>
   <p>
     These metrics help compare different parts of the network and identify unique structures across communities. Because I only had access to three personal networks (mine, my sister’s, and my roommate’s), I also computed these global statistics at the community level within each graph to better compare subsets of users.
   </p>
@@ -363,61 +322,18 @@ evelyngarciaphotos  a_global_globule    0.304193    1
 <script src="jquery.easing.min.js"></script>
 <script src="resume.min.js"></script>
 <script>
-  function toggleSubmenu() {
-    const submenu = document.getElementById("project-submenu");
-    const toggleLink = document.getElementById("projects-toggle-link");
-    const aboutSubmenu = document.getElementById("about-submenu");
-    const aboutToggleLink = document.getElementById("about-toggle-link");
-
-    const expanded = submenu.style.display === "block";
-    submenu.style.display = expanded ? "none" : "block";
-    toggleLink.textContent = expanded ? "Projects ▸" : "Projects ▼";
-
-    if (aboutSubmenu && aboutSubmenu.style.display === "block") {
-      aboutSubmenu.style.display = "none";
-      aboutToggleLink.textContent = "About ▸";
-    }
-  }
-
-  function toggleAboutMenu() {
-    const submenu = document.getElementById("about-submenu");
-    const toggleLink = document.getElementById("about-toggle-link");
-    const projectSubmenu = document.getElementById("project-submenu");
-    const projectToggleLink = document.getElementById("projects-toggle-link");
-
-    const expanded = submenu.style.display === "block";
-    submenu.style.display = expanded ? "none" : "block";
-    toggleLink.textContent = expanded ? "About ▸" : "About ▼";
-
-    if (projectSubmenu && projectSubmenu.style.display === "block") {
-      projectSubmenu.style.display = "none";
-      projectToggleLink.textContent = "Projects ▸";
-    }
-  }
-
+  // Initialize smooth scrolling
   document.addEventListener("DOMContentLoaded", function () {
-    const projectSubmenu = document.getElementById("project-submenu");
-    const projectToggleLink = document.getElementById("projects-toggle-link");
-    const aboutSubmenu = document.getElementById("about-submenu");
-    const aboutToggleLink = document.getElementById("about-toggle-link");
-
-    // Auto-expand project menu on this page
-    if (projectSubmenu) {
-      projectSubmenu.style.display = "block";
-      projectToggleLink.textContent = "Projects ▼";
-    }
-
-    // Collapse both menus if a standard nav link is clicked
-    const links = document.querySelectorAll(".nav-link.js-scroll-trigger:not(#projects-toggle-link):not(#about-toggle-link)");
+    const links = document.querySelectorAll(".nav-link.js-scroll-trigger");
     links.forEach(link => {
-      link.addEventListener("click", () => {
-        if (projectSubmenu && projectSubmenu.style.display === "block") {
-          projectSubmenu.style.display = "none";
-          projectToggleLink.textContent = "Projects ▸";
-        }
-        if (aboutSubmenu && aboutSubmenu.style.display === "block") {
-          aboutSubmenu.style.display = "none";
-          aboutToggleLink.textContent = "About ▸";
+      link.addEventListener("click", function(e) {
+        if (this.getAttribute("href").startsWith("#")) {
+          e.preventDefault();
+          const targetId = this.getAttribute("href").substring(1);
+          const targetElement = document.getElementById(targetId);
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: "smooth" });
+          }
         }
       });
     });

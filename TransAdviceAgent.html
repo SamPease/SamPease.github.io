@@ -29,54 +29,205 @@
 <div class="collapse navbar-collapse" id="navbarSupportedContent">
 <ul class="navbar-nav">
 <li class="nav-item">
-<a class="nav-link js-scroll-trigger" href="#ask">Ask a Question</a>
+<a class="nav-link js-scroll-trigger" href="index.html">
+<i class="fas fa-home"></i> Home
+</a>
 </li>
 <li class="nav-item">
-<a class="nav-link js-scroll-trigger" href="#faq">FAQ / Info</a>
+<a class="nav-link js-scroll-trigger" href="#overview">Overview</a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="#try-it">Try It Out</a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="#pipeline">How the Pipeline Works</a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="#tech-stack">Tech Stack</a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="#limitations-future">Limitations & Future Work</a>
 </li>
 </ul>
 </div>
 </nav>
-
 <div class="container-fluid p-0">
+<section class="resume-section p-3 p-lg-5 d-flex align-items-center">
+  <div class="w-100">
+    <h1 class="mb-0">Trans Advice Agent</h1>
+    <section id="overview">
+<h4>Overview:</h4>
+<p>
+  TransAdviceAgent is an experimental, community-focused tool designed to surface information about transgender healthcare and related topics. 
+  Its purpose is to aggregate and summarize what community members have shared in documents, helping users explore different experiences, perspectives, and outcomes.
+</p>
+<p>
+  Please note that this is an <b>amateur project</b> and not a professional medical resource. 
+  Answers are limited to the documents included in the system — they may be incomplete, biased, or outdated. 
+  The system may also be slow, as it relies on multiple language model calls and hierarchical summarization.
+</p>
+<p>
+  Use this tool as one piece of community knowledge rather than medical advice. Always consult licensed healthcare providers and multiple sources when making decisions about your care.
+</p>
+<p>
+For recommendation-type questions, data sources are often community forums like Reddit. If you know of any trans resources or communities that should be included, let me know!
+</p>
+<p>
+  If you have questions, feedback, or suggestions for improving this project, please reach out to me at <a href="mailto:sam@walking-stick.com">sam@walking-stick.com</a>.
+</p>
 
-<section class="resume-section p-3 p-lg-5 d-flex justify-content-center" id="ask">
-<div class="w-100">
-<h2 class="mb-5">Ask a Question</h2>
+</section>
+    <section id="try-it">
+  <div class="w-100">
+    <h4>Try It Out</h4>
 
-<form id="questionForm">
-  <div class="form-group mb-3">
-    <label for="questionInput">Your Question:</label>
-    <textarea class="form-control" id="questionInput" rows="3" placeholder="Type your question here..." required></textarea>
+    <form id="questionForm">
+      <div class="form-group mb-3">
+        <label for="questionInput">Your Question:</label>
+        <textarea class="form-control" id="questionInput" rows="3" placeholder="Type your question here..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <!-- Spinner -->
+    <div class="mt-3" id="loadingSpinner" style="display:none;">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <span class="ml-2" id="loadingLabel">Loading...</span>
+    </div>
+
+    <div class="mt-4" id="answerSection" style="display:none;">
+      <h4>Answer:</h4>
+      <p id="answerText"></p>
+      <h5>Sources:</h5>
+      <p id="sourcesText"></p>
+    </div>
   </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-
-<!-- Spinner -->
-<div class="mt-3" id="loadingSpinner" style="display:none;">
-  <div class="spinner-border text-primary" role="status">
-    <span class="sr-only">Loading...</span>
-  </div>
-  <span class="ml-2" id="loadingLabel">Loading...</span>
-</div>
-
-<div class="mt-4" id="answerSection" style="display:none;">
-  <h4>Answer:</h4>
-  <p id="answerText"></p>
-  <h5>Sources:</h5>
-  <p id="sourcesText"></p>
-</div>
-
-</div>
 </section>
 
 <style>
-  /* Ensure LLM answers preserve line breaks */
+  /* Ensure answer text preserves line breaks */
   #answerText {
     white-space: pre-line;
   }
 </style>
 
+<section id="pipeline">
+  <h4>How the Pipeline Works</h4>
+  <p>
+    TransAdviceAgent processes user questions through a multi-stage pipeline that transforms community-sourced documents into concise, fact-based answers. 
+    The system is designed to remain fully grounded in the documents and provide neutral, transparent summaries.
+  </p>
+
+  <ol>
+    <li>
+      <strong>Query Rewriting & Expansion</strong><br>
+      The user’s original question is rewritten and expanded using Claude 3.5 Haiku to improve document retrieval. 
+      This step includes expanding abbreviations to full names (e.g., <em>Dr RBL → Dr. Rachel Bluebond-Langner</em>) and adding relevant synonyms for trans-related terms. 
+      The original query is preserved for later stages.
+    </li>
+
+    <li>
+      <strong>Document Retrieval</strong><br>
+      All documents are pre-chunked and stored in FAISS/SQLite. 
+      The rewritten query is used to retrieve the most relevant chunks using Maximal Marginal Relevance (MMR) to maximize diversity and coverage.
+    </li>
+
+    <li>
+      <strong>Chunk Summarization</strong><br>
+      Retrieved chunks are processed in batches by Claude 3.5 Haiku to generate summaries for each batch. 
+      Each summary captures only the content of the batch, preserving positive/negative details, counts, dates, and any disagreements present in the text.
+    </li>
+
+    <li>
+      <strong>Summary Synthesis</strong><br>
+      Summaries from all batches are combined hierarchically into a single, non-redundant summary. 
+      This step aggregates patterns, highlights frequently mentioned providers or procedures, and notes gaps or conflicting information in the documents.
+    </li>
+
+    <li>
+      <strong>Final Answer</strong><br>
+      The synthesized summary and the original user question are passed directly to Claude 3.5 Haiku to produce the final answer. 
+      The output is concise, neutral, document-grounded, and includes positives and negatives where present. 
+      If evidence is insufficient, the answer states this clearly without adding external guidance or advice.
+    </li>
+  </ol>
+
+  <p>
+    You can view the full source code and contribute here: 
+    <a href="https://github.com/SamPease/TransAdviceAgent" target="_blank">github.com/SamPease/TransAdviceAgent</a>
+  </p>
+</section>
+
+
+
+  <section id="tech-stack">
+        <h4>Tech Stack:</h4>
+      <ul>
+    <li><strong>Python</strong> — core programming language</li>
+    <li><strong>FastAPI</strong> — backend API framework</li>
+    <li><strong>Claude 3.5 Haiku</strong> — summarization and synthesis</li>
+    <li><strong>SentenceTransformers (all-MiniLM-L6-v2)</strong> — local embeddings for data preparation</li>
+    <li><strong>Hugging Face Inference API</strong> — runtime query embeddings</li>
+    <li><strong>FAISS</strong> — vector index with Maximal Marginal Relevance (MMR) retrieval</li>
+    <li><strong>SQLite</strong> — lightweight database for document and metadata storage</li>
+    <li><strong>dotenv</strong> — environment variable management</li>
+    <li><strong>GitHub Pages</strong> — static frontend hosting</li>
+    <li><strong>Render</strong> — cloud hosting for the backend API</li>
+    <li><strong>GitHub</strong> — version control and code hosting 
+      (<a href="https://github.com/SamPease/TransAdviceAgent" target="_blank">view code</a>)
+    </li>
+  </ul>
+  </section>
+
+<section id="limitations-future">
+  <h4>Limitations & Future Work</h4>
+  <p>
+    TransAdviceAgent is an experimental, hobby project and has several limitations that users should be aware of:
+  </p>
+  <ul>
+    <li>
+      <strong>Document Coverage:</strong> The system can only provide answers based on the documents in its database. 
+      If a topic, clinician, or procedure is not well-represented, the answer may be incomplete or indicate insufficient evidence.
+    </li>
+    <li>
+      <strong>Community Bias:</strong> Retrieved documents reflect the perspectives of those who chose to share their experiences. 
+      They may not represent the full range of outcomes or experiences for a given healthcare provider or procedure.
+    </li>
+    <li>
+      <strong>Latency:</strong> Because the system uses multiple LLM calls for summarization, synthesis, and answering, responses may be slow.
+    </li>
+    <li>
+      <strong>Abbreviation Expansion:</strong> Automatic expansion of initials to full clinician names is based on a curated mapping and context. 
+      Unmapped or ambiguous initials may lead to missed documents or incorrect matches.
+    </li>
+    <li>
+      <strong>No Medical Advice:</strong> The system summarizes community-sourced information and is not a substitute for professional medical guidance. 
+      Users should consult licensed providers for personal healthcare decisions.
+    </li>
+  </ul>
+
+  <p>
+    <strong>Future Work:</strong>
+    <ul>
+      <li>Expand the document database to cover a wider range of clinicians, procedures, and locations.</li>
+      <li>Improve retrieval quality with additional techniques, such as sparse keyword search or hybrid dense-sparse approaches.</li>
+      <li>Incorporate provenance tracking for each fact in the final answer, showing exactly which documents contributed to which statements.</li>
+      <li>Optimize latency and scalability, including batching strategies and lighter-weight summarization models for faster responses.</li>
+      <li>Enhance abbreviation and synonym expansion using automated context-aware methods to reduce manual mapping and increase accuracy.</li>
+    </ul>
+  </p>
+</section>
+
+
+</div>
+
+
+<script src="jquery.min.js"></script>
+<script src="bootstrap.bundle.min.js"></script>
+<script src="jquery.easing.min.js"></script>
+<script src="resume.min.js"></script>
 <script>
 document.getElementById("questionForm").addEventListener("submit", async function(e) {
     e.preventDefault();
@@ -145,73 +296,6 @@ document.getElementById("questionForm").addEventListener("submit", async functio
         answerSection.style.display = "block";
     } finally {
         spinner.style.display = "none";
-    }
-});
-</script>
-
-
-
-
-</div>
-</section>
-
-<hr class="m-0"/>
-<section class="resume-section p-3 p-lg-5 d-flex justify-content-center" id="faq">
-<div class="w-100">
-<h2 class="mb-5">FAQ / Info</h2>
-<p class="lead">
-This tool uses a retrieval-augmented generation pipeline to answer questions based on the information available in the knowledge base. It is intended for educational purposes and advice aggregation.
-</p>
-</div>
-</section>
-
-</div>
-
-<footer class="text-center">
-<div class="footer-above">
-<div class="container">
-<div class="row">
-<div class="footer-col col-md-4"></div>
-<div class="footer-col col-md-4">
-<font size="1">Website template from <a href="https://startbootstrap.com/themes/resume/" target="_blank">Start Bootstrap</a></font>
-</div>
-</div>
-</div>
-</div>
-</footer>
-
-<script src="jquery.min.js"></script>
-<script src="bootstrap.bundle.min.js"></script>
-<script src="jquery.easing.min.js"></script>
-<script src="resume.min.js"></script>
-
-<script>
-document.getElementById("questionForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    const question = document.getElementById("questionInput").value;
-    const answerSection = document.getElementById("answerSection");
-    const answerText = document.getElementById("answerText");
-    const sourcesText = document.getElementById("sourcesText");
-
-    answerText.textContent = "Loading...";
-    sourcesText.textContent = "";
-
-    try {
-        const response = await fetch("https://transadviceagent.onrender.com/ask", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ question })
-        });
-
-        const data = await response.json();
-        answerText.textContent = data.answer || "No answer returned.";
-        sourcesText.textContent = data.sources || "No sources available.";
-        answerSection.style.display = "block";
-    } catch (error) {
-        answerText.textContent = "Error fetching answer.";
-        sourcesText.textContent = "";
-        answerSection.style.display = "block";
-        console.error(error);
     }
 });
 </script>
