@@ -284,9 +284,29 @@ document.getElementById("questionForm").addEventListener("submit", async functio
 
         const data = await response.json();
         answerText.textContent = data.answer || "No answer returned.";
-        sourcesText.textContent = (data.sources && data.sources.length > 0)
-            ? data.sources.join("\n")
-            : "No sources available.";
+    // Render sources as clickable links (create DOM nodes to avoid raw HTML injection)
+    if (data.sources && data.sources.length > 0) {
+      // clear any previous content
+      sourcesText.innerHTML = "";
+      data.sources.forEach(src => {
+        // create an anchor for each source; if src is not a valid URL, fall back to text
+        try {
+          const a = document.createElement('a');
+          a.href = src;
+          a.textContent = src;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          sourcesText.appendChild(a);
+          sourcesText.appendChild(document.createElement('br'));
+        } catch (e) {
+          const t = document.createTextNode(src);
+          sourcesText.appendChild(t);
+          sourcesText.appendChild(document.createElement('br'));
+        }
+      });
+    } else {
+      sourcesText.textContent = "No sources available.";
+    }
         answerSection.style.display = "block";
 
     } catch (error) {
