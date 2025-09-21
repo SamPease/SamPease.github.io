@@ -187,7 +187,7 @@ Currently, the primary data source is Reddit, with plans to expand to include ad
     <li><strong>LangChain/LangSmith</strong> — orchestrates the entire pipeline and provides monitoring/logging of all interactions</li>
     <li><strong>FAISS</strong> — vector database for efficient similarity search with MMR (Maximal Marginal Relevance)</li>
     <li><strong>SQLite</strong> — lightweight database for document metadata and text storage</li>
-    <li><strong>Hugging Face</strong> — hosts the pre-built FAISS index and SQLite database files created offline</li>
+    <li><strong>Hugging Face</strong> — hosts the pre-built FAISS index and SQLite database files created offline, and provides inference API for all-MiniLM-L6-v2 when running the web app</li>
     <li><strong>Render</strong> — cloud hosting platform for the backend web application</li>
     <li><strong>GitHub Pages</strong> — static frontend hosting for this interface</li>
     <li><strong>GitHub</strong> — version control and open source code hosting 
@@ -211,7 +211,8 @@ Currently, the primary data source is Reddit, with plans to expand to include ad
       They may not represent the full range of outcomes or experiences for a given healthcare provider or procedure.
     </li>
     <li>
-      <strong>Latency:</strong> Because the system uses multiple LLM calls for summarization, synthesis, and answering, responses may be slow.
+      <strong>Latency:</strong> Because the system uses multiple LLM calls for summarization, synthesis, and answering, responses may be slow. 
+      Additionally, the biggest barrier to response time is that the backend runs on a free hosting tier that spins down due to inactivity and can take up to two minutes to spin back up.
     </li>
     <li>
       <strong>Abbreviation Expansion:</strong> Automatic expansion of initials to full clinician names is based on a curated mapping and context. 
