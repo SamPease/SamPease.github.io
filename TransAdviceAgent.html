@@ -58,19 +58,25 @@
     <section id="overview">
 <h4>Overview:</h4>
 <p>
-  TransAdviceAgent is an experimental, community-focused tool designed to surface information about transgender healthcare and related topics. 
-  Its purpose is to aggregate and summarize what community members have shared in documents, helping users explore different experiences, perspectives, and outcomes.
+  TransAdviceAgent is an experimental tool designed to answer transgender-related questions by compiling and synthesizing community knowledge from forums and online discussions. The focus is on questions that require community guidance rather than simple factual answers, as there are very few trans-related topics backed by comprehensive research.
+</p>
+<p>
+  Many medical questions and practical recommendations are best answered by community forums where people share real experiences. This project aims to make that collective knowledge more accessible by using advanced natural language processing to search, summarize, and synthesize information from these community sources.
+</p>
+<p>
+  The system uses query enhancement with synonyms to improve search relevance, retrieval of diverse sources using embedding similarity, and hierarchical summarization to provide comprehensive answers grounded in community experiences.
 </p>
 <p>
   Please note that this is an <b>amateur project</b> and not a professional medical resource. 
-  Answers are limited to the documents included in the system — they may be incomplete, biased, or outdated. 
-  The system may also be slow, as it relies on multiple language model calls and hierarchical summarization.
+  Answers are limited to the community documents included in the system — they may be incomplete, biased, or outdated. 
+  Always consult licensed healthcare providers and multiple sources when making decisions about your care.
 </p>
 <p>
-  Use this tool as one piece of community knowledge rather than medical advice. Always consult licensed healthcare providers and multiple sources when making decisions about your care.
+  <b>Privacy Notice:</b> This system uses LangSmith for monitoring and logging all interactions, including your questions and the generated responses. 
+  Please do not input sensitive personal information, medical details, or anything you would not want logged for analysis and improvement purposes.
 </p>
 <p>
-For recommendation-type questions, data sources are often community forums like Reddit. If you know of any trans resources or communities that should be included, let me know!
+Currently, the primary data source is Reddit, with plans to expand to include additional trans community forums and resources in future iterations. If you know of trans resources or communities that should be included, please let me know!
 </p>
 <p>
   If you have questions, feedback, or suggestions for improving this project, please reach out to me at <a href="mailto:sam@walking-stick.com">sam@walking-stick.com</a>.
@@ -107,6 +113,10 @@ For recommendation-type questions, data sources are often community forums like 
         <nav aria-label="Sources pagination" class="mt-2">
           <ul class="pagination pagination-sm" id="sourcesPagination"></ul>
         </nav>
+        <div class="d-flex justify-content-between mt-2">
+          <button class="btn btn-sm btn-outline-secondary" id="sourcesPrev">Prev</button>
+          <button class="btn btn-sm btn-outline-secondary" id="sourcesNext">Next</button>
+        </div>
       </div>
     </div>
   </div>
@@ -122,41 +132,40 @@ For recommendation-type questions, data sources are often community forums like 
 <section id="pipeline">
   <h4>How the Pipeline Works</h4>
   <p>
-    TransAdviceAgent processes user questions through a multi-stage pipeline that transforms community-sourced documents into concise, fact-based answers. 
-    The system is designed to remain fully grounded in the documents and provide neutral, transparent summaries.
+    TransAdviceAgent processes user questions through a sophisticated multi-stage pipeline designed to surface relevant community knowledge and provide comprehensive, well-sourced answers. 
+    The system emphasizes finding diverse perspectives and remains fully grounded in community-sourced documents.
   </p>
 
   <ol>
     <li>
-      <strong>Query Rewriting & Expansion</strong><br>
-      The user’s original question is rewritten and expanded using Claude 3.5 Haiku to improve document retrieval. 
-      This step includes expanding abbreviations to full names (e.g., <em>Dr RBL → Dr. Rachel Bluebond-Langner</em>) and adding relevant synonyms for trans-related terms. 
-      The original query is preserved for later stages.
+      <strong>Query Enhancement</strong><br>
+      The user's original question is enhanced using Claude Haiku to add relevant synonyms and alternative phrasings. 
+      This critical step ensures that when the embedding model searches for similar content, it finds all relevant sources rather than missing documents due to vocabulary differences. 
+      The original query is preserved for the final answering stage.
     </li>
 
     <li>
-      <strong>Document Retrieval</strong><br>
-      All documents are pre-chunked and stored in FAISS/SQLite. 
-      The rewritten query is used to retrieve the most relevant chunks using Maximal Marginal Relevance (MMR) to maximize diversity and coverage.
+      <strong>Embedding-Based Retrieval</strong><br>
+      Community documents are pre-chunked and stored in a FAISS vector database with SQLite metadata storage. 
+      The enhanced query is embedded using the all-MiniLM-L6-v2 model and used to find semantically similar document chunks. 
+      Maximal Marginal Relevance (MMR) is used to ensure diverse perspectives and avoid redundant sources.
     </li>
 
     <li>
-      <strong>Chunk Summarization</strong><br>
-      Retrieved chunks are processed in batches by Claude 3.5 Haiku to generate summaries for each batch. 
-      Each summary captures only the content of the batch, preserving positive/negative details, counts, dates, and any disagreements present in the text.
+      <strong>Parallel Batch Summarization</strong><br>
+      Retrieved document chunks are processed in parallel batches of 10 using Claude Haiku. 
+      Each batch is summarized independently to capture the key information, experiences, and perspectives while preserving important details like dates, outcomes, and any conflicting viewpoints.
     </li>
 
     <li>
-      <strong>Summary Synthesis</strong><br>
-      Summaries from all batches are combined hierarchically into a single, non-redundant summary. 
-      This step aggregates patterns, highlights frequently mentioned providers or procedures, and notes gaps or conflicting information in the documents.
+      <strong>Hierarchical Summary Combination</strong><br>
+      All batch summaries are combined by the LLM into a single, comprehensive summary that aggregates patterns, highlights frequently mentioned information, and preserves the diversity of community experiences and opinions.
     </li>
 
     <li>
-      <strong>Final Answer</strong><br>
-      The synthesized summary and the original user question are passed directly to Claude 3.5 Haiku to produce the final answer. 
-      The output is concise, neutral, document-grounded, and includes positives and negatives where present. 
-      If evidence is insufficient, the answer states this clearly without adding external guidance or advice.
+      <strong>Final Answer Generation</strong><br>
+      Using the original user question and the combined summary, Claude Haiku generates the final answer. 
+      The response is designed to be comprehensive, balanced, and clearly grounded in the community sources, including both positive and negative experiences where present.
     </li>
   </ol>
 
@@ -171,17 +180,17 @@ For recommendation-type questions, data sources are often community forums like 
   <section id="tech-stack">
         <h4>Tech Stack:</h4>
       <ul>
-    <li><strong>Python</strong> — core programming language</li>
-    <li><strong>FastAPI</strong> — backend API framework</li>
-    <li><strong>Claude 3.5 Haiku</strong> — summarization and synthesis</li>
-    <li><strong>SentenceTransformers (all-MiniLM-L6-v2)</strong> — local embeddings for data preparation</li>
-    <li><strong>Hugging Face Inference API</strong> — runtime query embeddings</li>
-    <li><strong>FAISS</strong> — vector index with Maximal Marginal Relevance (MMR) retrieval</li>
-    <li><strong>SQLite</strong> — lightweight database for document and metadata storage</li>
-    <li><strong>dotenv</strong> — environment variable management</li>
-    <li><strong>GitHub Pages</strong> — static frontend hosting</li>
-    <li><strong>Render</strong> — cloud hosting for the backend API</li>
-    <li><strong>GitHub</strong> — version control and code hosting 
+    <li><strong>Python</strong> — core programming language for the entire pipeline</li>
+    <li><strong>FastAPI</strong> — backend web framework for the API server</li>
+    <li><strong>Claude Haiku</strong> — language model for query enhancement, summarization, and answer generation</li>
+    <li><strong>all-MiniLM-L6-v2</strong> — embedding model for semantic similarity search, used both locally for database creation and via Hugging Face for inference</li>
+    <li><strong>LangChain/LangSmith</strong> — orchestrates the entire pipeline and provides monitoring/logging of all interactions</li>
+    <li><strong>FAISS</strong> — vector database for efficient similarity search with MMR (Maximal Marginal Relevance)</li>
+    <li><strong>SQLite</strong> — lightweight database for document metadata and text storage</li>
+    <li><strong>Hugging Face</strong> — hosts the pre-built FAISS index and SQLite database files created offline</li>
+    <li><strong>Render</strong> — cloud hosting platform for the backend web application</li>
+    <li><strong>GitHub Pages</strong> — static frontend hosting for this interface</li>
+    <li><strong>GitHub</strong> — version control and open source code hosting 
       (<a href="https://github.com/SamPease/TransAdviceAgent" target="_blank">view code</a>)
     </li>
   </ul>
@@ -217,7 +226,7 @@ For recommendation-type questions, data sources are often community forums like 
   <p>
     <strong>Future Work:</strong>
     <ul>
-      <li>Expand the document database to cover a wider range of clinicians, procedures, and locations.</li>
+      <li>Expand data sources beyond Reddit to include additional trans community forums, resources, and documentation.</li>
       <li>Improve retrieval quality with additional techniques, such as sparse keyword search or hybrid dense-sparse approaches.</li>
       <li>Incorporate provenance tracking for each fact in the final answer, showing exactly which documents contributed to which statements.</li>
       <li>Optimize latency and scalability, including batching strategies and lighter-weight summarization models for faster responses.</li>
@@ -299,27 +308,59 @@ document.getElementById("questionForm").addEventListener("submit", async functio
     // Paginated sources display (10 per page)
   const sourcesPerPage = 10;
 
+    // Helper: isValidUrl
+    function isValidUrl(u) {
+      try {
+        new URL(u);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    // Helper: getUrlAndText from a source which may be a string or an object {title, url}
+    function getUrlAndText(src) {
+      if (typeof src === 'string') return { url: src, text: src };
+      if (src && typeof src === 'object') {
+        const url = src.url || src.link || src.href || null;
+        const text = src.title || src.text || url || JSON.stringify(src);
+        return { url, text };
+      }
+      return { url: null, text: String(src) };
+    }
+
     // Helper: render a page of sources
+    let currentPage = 0;
     function renderSourcesPage(sources, page) {
+      currentPage = page;
       sourcesListEl.innerHTML = '';
       const start = page * sourcesPerPage;
       const end = Math.min(start + sourcesPerPage, sources.length);
       for (let i = start; i < end; i++) {
         const src = sources[i];
         const div = document.createElement('div');
-        // create anchor if possible
-        try {
+        const { url, text } = getUrlAndText(src);
+        if (url && isValidUrl(url)) {
           const a = document.createElement('a');
-          a.href = src;
-          a.textContent = src;
+          a.href = url;
+          a.textContent = text;
           a.target = '_blank';
           a.rel = 'noopener noreferrer';
           div.appendChild(a);
-        } catch (e) {
-          div.textContent = src;
+        } else {
+          div.textContent = text + (url ? ` (${url})` : '');
         }
         sourcesListEl.appendChild(div);
       }
+      // update pagination active state
+      Array.from(sourcesPaginationEl.children).forEach((child, idx) => {
+        child.classList.toggle('active', idx === page);
+      });
+      // update Prev/Next disabled state
+      const prevBtn = document.getElementById('sourcesPrev');
+      const nextBtn = document.getElementById('sourcesNext');
+      if (prevBtn) prevBtn.disabled = page <= 0;
+      if (nextBtn) nextBtn.disabled = end >= sources.length;
     }
 
     // Helper: build pagination controls
@@ -337,14 +378,22 @@ document.getElementById("questionForm").addEventListener("submit", async functio
         a.textContent = (p + 1).toString();
         a.addEventListener('click', (ev) => {
           ev.preventDefault();
-          // clear active
-          Array.from(sourcesPaginationEl.children).forEach(child => child.classList.remove('active'));
-          li.classList.add('active');
           renderSourcesPage(sources, p);
         });
         li.appendChild(a);
         sourcesPaginationEl.appendChild(li);
       }
+
+      // wire Prev/Next
+      const prevBtn = document.getElementById('sourcesPrev');
+      const nextBtn = document.getElementById('sourcesNext');
+      if (prevBtn) prevBtn.onclick = () => {
+        if (currentPage > 0) renderSourcesPage(sources, currentPage - 1);
+      };
+      if (nextBtn) nextBtn.onclick = () => {
+        const pageCount = Math.ceil(sources.length / sourcesPerPage);
+        if (currentPage < pageCount - 1) renderSourcesPage(sources, currentPage + 1);
+      };
     }
 
     if (data.sources && data.sources.length > 0) {
