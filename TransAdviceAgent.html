@@ -101,7 +101,13 @@ For recommendation-type questions, data sources are often community forums like 
       <h4>Answer:</h4>
       <p id="answerText"></p>
       <h5>Sources:</h5>
-      <p id="sourcesText"></p>
+      <p class="small text-muted">Sorted by relevance.</p>
+      <div id="sourcesContainer">
+        <div id="sourcesList"></div>
+        <nav aria-label="Sources pagination" class="mt-2">
+          <ul class="pagination pagination-sm" id="sourcesPagination"></ul>
+        </nav>
+      </div>
     </div>
   </div>
 </section>
@@ -235,16 +241,22 @@ document.getElementById("questionForm").addEventListener("submit", async functio
     const question = document.getElementById("questionInput").value;
     const answerSection = document.getElementById("answerSection");
     const answerText = document.getElementById("answerText");
-    const sourcesText = document.getElementById("sourcesText");
+  const sourcesListEl = document.getElementById("sourcesList");
+  const sourcesPaginationEl = document.getElementById("sourcesPagination");
     const spinner = document.getElementById("loadingSpinner");
     const loadingLabel = document.getElementById("loadingLabel");
 
     // Reset UI
     spinner.style.display = "inline-flex";
     loadingLabel.textContent = "Waking server (this may take up to a minute)…";
-    answerSection.style.display = "none";
-    answerText.textContent = "";
-    sourcesText.textContent = "";
+  answerSection.style.display = "none";
+  answerText.textContent = "";
+  if (sourcesListEl) {
+    sourcesListEl.textContent = "";
+  }
+  if (sourcesPaginationEl) {
+    sourcesPaginationEl.innerHTML = "";
+  }
 
     try {
         // --- Step 1: Wake server ---
@@ -284,35 +296,73 @@ document.getElementById("questionForm").addEventListener("submit", async functio
 
         const data = await response.json();
         answerText.textContent = data.answer || "No answer returned.";
-    // Render sources as clickable links (create DOM nodes to avoid raw HTML injection)
-    if (data.sources && data.sources.length > 0) {
-      // clear any previous content
-      sourcesText.innerHTML = "";
-      data.sources.forEach(src => {
-        // create an anchor for each source; if src is not a valid URL, fall back to text
+    // Paginated sources display (10 per page)
+  const sourcesPerPage = 10;
+
+    // Helper: render a page of sources
+    function renderSourcesPage(sources, page) {
+      sourcesListEl.innerHTML = '';
+      const start = page * sourcesPerPage;
+      const end = Math.min(start + sourcesPerPage, sources.length);
+      for (let i = start; i < end; i++) {
+        const src = sources[i];
+        const div = document.createElement('div');
+        // create anchor if possible
         try {
           const a = document.createElement('a');
           a.href = src;
           a.textContent = src;
           a.target = '_blank';
           a.rel = 'noopener noreferrer';
-          sourcesText.appendChild(a);
-          sourcesText.appendChild(document.createElement('br'));
+          div.appendChild(a);
         } catch (e) {
-          const t = document.createTextNode(src);
-          sourcesText.appendChild(t);
-          sourcesText.appendChild(document.createElement('br'));
+          div.textContent = src;
         }
-      });
+        sourcesListEl.appendChild(div);
+      }
+    }
+
+    // Helper: build pagination controls
+    function buildPagination(sources) {
+      sourcesPaginationEl.innerHTML = '';
+      const pageCount = Math.ceil(sources.length / sourcesPerPage);
+      if (pageCount <= 1) return;
+
+      for (let p = 0; p < pageCount; p++) {
+        const li = document.createElement('li');
+        li.className = 'page-item' + (p === 0 ? ' active' : '');
+        const a = document.createElement('a');
+        a.className = 'page-link';
+        a.href = '#';
+        a.textContent = (p + 1).toString();
+        a.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          // clear active
+          Array.from(sourcesPaginationEl.children).forEach(child => child.classList.remove('active'));
+          li.classList.add('active');
+          renderSourcesPage(sources, p);
+        });
+        li.appendChild(a);
+        sourcesPaginationEl.appendChild(li);
+      }
+    }
+
+    if (data.sources && data.sources.length > 0) {
+      // store and render first page
+      const sources = data.sources;
+      renderSourcesPage(sources, 0);
+      buildPagination(sources);
     } else {
-      sourcesText.textContent = "No sources available.";
+      sourcesListEl.textContent = 'No sources available.';
+      sourcesPaginationEl.innerHTML = '';
     }
         answerSection.style.display = "block";
 
     } catch (error) {
         console.error(error);
-        answerText.textContent = "Error fetching answer. The server might still be waking or busy — try again in a few seconds.";
-        sourcesText.textContent = "";
+  answerText.textContent = "Error fetching answer. The server might still be waking or busy — try again in a few seconds.";
+  if (sourcesListEl) sourcesListEl.textContent = "";
+  if (sourcesPaginationEl) sourcesPaginationEl.innerHTML = "";
         answerSection.style.display = "block";
     } finally {
         spinner.style.display = "none";
