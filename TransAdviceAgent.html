@@ -324,7 +324,9 @@ document.getElementById("questionForm").addEventListener("submit", async functio
       if (typeof src === 'string') return { url: src, text: src };
       if (src && typeof src === 'object') {
         const url = src.url || src.link || src.href || null;
-        const text = src.title || src.text || url || JSON.stringify(src);
+        const sourceName = src.source || src.source_name || 'Source';
+        const title = src.title || src.text || 'Untitled';
+        const text = `${sourceName}: ${title}`;
         return { url, text };
       }
       return { url: null, text: String(src) };
