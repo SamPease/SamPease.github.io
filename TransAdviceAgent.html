@@ -185,7 +185,7 @@ Currently, the primary data source is Reddit, with plans to expand to include ad
     <li><strong>Claude Haiku</strong> — language model for query enhancement, summarization, and answer generation</li>
     <li><strong>all-MiniLM-L6-v2</strong> — embedding model for semantic similarity search, used both locally for database creation and via Hugging Face for inference</li>
     <li><strong>LangChain/LangSmith</strong> — orchestrates the entire pipeline and provides monitoring/logging of all interactions</li>
-    <li><strong>FAISS</strong> — vector database for efficient similarity search with MMR (Maximal Marginal Relevance)</li>
+    <li><strong>FAISS</strong> — vector database for efficient similarity search with MMR (Maximal Marginal Relevance). Uses FAISS IVFPQ (inverted file + product quantization) to reduce memory usage and enable larger database scaling by avoiding the need to load the entire embedding index into memory at runtime.</li>
     <li><strong>SQLite</strong> — lightweight database for document metadata and text storage</li>
     <li><strong>Hugging Face</strong> — hosts the pre-built FAISS index and SQLite database files created offline, and provides inference API for all-MiniLM-L6-v2 when running the web app</li>
     <li><strong>Render</strong> — cloud hosting platform for the backend web application</li>
