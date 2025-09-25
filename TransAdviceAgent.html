@@ -366,17 +366,28 @@ document.getElementById("questionForm").addEventListener("submit", async functio
       const start = page * sourcesPerPage;
       const end = Math.min(start + sourcesPerPage, sources.length);
       for (let i = start; i < end; i++) {
-        const src = sources[i];
+        let src = sources[i];
         const div = document.createElement('div');
 
-        // If backend supplies an object with fields {source, title, url}, format as "source: title" linking to url
+        // If backend returned a JSON stringified object, try to parse it
+        if (typeof src === 'string') {
+          try {
+            const parsed = JSON.parse(src);
+            // only replace if parsed is an object with expected fields
+            if (parsed && typeof parsed === 'object') {
+              src = parsed;
+            }
+          } catch (_) {
+            // not JSON, leave as string URL
+          }
+        }
+
+        // If src is an object, use its source/title/url fields directly
         if (src && typeof src === 'object' && !Array.isArray(src)) {
           const url = src.url || src.link || src.href || null;
-          const sourceName = (src.source || src.source_name || '').toString().trim();
-          const title = (src.title || src.text || '').toString().trim();
-          const linkText = (sourceName || title) ? `${sourceName || 'Source'}: ${title || '(no title)'}` : JSON.stringify(src);
-
-          console.debug('Rendering source object', { index: i, src, url, linkText });
+          const sourceName = (typeof src.source === 'string' && src.source.trim()) ? src.source.trim() : 'Source';
+          const title = (typeof src.title === 'string' && src.title.trim()) ? src.title.trim() : '(no title)';
+          const linkText = `${sourceName}: ${title}`;
 
           if (url && isValidUrl(url)) {
             const a = document.createElement('a');
@@ -390,9 +401,8 @@ document.getElementById("questionForm").addEventListener("submit", async functio
           }
 
         } else {
-          // Fallback: handle string URLs or unexpected shapes using existing helper
+          // Fallback: src is a plain string (URL or other). Show it as a link if valid.
           const { url, text } = getUrlAndText(src);
-          console.debug('Rendering fallback source', { index: i, src, url, text });
           if (url && isValidUrl(url)) {
             const a = document.createElement('a');
             a.href = url;
