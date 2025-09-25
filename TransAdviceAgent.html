@@ -305,6 +305,16 @@ document.getElementById("questionForm").addEventListener("submit", async functio
         if (!response.ok) throw new Error("Failed to fetch answer from backend.");
 
         const data = await response.json();
+        console.debug('DEBUG: full backend response', data);
+        if (data && data.sources) {
+          try {
+            console.debug('DEBUG: sources (first 20 items types and values)', data.sources.slice(0,20).map((s,idx)=>({index: idx, type: typeof s, sample: s}))); 
+          } catch (e) {
+            console.debug('DEBUG: sources logging error', e, data.sources);
+          }
+        } else {
+          console.debug('DEBUG: no data.sources present', data);
+        }
         answerText.textContent = data.answer || "No answer returned.";
     // Paginated sources display (10 per page)
   const sourcesPerPage = 10;
