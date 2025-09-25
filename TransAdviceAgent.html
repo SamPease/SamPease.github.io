@@ -319,16 +319,42 @@ document.getElementById("questionForm").addEventListener("submit", async functio
       }
     }
 
-    // Helper: getUrlAndText from a source which may be a string or an object {title, url}
+    // Helper: getUrlAndText from a source which may be a string or an object {title, source, url}
     function getUrlAndText(src) {
+      // If backend returned a simple string (URL), keep previous behavior
       if (typeof src === 'string') return { url: src, text: src };
+
       if (src && typeof src === 'object') {
+        // Prefer the explicit fields the backend provides
         const url = src.url || src.link || src.href || null;
-        const sourceName = src.source || src.source_name || 'Source';
-        const title = src.title || src.text || 'Untitled';
-        const text = `${sourceName}: ${title}`;
-        return { url, text };
+        const title = (typeof src.title === 'string' && src.title.trim()) ? src.title.trim() : null;
+        const sourceName = (typeof src.source === 'string' && src.source.trim()) ? src.source.trim() : null;
+
+        if (sourceName || title) {
+          // Format exactly as requested: "source: title"
+          const safeSource = sourceName || 'Source';
+          const safeTitle = title || '(no title)';
+          return { url, text: `${safeSource}: ${safeTitle}` };
+        }
+
+        // If title/source aren't present but a URL is, use domain as source and path as title
+        if (url) {
+          try {
+            const parsed = new URL(url);
+            const hostname = parsed.hostname.replace(/^www\./, '');
+            const pathname = parsed.pathname.replace(/^\//, '');
+            const text = pathname ? `${hostname}: ${pathname}` : hostname;
+            return { url, text };
+          } catch (_) {
+            // fallback to raw URL
+            return { url, text: url };
+          }
+        }
+
+        // Last resort: JSON stringify the object
+        return { url: null, text: JSON.stringify(src) };
       }
+
       return { url: null, text: String(src) };
     }
 
