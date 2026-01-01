@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+<meta content="" name="description"/>
+<meta content="" name="author"/>
+<script crossorigin="anonymous" src="https://use.fontawesome.com/releases/v5.15.3/js/all.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/>
+<link href="https://cdn.rawgit.com/jpswalsh/academicons/master/css/academicons.min.css" rel="stylesheet"/>
+<title>BARSElo — Samantha Pease</title>
+<link href="bootstrap.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:500,700" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css?family=Muli:400,400i,800,800i" rel="stylesheet"/>
+<link href="all.min.css" rel="stylesheet"/>
+<link href="resume.min.css" rel="stylesheet"/>
+</head>
+<body id="page-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav">
+<a class="navbar-brand js-scroll-trigger" href="index.html#page-top">
+<span class="d-block d-lg-none">Sam Pease</span>
+<span class="d-none d-lg-block">
+<img alt="" class="img-fluid img-profile rounded-circle mx-auto mb-2" src="profile.png"/>
+</span>
+</a>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+<ul class="navbar-nav">
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="index.html">
+<i class="fas fa-home"></i> Home
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="#overview">Overview</a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="#journey">The Journey</a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="#technical">Technical Approach</a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="#challenges">Challenges</a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="#performance">Performance</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="rankings.html" target="_blank">View Rankings</a>
+</li>
+<li class="nav-item">
+<a class="nav-link js-scroll-trigger" href="#tech-stack">Tech Stack</a>
+</li>
+</ul>
+</div>
+</nav>
+
+<div class="container-fluid p-0">
+<section class="resume-section p-3 p-lg-5 d-flex align-items-center">
+  <div class="w-100">
+    <h1 class="mb-0">BARSElo: Player Rating System for Recreational Dodgeball</h1>
+    
+    <section id="overview">
+      <h4>Overview:</h4>
+      <p>
+        BARSElo is a data-driven skill rating system for recreational dodgeball players in the Big Apple Recreational Sports (BARS) league in NYC. The project emerged from a simple question: can you rank individual player skill when win/loss records are heavily determined by randomly-assigned teams? Rather than relying on traditional win-loss records, I built a machine learning model that uses game outcomes and margin of victory to estimate underlying player skill while controlling for team composition.
+      </p>
+      <p>
+        The system uses historical game data (790+ games spanning Fall 2023 to present) to train a Bradley-Terry model with margin-of-victory extensions. The approach separates individual skill from team effects through batch optimization, leverages Bayesian uncertainty for sparse-data players, and validates predictions using both chronological and "new-team" evaluation modes. The result is an interactive static site with player trajectories, searchable databases, and model comparisons.
+      </p>
+      <p>
+        This project demonstrates the full machine learning pipeline: exploratory data analysis, model development with competing hypotheses, hyperparameter optimization, cross-validation, and deployment. It also illustrates the tension between predictive accuracy and interpretability — a model can be statistically sound while producing rankings that don't pass the "eye test" for practical use.
+      </p>
+    </section>
+
+    <section class="mt-5">
+      <h4>View the Interactive Rankings</h4>
+      <p>
+        <a class="btn btn-primary" href="rankings.html" target="_blank">
+          <i class="fas fa-chart-bar"></i> Open BARSElo Rankings
+        </a>
+      </p>
+      <p class="small text-muted mt-2">
+        The rankings page includes player skill trajectories, searchable databases, team comparisons, and visualizations of different model predictions.
+      </p>
+    </section>
+
+    <section class="mt-5">
+      <h4>Project Stats</h4>
+      <ul>
+        <li>790+ games spanning Fall 2023 – present</li>
+        <li>139 unique teams</li>
+        <li>400+ unique players</li>
+        <li>~240 players with ≤15 games on a single team (sparse data challenge)</li>
+        <li>Tournament data added recently (cross-team matchups, travel team performance)</li>
+        <li>Manual data collection and curation</li>
+      </ul>
+    </section>
+
+    <section class="mt-5">
+      <h4>Repository</h4>
+      <p>
+        <a href="https://github.com/SamPease/BARSElo" target="_blank">
+          <i class="fab fa-github"></i> View on GitHub
+        </a>
+      </p>
+      <p class="small text-muted">
+        Full source code, model implementations, hyperparameter optimization logs, and data processing scripts.
+      </p>
+    </section>
+
+    <section id="tech-stack" class="mt-5">
+      <h4>Tech Stack:</h4>
+      <ul>
+        <li><strong>Python 3.x</strong> — primary programming language</li>
+        <li><strong>scipy.optimize (L-BFGS-B)</strong> — batch optimization for maximum likelihood estimation</li>
+        <li><strong>Optuna</strong> — Bayesian optimization for hyperparameter search (100-200 trials per model)</li>
+        <li><strong>NumPy</strong> — numerical computation, vectorized probability calculations</li>
+        <li><strong>Pandas</strong> — data processing and tabular data management</li>
+        <li><strong>BeautifulSoup</strong> — HTML scraping for game and roster data</li>
+        <li><strong>Plotly.js</strong> — interactive charts and player skill trajectories</li>
+        <li><strong>Vanilla JavaScript</strong> — client-side interactivity</li>
+        <li><strong>Git</strong> — version control (~50 commits over 4 months)</li>
+        <li><strong>GitHub Pages</strong> — static site hosting</li>
+      </ul>
+    </section>
+
+    <section id="performance" class="mt-5">
+      <h4>Current Performance</h4>
+      
+      <h5>BT-Uncert (New-team mode — current best)</h5>
+      <ul>
+        <li>Mean negative log-likelihood: 0.666</li>
+        <li>Win prediction accuracy: 54.4%</li>
+        <li>Mean Brier score: 0.238</li>
+        <li>Cross-mode accuracy: 62.2%</li>
+      </ul>
+
+      <h5>BT-VET</h5>
+      <ul>
+        <li>Mean negative log-likelihood: 0.664 (slightly better NLL)</li>
+        <li>Win prediction accuracy: 56.8%</li>
+        <li>Mean Brier score: 0.237</li>
+        <li>Cross-mode accuracy: 62.6%</li>
+      </ul>
+
+      <h5>BT-MOV (Baseline)</h5>
+      <ul>
+        <li>Mean negative log-likelihood: 0.671</li>
+        <li>Win prediction accuracy: 54.9%</li>
+        <li>Mean Brier score: 0.240</li>
+        <li>Cross-mode accuracy: 62.1%</li>
+      </ul>
+
+      <p>
+        These metrics show meaningful improvement over Elo (~62% chrono accuracy but worse new-team generalization) and all TrueSkill variants. BT-Uncert is currently deployed for its principled ranking approach via head-to-head win probabilities, though BT-VET achieves slightly better predictive metrics.
+      </p>
+    </section>
+
+    <section id="journey" class="mt-5">
+      <h4>The Journey: From Simple Elo to Bradley-Terry with Margin of Victory</h4>
+      
+      <h5>Phase 1: Starting Simple with Elo</h5>
+      <p>
+        Like many initial attempts at skill rating, I started with Elo ratings from chess. The approach is straightforward: players start at 1000, team ratings are the average of their roster, and you update after each game based on expected vs. actual outcome. I tuned the K-factor to balance how quickly players could climb or fall.
+      </p>
+      <p>
+        Surprisingly, it worked well — around 62% win prediction accuracy. But Elo is fundamentally reactive: it rewards players on teams currently winning, rather than truly disentangling individual skill from team composition. It also ignores margin of victory, discarding information about whether a team won 5-0 or 3-2.
+      </p>
+
+      <h5>Phase 2: The TrueSkill Experiment</h5>
+      <p>
+        TrueSkill seemed perfect for team-based games. It was literally designed for this problem, models player uncertainty, and has nice Bayesian properties. But it performed worse than basic Elo. The problem: overfitting. With ~800 parameters for ~800 games of data, the model had too much flexibility. TrueSkill maintains two learned parameters per player (mean skill μ and uncertainty σ), which is too many degrees of freedom for my dataset.
+      </p>
+      <p>
+        The detour wasn't wasted — it taught me about Bayesian approaches and made me realize that sequential update rules are fundamentally limited. Elo and TrueSkill both cheat by being reactive.
+      </p>
+
+      <h5>Phase 3: Margin of Victory Struggles</h5>
+      <p>
+        I kept asking: how do you properly incorporate margin of victory? I tried treating score differences as "repeated games," adjusting win probabilities based on margin, modifying confidence/uncertainty — nothing felt right. Then I analyzed the empirical distribution: margins are Gaussian. That changed everything.
+      </p>
+
+      <h5>Phase 4: The Bradley-Terry Pivot</h5>
+      <p>
+        Instead of sequential updates, what if I optimized all player skills simultaneously using the entire game history? This became the core idea behind Bradley-Terry (BT).
+      </p>
+      <p>
+        <strong>Core approach:</strong> Each player has a latent skill parameter θ (theta). Team skill is the mean of player skills. I maximize the likelihood of observing all game outcomes given these parameters, with L2 regularization to prevent overfitting.
+      </p>
+      <p>
+        <strong>Margin breakthrough:</strong> I unified the prediction model to use a Gaussian distribution over skill differences:
+      </p>
+      <ul>
+        <li>When only win/loss is known: use the CDF (cumulative distribution function) to get P(A wins)</li>
+        <li>When margin is known: use the PDF (probability density function) centered at the skill difference</li>
+        <li>This naturally leverages more information when available without arbitrary hacks</li>
+      </ul>
+      <p>
+        The model uses scipy.optimize to find maximum likelihood skill values across all ~700 games, with hyperparameters for regularization strength (lambda) and margin noise (sigma).
+      </p>
+
+      <h5>Phase 5: The Eye Test Problem</h5>
+      <p>
+        BT-MOV beats Elo in predictive metrics, but the rankings don't always pass the eye test. Random players crop up in the top 10. The model is predictive, but is it capturing "true skill"?
+      </p>
+      <p>
+        This tension led to a key innovation: dual evaluation modes. Traditional chronological prediction lets models cheat by being reactive ("all players on winning teams are good!"). New-team mode trains on all games before a team's first appearance, then predicts that team's games with the model frozen. It's much harder (56.8% accuracy vs 62.6% chrono), but it answers: can the model assess player skill in a way that generalizes to unseen team compositions?
+      </p>
+
+      <h5>Phase 6: Bayesian Uncertainty for Sparse Data</h5>
+      <p>
+        About 240 players (~60%) have played only one season on one team — 15 games or fewer. For these players, I need to separate "this player is good" from "this team was good" with almost no information.
+      </p>
+      <p>
+        The solution: BT-VET (Bradley-Terry with Veteran Uncertainty). It weights games by player experience, where newer/less-frequent players have higher uncertainty. Rookie players pull estimates toward the league mean, preventing wild swings from lucky/unlucky small samples. This achieved strong new-team performance (NLL of 0.664) and aligns philosophically with what I want: uncertainty that decreases as players accumulate games.
+      </p>
+      <p>
+        <strong>Current evolution: BT-Uncert</strong> — A refined uncertainty formulation that addresses a key ranking challenge. In Bayesian settings like TrueSkill, the standard approach is to rank by μ - k*σ (conservative skill estimates), but this feels arbitrary and doesn't properly handle two-dimensional data. Instead, BT-Uncert ranks by <strong>average head-to-head win probability</strong>: for each player, compute their expected win rate against every other player. This compresses skill+uncertainty into a 1D ranking in a principled way that directly answers "who would win the most matchups?" The O(n²) computational cost required vectorizing all probability calculations using NumPy broadcasting.
+      </p>
+    </section>
+
+    <section id="technical">
+      <h4>Technical Approach</h4>
+      <p>
+        The project combines data pipeline, statistical modeling, hyperparameter optimization, and interactive visualization.
+      </p>
+      
+      <h5>Data Pipeline</h5>
+      <p>
+        Data collection is semi-automated. I download HTML pages from the league's scheduling site (LeagueLobster) manually, then scripts extract game results and team rosters:
+      </p>
+      <ul>
+        <li><code>extract_games.py</code>: Parses HTML for scored games, deduplicates by (datetime, team1, team2), sorts chronologically</li>
+        <li><code>extract_teams.py</code>: Extracts team rosters from standings pages</li>
+        <li><code>resolve_aliases.py</code>: Interactive tool to handle player name variations (e.g., "Sam" vs "Samantha")</li>
+        <li>Output: <code>Sports Elo - Games.csv</code> (~790 games) and <code>Sports Elo - Teams.csv</code></li>
+      </ul>
+
+      <h5>Model Framework</h5>
+      <ul>
+        <li><strong>Modular base class</strong> (<code>models/base.py</code>) with uniform API across all rating systems</li>
+        <li>Each model implements: <code>update()</code>, <code>predict_win_prob()</code>, <code>expose()</code></li>
+        <li><strong>Hyperparameter search</strong> via Optuna (Bayesian optimization, 100-200 trials per model)</li>
+        <li><strong>Configuration-driven</strong> via <code>unified_config.json</code> for reproducible experiments</li>
+      </ul>
+
+      <h5>Current Best Model: BT-Uncert</h5>
+      <ul>
+        <li>Bayesian uncertainty that decreases with games played (alpha parameter)</li>
+        <li>Gaussian margin likelihood (sigma parameter)</li>
+        <li>L2 regularization on skill parameters (l2_lambda)</li>
+        <li>New-team mean NLL: 0.666</li>
+        <li>Cross-mode accuracy: 62.2%</li>
+        <li>Optimizes ~700 games worth of data over 139 unique teams</li>
+        <li><strong>Novel ranking approach:</strong> Instead of the standard Bayesian μ - k*σ (which feels arbitrary), players are ranked by average head-to-head win probability — compressing higher-dimensional skill+uncertainty data into a principled 1D ranking. Required vectorized NumPy calculations for O(n²) efficiency.</li>
+      </ul>
+
+      <h5>Key Technical Decisions</h5>
+      <ol>
+        <li><strong>Batch optimization over incremental updates:</strong> Sequential update rules (Elo, TrueSkill) inherently reward players on teams currently winning. Batch optimization using all data at once better disentangles individual skill from team composition.</li>
+        <li><strong>Dual evaluation modes:</strong> Chronological validation lets models cheat by being reactive. New-team mode forces the model to generalize to unseen team compositions, which is the actual hard problem.</li>
+        <li><strong>Gaussian margin likelihood:</strong> The empirical distribution of margins is Gaussian. Using the PDF when margin is known and CDF when only outcome is known extracts more information without arbitrary weighting.</li>
+        <li><strong>L2 regularization:</strong> With 400+ players and ~800 games, overfitting is real. Regularization pulls estimates toward zero (league average), so sparse-data players don't get extreme ratings.</li>
+        <li><strong>Static site over Dash:</strong> Pre-compute ratings to JSON, serve with GitHub Pages. No backend maintenance, free hosting, instant load times.</li>
+      </ol>
+    </section>
+
+    <section id="challenges">
+      <h4>Challenges and Learnings</h4>
+      
+      <h5>Data Sparsity</h5>
+      <p>
+        This is the core technical challenge. About 240 players (~60%) have ≤15 games on a single team. I'm trying to separate "this player is good" from "this team was good" with almost no information. The model needs to downweight sparse-data players while still acknowledging real skill differences.
+      </p>
+
+      <h5>Attendance Confounds Everything</h5>
+      <p>
+        Teams are fixed per season even if players stop showing up, but I have no attendance data. The model has to treat attendance patterns as part of "skill" because there's no alternative. This is obviously not ideal — a great player who misses half the games shouldn't be rated the same as someone who shows up every week.
+      </p>
+
+      <h5>Tournament Data Adds Signal (But New Questions)</h5>
+      <p>
+        Tournament data has been incredibly valuable — it provides cross-team matchups and validates ratings. The league's travel team (composed of top players) dominates tournaments, giving a strong signal that those players are genuinely good. But it raises the central challenge: which players on that dominant team are actually stars, and which are competent players overestimated by association?
+      </p>
+
+      <h5>The Overfitting Lesson</h5>
+      <p>
+        TrueSkill taught me to count parameters. 800 parameters for 800 games equals trouble. Now I'm much more careful about model complexity relative to data size.
+      </p>
+
+      <h5>The Eye Test vs. Metrics Tension</h5>
+      <p>
+        I can achieve 62-63% prediction accuracy, but the rankings sometimes feel wrong. Unknown players rank surprisingly high. This is the current open problem — finding principled ways to improve ranking quality without just tweaking toward personal biases.
+      </p>
+    </section>
+
+    <section id="performance">
+      <h4>Current Performance</h4>
+      
+      <h5>BT-Uncert (New-team mode — current best)</h5>
+      <ul>
+        <li>Mean negative log-likelihood: 0.666</li>
+        <li>Win prediction accuracy: 54.4%</li>
+        <li>Mean Brier score: 0.238</li>
+        <li>Cross-mode accuracy: 62.2%</li>
+      </ul>
+
+      <h5>BT-VET</h5>
+      <ul>
+        <li>Mean negative log-likelihood: 0.664 (slightly better NLL)</li>
+        <li>Win prediction accuracy: 56.8%</li>
+        <li>Mean Brier score: 0.237</li>
+        <li>Cross-mode accuracy: 62.6%</li>
+      </ul>
+
+      <h5>BT-MOV (Baseline)</h5>
+      <ul>
+        <li>Mean negative log-likelihood: 0.671</li>
+        <li>Win prediction accuracy: 54.9%</li>
+        <li>Mean Brier score: 0.240</li>
+        <li>Cross-mode accuracy: 62.1%</li>
+      </ul>
+
+      <p>
+        These metrics show meaningful improvement over Elo (~62% chrono accuracy but worse new-team generalization) and all TrueSkill variants. BT-Uncert is currently deployed for its principled ranking approach via head-to-head win probabilities, though BT-VET achieves slightly better predictive metrics.
+      </p>
+    </section>
+
+
+
+  </div>
+</section>
+</div>
+
+<script src="jquery.min.js"></script>
+<script src="bootstrap.bundle.min.js"></script>
+<script src="jquery.easing.min.js"></script>
+<script src="resume.min.js"></script>
+
+</body>
+</html>
