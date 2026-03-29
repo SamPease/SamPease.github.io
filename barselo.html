@@ -69,7 +69,7 @@
         BARSElo is a data-driven skill rating system for recreational dodgeball players in the Big Apple Recreational Sports (BARS) league in NYC. The project emerged from a simple question: can you rank individual player skill when win/loss records are heavily determined by randomly-assigned teams? Rather than relying on traditional win-loss records, I built a machine learning model that uses game outcomes and margin of victory to estimate underlying player skill while controlling for team composition.
       </p>
       <p>
-        The system uses historical game data (790+ games spanning Fall 2023 to present) to train a Bradley-Terry model with margin-of-victory extensions. The approach separates individual skill from team effects through batch optimization, leverages Bayesian uncertainty for sparse-data players, and validates predictions using both chronological and "new-team" evaluation modes. The result is an interactive static site with player trajectories, searchable databases, and model comparisons.
+        The system uses historical game data (790+ games spanning Fall 2023 to present) to train Bradley-Terry variants with margin-of-victory extensions. The approach separates individual skill from team effects through batch optimization, uses regularization designed for sparse-data robustness, and validates predictions using both chronological and "new-team" evaluation modes. The result is an interactive static site with player trajectories, searchable databases, and model comparisons.
       </p>
       <p>
         This project demonstrates the full machine learning pipeline: exploratory data analysis, model development with competing hypotheses, hyperparameter optimization, cross-validation, and deployment. It also illustrates the tension between predictive accuracy and interpretability — a model can be statistically sound while producing rankings that don't pass the "eye test" for practical use.
@@ -130,33 +130,37 @@
 
     <section id="performance" class="mt-5">
       <h4>Current Performance</h4>
-      
-      <h5>BT-Uncert (New-team mode — current best)</h5>
+      <p class="small text-muted">Updated: March 28, 2026</p>
+
+      <h5>BT-Normal (New-team mode — current direction)</h5>
       <ul>
-        <li>Mean negative log-likelihood: 0.666</li>
-        <li>Win prediction accuracy: 54.4%</li>
-        <li>Mean Brier score: 0.238</li>
-        <li>Cross-mode accuracy: 62.2%</li>
+        <li>Mean negative log-likelihood: 0.6814</li>
+        <li>Win prediction accuracy: 53.1%</li>
+        <li>Mean Brier score: 0.2442</li>
+        <li>Teams scored: 139</li>
+        <li>Cross-mode NLL: 0.6580</li>
+        <li>Cross-mode Brier: 0.2329</li>
+        <li>Cross-mode accuracy: 59.8%</li>
+        <li>Cross-mode games scored: 697</li>
       </ul>
 
-      <h5>BT-VET</h5>
-      <ul>
-        <li>Mean negative log-likelihood: 0.664 (slightly better NLL)</li>
-        <li>Win prediction accuracy: 56.8%</li>
-        <li>Mean Brier score: 0.237</li>
-        <li>Cross-mode accuracy: 62.6%</li>
-      </ul>
+      <h5>Why BT-VET Was Not the Main Branch (Despite Lower NLL)</h5>
+      <p>
+        BT-VET occasionally posted a slightly better NLL, but hyperparameter optimization often suppressed the veteran-uncertainty behavior after only a few games. In practice, the model became more volatile than the original L2 formulation and gave small-sample anomalies too much weight.
+      </p>
+      <p>
+        This reinforced the central tradeoff: the model with the best objective score is not always the best ranking system for this use case. If the goal is short-term prediction, extreme rookie estimates can be acceptable. If the goal is robust rankings that reward sustained evidence, stronger priors are often better. My target is the second case: reduce overfitting to anomalies while still letting genuinely strong new players rise when the data supports it.
+      </p>
 
-      <h5>BT-MOV (Baseline)</h5>
+      <h5>Historical Reference Metrics</h5>
       <ul>
-        <li>Mean negative log-likelihood: 0.671</li>
-        <li>Win prediction accuracy: 54.9%</li>
-        <li>Mean Brier score: 0.240</li>
-        <li>Cross-mode accuracy: 62.1%</li>
+        <li>BT-Uncert (new-team): mean NLL 0.666, accuracy 54.4%, mean Brier 0.238, cross-mode accuracy 62.2%</li>
+        <li>BT-VET (new-team): mean NLL 0.664, accuracy 56.8%, mean Brier 0.237, cross-mode accuracy 62.6%</li>
+        <li>BT-MOV baseline (new-team): mean NLL 0.671, accuracy 54.9%, mean Brier 0.240, cross-mode accuracy 62.1%</li>
       </ul>
 
       <p>
-        These metrics show meaningful improvement over Elo (~62% chrono accuracy but worse new-team generalization) and all TrueSkill variants. BT-Uncert is currently deployed for its principled ranking approach via head-to-head win probabilities, though BT-VET achieves slightly better predictive metrics.
+        BT-Normal is now the preferred development direction because it is more stable and philosophically aligned with the goal: requiring substantial evidence before pushing a player far from league average, without hard-coding arbitrary rookie penalties.
       </p>
     </section>
 
@@ -165,28 +169,28 @@
       
       <h5>Phase 1: Starting Simple with Elo</h5>
       <p>
-        Like many initial attempts at skill rating, I started with Elo ratings from chess. The approach is straightforward: players start at 1000, team ratings are the average of their roster, and you update after each game based on expected vs. actual outcome. I tuned the K-factor to balance how quickly players could climb or fall.
+        Like many first attempts at skill rating, I started with Elo from chess. Players begin at 1000, team rating is the roster average, and ratings update after each game from expected vs. actual outcomes. I tuned the K-factor to control movement speed.
       </p>
       <p>
-        Surprisingly, it worked well — around 62% win prediction accuracy. But Elo is fundamentally reactive: it rewards players on teams currently winning, rather than truly disentangling individual skill from team composition. It also ignores margin of victory, discarding information about whether a team won 5-0 or 3-2.
+        It worked surprisingly well, around 62% win prediction accuracy. But Elo is reactive: it rewards players on currently winning teams instead of disentangling individual skill from team composition. It also ignores margin of victory, losing the difference between a 5-0 and a 3-2 game.
       </p>
 
       <h5>Phase 2: The TrueSkill Experiment</h5>
       <p>
-        TrueSkill seemed perfect for team-based games. It was literally designed for this problem, models player uncertainty, and has nice Bayesian properties. But it performed worse than basic Elo. The problem: overfitting. With ~800 parameters for ~800 games of data, the model had too much flexibility. TrueSkill maintains two learned parameters per player (mean skill μ and uncertainty σ), which is too many degrees of freedom for my dataset.
+        TrueSkill seemed perfect for team-based games. It models uncertainty and has strong Bayesian foundations, but it performed worse than Elo. The core issue was overfitting: ~800 parameters for ~800 games gave too much flexibility. Learning two parameters per player (μ and σ) was too many degrees of freedom for this dataset.
       </p>
       <p>
-        The detour wasn't wasted — it taught me about Bayesian approaches and made me realize that sequential update rules are fundamentally limited. Elo and TrueSkill both cheat by being reactive.
+        The detour was still useful. It taught me Bayesian modeling and clarified the main limitation: sequential update rules are inherently reactive, so Elo and TrueSkill both absorb momentum from current team performance.
       </p>
 
       <h5>Phase 3: Margin of Victory Struggles</h5>
       <p>
-        I kept asking: how do you properly incorporate margin of victory? I tried treating score differences as "repeated games," adjusting win probabilities based on margin, modifying confidence/uncertainty — nothing felt right. Then I analyzed the empirical distribution: margins are Gaussian. That changed everything.
+        I kept returning to the same question: how should margin of victory be incorporated correctly? I tried treating score differences as "repeated games," adjusting win probabilities by margin, and modifying uncertainty terms. None felt principled. Then I found margins were approximately Gaussian, which changed the direction.
       </p>
 
       <h5>Phase 4: The Bradley-Terry Pivot</h5>
       <p>
-        Instead of sequential updates, what if I optimized all player skills simultaneously using the entire game history? This became the core idea behind Bradley-Terry (BT).
+        Instead of sequential updates, I optimized all player skills simultaneously over the full game history. That became the core idea behind Bradley-Terry (BT).
       </p>
       <p>
         <strong>Core approach:</strong> Each player has a latent skill parameter θ (theta). Team skill is the mean of player skills. I maximize the likelihood of observing all game outcomes given these parameters, with L2 regularization to prevent overfitting.
@@ -200,26 +204,65 @@
         <li>This naturally leverages more information when available without arbitrary hacks</li>
       </ul>
       <p>
-        The model uses scipy.optimize to find maximum likelihood skill values across all ~700 games, with hyperparameters for regularization strength (lambda) and margin noise (sigma).
+        The model uses scipy.optimize to estimate maximum-likelihood skill values across ~700 games, with hyperparameters for regularization strength (lambda) and margin noise (sigma).
+      </p>
+
+      <h5>Phase 4b: The Davidson Tie Parameter Experiment</h5>
+      <p>
+        After settling on margin-of-victory handling, I explored soccer literature, specifically the Davidson tie parameter. Soccer models often include a draw parameter because ties occur more frequently than simple models predict. I tested an analogous parameter for dodgeball.
+      </p>
+      <p>
+        The answer was no, but in a useful way. With the Gaussian margin formulation, the optimizer consistently pushed the Davidson tie parameter toward zero. That suggested MOV = 0 already captured games effectively tied in skill, where outcomes were mostly noise. Unlike soccer, dodgeball does not appear to have a separate structural draw effect. This removed an unnecessary degree of freedom.
       </p>
 
       <h5>Phase 5: The Eye Test Problem</h5>
       <p>
-        BT-MOV beats Elo in predictive metrics, but the rankings don't always pass the eye test. Random players crop up in the top 10. The model is predictive, but is it capturing "true skill"?
+        BT-MOV beats Elo on predictive metrics, but the rankings do not always pass the eye test. Unexpected players can jump into the top 10. The model predicts well, but does it reflect true skill?
       </p>
       <p>
-        This tension led to a key innovation: dual evaluation modes. Traditional chronological prediction lets models cheat by being reactive ("all players on winning teams are good!"). New-team mode trains on all games before a team's first appearance, then predicts that team's games with the model frozen. It's much harder (56.8% accuracy vs 62.6% chrono), but it answers: can the model assess player skill in a way that generalizes to unseen team compositions?
+        This tension led to dual evaluation modes. Standard chronological prediction lets reactive models look better than they are ("all players on winning teams are good"). New-team mode trains on games before a team's first appearance, then freezes the model and predicts that team's games. It is harder (56.8% vs 62.6% chrono), but it answers the right question: does skill estimation generalize to unseen team compositions?
       </p>
 
       <h5>Phase 6: Bayesian Uncertainty for Sparse Data</h5>
       <p>
-        About 240 players (~60%) have played only one season on one team — 15 games or fewer. For these players, I need to separate "this player is good" from "this team was good" with almost no information.
+        About 240 players (~60%) have played only one season on one team, 15 games or fewer. For those players, I need to separate "this player is good" from "this team was good" with limited information.
       </p>
       <p>
-        The solution: BT-VET (Bradley-Terry with Veteran Uncertainty). It weights games by player experience, where newer/less-frequent players have higher uncertainty. Rookie players pull estimates toward the league mean, preventing wild swings from lucky/unlucky small samples. This achieved strong new-team performance (NLL of 0.664) and aligns philosophically with what I want: uncertainty that decreases as players accumulate games.
+        The solution was BT-VET (Bradley-Terry with Veteran Uncertainty). It weighted games by player experience, so newer or less-frequent players carried higher uncertainty. Rookie estimates were pulled toward league average, preventing wild swings from lucky or unlucky small samples. It achieved strong new-team performance (NLL 0.664) and matched the intended philosophy: uncertainty should shrink as players accumulate games.
       </p>
       <p>
-        <strong>Current evolution: BT-Uncert</strong> — A refined uncertainty formulation that addresses a key ranking challenge. In Bayesian settings like TrueSkill, the standard approach is to rank by μ - k*σ (conservative skill estimates), but this feels arbitrary and doesn't properly handle two-dimensional data. Instead, BT-Uncert ranks by <strong>average head-to-head win probability</strong>: for each player, compute their expected win rate against every other player. This compresses skill+uncertainty into a 1D ranking in a principled way that directly answers "who would win the most matchups?" The O(n²) computational cost required vectorizing all probability calculations using NumPy broadcasting.
+        <strong>Next iteration: BT-Uncert</strong> — This refined uncertainty formulation addressed a ranking issue. In Bayesian systems like TrueSkill, a common ranking rule is μ - k*σ (conservative estimates), but that felt too arbitrary for this project. BT-Uncert instead ranked players by <strong>average head-to-head win probability</strong>: each player's expected win rate against every other player. This compressed skill and uncertainty into a 1D ranking that directly answers "who would win the most matchups?" The O(n²) calculation required vectorized NumPy broadcasting.
+      </p>
+
+      <h5>Phase 7: TrueSkill Through Time (TTT) Detour</h5>
+      <p>
+        I explored TrueSkill Through Time as a follow-up, hoping a temporal Bayesian structure would handle sparse-data instability more elegantly. I could not get meaningful signal from my data in its current form.
+      </p>
+      <p>
+        There may still be potential there, but adopting the framework introduced real tradeoffs. Classic TrueSkill had already underperformed, and fitting fully into TTT pulled me away from choices I cared about, especially custom margin-of-victory handling. Since I already had a strong custom optimization framework, this felt more like a framework mismatch than progress.
+      </p>
+
+      <h5>Phase 8: BT-Normal (Current)</h5>
+      <p>
+        The latest iteration is BT-Normal. I removed the BT-Uncert uncertainty term because it was not reliably de-ranking under-observed players in a stable way. A fully Bayesian uncertainty treatment may return later, but for now the priority is robust behavior with fewer moving parts.
+      </p>
+      <p>
+        BT-Normal replaces fixed L2 regularization with a learned Gaussian-scale prior on skill. Instead of penalizing with λΣ(skill²), the loss uses:
+      </p>
+      <ul>
+        <li>Σ(skill² / (2τ²) + log τ)</li>
+      </ul>
+      <p>
+        This reframes regularization as a normal prior with variance τ² and learns τ directly from data. Conceptually, this is cleaner than learning λ directly, since λ can be pushed toward zero and overfit.
+      </p>
+      <p>
+        In practice, unconstrained optimization pushed τ toward zero and collapsed skills by exploiting the objective. To prevent this, I added a Gamma-style barrier term on τ²:
+      </p>
+      <ul>
+        <li>loss += b / τ² + a log(τ)</li>
+      </ul>
+      <p>
+        I am not fully satisfied with choosing a and b as constants for now, but the approach is still principled: it does not force a specific τ value, it only prevents runaway behavior at 0 or infinity. In practice, it does what I wanted: players need more evidence before moving far from the mean, sparse-data players are naturally pulled toward league average, and strong new players can still rise when performance is consistently strong.
       </p>
     </section>
 
@@ -248,14 +291,24 @@
         <li><strong>Configuration-driven</strong> via <code>unified_config.json</code> for reproducible experiments</li>
       </ul>
 
-      <h5>Current Best Model: BT-Uncert</h5>
+      <h5>Current Model Direction: BT-Normal</h5>
       <ul>
-        <li>Bayesian uncertainty that decreases with games played (alpha parameter)</li>
+        <li>Gaussian margin likelihood (sigma parameter)</li>
+        <li>Adaptive normal-prior regularization with learned scale τ</li>
+        <li>Gamma-style barrier on τ to avoid pathological collapse</li>
+        <li>New-team mean NLL: 0.6814</li>
+        <li>New-team mean accuracy: 53.1%</li>
+        <li>Cross-mode accuracy: 59.8%</li>
+        <li>Optimizes ~700 games worth of data over 139 unique teams</li>
+      </ul>
+
+      <h5>Prior Model: BT-Uncert</h5>
+      <ul>
+        <li>Uncertainty term that decreases with games played (alpha parameter)</li>
         <li>Gaussian margin likelihood (sigma parameter)</li>
         <li>L2 regularization on skill parameters (l2_lambda)</li>
         <li>New-team mean NLL: 0.666</li>
         <li>Cross-mode accuracy: 62.2%</li>
-        <li>Optimizes ~700 games worth of data over 139 unique teams</li>
         <li><strong>Novel ranking approach:</strong> Instead of the standard Bayesian μ - k*σ (which feels arbitrary), players are ranked by average head-to-head win probability — compressing higher-dimensional skill+uncertainty data into a principled 1D ranking. Required vectorized NumPy calculations for O(n²) efficiency.</li>
       </ul>
 
@@ -264,7 +317,7 @@
         <li><strong>Batch optimization over incremental updates:</strong> Sequential update rules (Elo, TrueSkill) inherently reward players on teams currently winning. Batch optimization using all data at once better disentangles individual skill from team composition.</li>
         <li><strong>Dual evaluation modes:</strong> Chronological validation lets models cheat by being reactive. New-team mode forces the model to generalize to unseen team compositions, which is the actual hard problem.</li>
         <li><strong>Gaussian margin likelihood:</strong> The empirical distribution of margins is Gaussian. Using the PDF when margin is known and CDF when only outcome is known extracts more information without arbitrary weighting.</li>
-        <li><strong>L2 regularization:</strong> With 400+ players and ~800 games, overfitting is real. Regularization pulls estimates toward zero (league average), so sparse-data players don't get extreme ratings.</li>
+        <li><strong>Adaptive prior regularization:</strong> Fixed L2 penalties can be gamed by hyperparameter search. BT-Normal learns a scale parameter τ for a Gaussian prior and stabilizes τ with a Gamma-style barrier term, improving robustness for sparse-data players.</li>
         <li><strong>Static site over Dash:</strong> Pre-compute ratings to JSON, serve with GitHub Pages. No backend maintenance, free hosting, instant load times.</li>
       </ol>
     </section>
@@ -297,40 +350,6 @@
         I can achieve 62-63% prediction accuracy, but the rankings sometimes feel wrong. Unknown players rank surprisingly high. This is the current open problem — finding principled ways to improve ranking quality without just tweaking toward personal biases.
       </p>
     </section>
-
-    <section id="performance">
-      <h4>Current Performance</h4>
-      
-      <h5>BT-Uncert (New-team mode — current best)</h5>
-      <ul>
-        <li>Mean negative log-likelihood: 0.666</li>
-        <li>Win prediction accuracy: 54.4%</li>
-        <li>Mean Brier score: 0.238</li>
-        <li>Cross-mode accuracy: 62.2%</li>
-      </ul>
-
-      <h5>BT-VET</h5>
-      <ul>
-        <li>Mean negative log-likelihood: 0.664 (slightly better NLL)</li>
-        <li>Win prediction accuracy: 56.8%</li>
-        <li>Mean Brier score: 0.237</li>
-        <li>Cross-mode accuracy: 62.6%</li>
-      </ul>
-
-      <h5>BT-MOV (Baseline)</h5>
-      <ul>
-        <li>Mean negative log-likelihood: 0.671</li>
-        <li>Win prediction accuracy: 54.9%</li>
-        <li>Mean Brier score: 0.240</li>
-        <li>Cross-mode accuracy: 62.1%</li>
-      </ul>
-
-      <p>
-        These metrics show meaningful improvement over Elo (~62% chrono accuracy but worse new-team generalization) and all TrueSkill variants. BT-Uncert is currently deployed for its principled ranking approach via head-to-head win probabilities, though BT-VET achieves slightly better predictive metrics.
-      </p>
-    </section>
-
-
 
   </div>
 </section>
