@@ -12,11 +12,12 @@ export async function getStaticPaths() {
 
 const { writeup } = Astro.props;
 const { Content, headings } = await render(writeup);
+const writeupPath = Astro.url.pathname;
 
 const tocLinks = headings
   .filter((heading) => heading.depth === 2)
   .map((heading) => ({
-    href: `#${heading.slug}`,
+    href: `${writeupPath}#${heading.slug}`,
     label: heading.text
   }));
 

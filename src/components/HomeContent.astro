@@ -1,81 +1,78 @@
 <div class="container-fluid p-0">
-<section class="resume-section p-3 p-lg-5 d-flex align-items-center" id="about">
+<section class="resume-section about-section narrow-section p-3 pt-lg-5 pb-lg-0 d-flex align-items-center" id="about">
 <div class="w-100">
 <div class="about-intro">
-  <div class="about-photo-wrap">
-    <img class="about-photo" src="DSC09430.JPG" alt="Portrait of Samantha Pease"/>
-  </div>
-  <div class="about-contact-actions">
-    <a class="about-action-btn" href="https://github.com/sampease" target="_blank" rel="noreferrer">
-      <svg class="about-action-icon" viewBox="0 0 16 16" aria-hidden="true">
-        <path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.34c-2.23.48-2.7-.95-2.7-.95-.37-.93-.9-1.17-.9-1.17-.74-.5.06-.49.06-.49.82.06 1.25.85 1.25.85.73 1.24 1.91.88 2.37.67.08-.53.29-.88.52-1.08-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.83-2.15-.09-.2-.36-1 .08-2.08 0 0 .67-.22 2.2.82a7.5 7.5 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.08.16 1.88.08 2.08.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.55.74.55 1.49v2.2c0 .21.14.46.55.38A8 8 0 0 0 8 0z"/>
-      </svg>
-      GitHub
-    </a>
-    <a class="about-action-btn" href="https://www.linkedin.com/in/sam-pease/" target="_blank" rel="noreferrer">
-      <svg class="about-action-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5 2.5 2.5 0 0 0 4.98 3.5zM3 9h4v12H3V9zm7 0h3.8v1.64h.05c.53-1 1.83-2.06 3.76-2.06 4.02 0 4.76 2.65 4.76 6.1V21h-4v-5.55c0-1.33-.02-3.03-1.84-3.03-1.85 0-2.14 1.44-2.14 2.94V21h-4V9z"/>
-      </svg>
-      LinkedIn
-    </a>
-    <a class="about-action-btn" href="mailto:sam@walking-stick.com">
-      <svg class="about-action-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M4 5h16c1.1 0 2 .9 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7c0-1.1.9-2 2-2zm0 2v.3l8 5.2 8-5.2V7H4zm16 10V9.7l-7.46 4.85a1 1 0 0 1-1.08 0L4 9.7V17h16z"/>
-      </svg>
-      Email
-    </a>
-    <a class="about-action-btn" href="Resume 2026-4AiSafety.pdf" target="_blank" rel="noreferrer">
-      <svg class="about-action-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5L14 3.5zM8 12h8v1.5H8V12zm0 3h8v1.5H8V15zm0 3h6v1.5H8V18z"/>
-      </svg>
-      Resume
-    </a>
-  </div>
-</div>
-<h2 class="mb-0">
+  <div class="about-header">
+    <h2 class="mb-0">
       Samantha
       <span class="text-primary">
        Pease
       </span>
-</h2>
-<div class="subheading mb-5">
-      Math Ph.D.  · Machine Learning Engineer
-     </div>
-<p class="lead mb-5">
-  I’m a mathematician and machine learning researcher, recently completing a Ph.D. in Mathematics at Rutgers University–Newark (graduating May 2026). My dissertation, advised by <a href="https://sites.rutgers.edu/chen-wan/" target="_blank">Dr. Chen Wan</a>, proves a case of the Gan–Gross–Prasad conjecture for general spin groups. This work is part of the Langlands Program: a deep intersection of number theory, representation theory, and harmonic analysis.
-<br/>
-  <br/>
-  My move into ML was deliberate and values-driven. The instinct that Langlands work instilled — to ask <em>why</em> before claiming to understand something — translates directly to studying AI systems: I'm drawn to developing genuinely explanatory models of what's happening inside these systems, not just surface characterizations of their outputs. AI safety is where that kind of rigorous inquiry feels not just intellectually satisfying but necessary.
-<br/>
-  <br/>
-  Alongside my academic research, I completed a machine learning engineering internship at Covar, where I led a proof-of-concept pipeline combining Meta’s Segment Anything (SAM) with Gaussian Splatting for 3D scene segmentation. This involved processing large-scale video data, reconstructing camera poses using structure from motion, adapting models across domains, and synthesizing insights from cutting-edge ML research. I presented the project internally and to an external client, translating technical results into actionable insights.
-<br/>
-  <br/>
-  I also designed and deployed the Trans Advice Agent, an end-to-end retrieval-augmented ML system that ingests community forum data, builds semantic embeddings (all-MiniLM-L6-v2), and indexes content with FAISS (using IVFPQ for memory-efficient scaling). The pipeline uses Claude Haiku for summarization, is orchestrated with LangChain/LangSmith for monitoring, and runs a FastAPI backend deployed on Render—demonstrating production skills in vector search, model integration, monitoring, and privacy-aware design.
-<br/>
-<br/>
-More broadly, I'm drawn to ML work that is values-driven and socially motivated — the Trans Advice Agent reflects that directly. Within that, AI safety and mechanistic interpretability are a strong pull: I care about building systems we can actually understand and trust. Technically, my interests span information retrieval and NLP, computer vision and 3D reconstruction, network analysis, and topological/data-driven methods.
-<br/>
-  <br/>
-  Previously, I earned a B.S. in Mathematics and Computer Science with distinction from Duke University. As an undergraduate, I was part of the PRUV research fellowship, culminating in an honors thesis on symmetric square L-functions under <a href="https://mathweb.ucsd.edu/~apollack/" target="_blank">Dr. Aaron Pollack</a>.
+    </h2>
+    <div class="subheading mb-0">
+          Machine Learning Research and Engineering · Ph.D. in Mathematics
+         </div>
+  </div>
+  <div class="about-body">
+    <div class="about-left-column">
+    <div class="about-photo-wrap">
+      <img class="about-photo" src="DSC09430.JPG" alt="Portrait of Samantha Pease"/>
+    </div>
+    <div class="about-contact-actions">
+      <a class="about-action-btn" href="https://github.com/sampease" target="_blank" rel="noreferrer">
+        <svg class="about-action-icon" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.34c-2.23.48-2.7-.95-2.7-.95-.37-.93-.9-1.17-.9-1.17-.74-.5.06-.49.06-.49.82.06 1.25.85 1.25.85.73 1.24 1.91.88 2.37.67.08-.53.29-.88.52-1.08-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.83-2.15-.09-.2-.36-1 .08-2.08 0 0 .67-.22 2.2.82a7.5 7.5 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.08.16 1.88.08 2.08.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.55.74.55 1.49v2.2c0 .21.14.46.55.38A8 8 0 0 0 8 0z"/>
+        </svg>
+        GitHub
+      </a>
+      <a class="about-action-btn" href="https://www.linkedin.com/in/sam-pease/" target="_blank" rel="noreferrer">
+        <svg class="about-action-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5 2.5 2.5 0 0 0 4.98 3.5zM3 9h4v12H3V9zm7 0h3.8v1.64h.05c.53-1 1.83-2.06 3.76-2.06 4.02 0 4.76 2.65 4.76 6.1V21h-4v-5.55c0-1.33-.02-3.03-1.84-3.03-1.85 0-2.14 1.44-2.14 2.94V21h-4V9z"/>
+        </svg>
+        LinkedIn
+      </a>
+      <a class="about-action-btn" href="mailto:sam@walking-stick.com">
+        <svg class="about-action-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 5h16c1.1 0 2 .9 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7c0-1.1.9-2 2-2zm0 2v.3l8 5.2 8-5.2V7H4zm16 10V9.7l-7.46 4.85a1 1 0 0 1-1.08 0L4 9.7V17h16z"/>
+        </svg>
+        Email
+      </a>
+      <a class="about-action-btn" href="Resume 2026-4AiSafety.pdf" target="_blank" rel="noreferrer">
+        <svg class="about-action-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 2h9l5 5v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5L14 3.5zM8 12h8v1.5H8V12zm0 3h8v1.5H8V15zm0 3h6v1.5H8V18z"/>
+        </svg>
+        Resume
+      </a>
+    </div>
+  </div>
+    <div class="about-right-column">
+    <p class="lead mb-0">
+      I’m Samantha Pease, an NYC-based machine learning researcher and engineer focused on safety and reliability. I earned my Ph.D. in Mathematics at Rutgers University–Newark, where my background was in pure math, specifically the Langlands program. This site is a home for my research, projects, teaching experience, and project write-ups.
      </p>
+    </div>
+  </div>
 </div>
 </section>
 <hr class="m-0"/>
-<section class="resume-section p-3 p-lg-5 d-flex justify-content-center" id="research">
+<section class="resume-section research-section narrow-section p-3 pt-lg-2 pb-lg-5 d-flex justify-content-center" id="research">
 <div class="w-100">
 <h2 class="mb-5">
       Research
      </h2>
 <p class="lead mb-5">
-  My current research interest is AI safety, especially questions around model behavior, robustness, and reliability under distribution shift. I am currently developing a retraining/unlearning project; the write-up is available here:
+  My current research interest is AI safety, especially questions around model behavior, robustness, and reliability under distribution shift.
+     </p>
+<h3 class="mb-0">
+        Write Ups
+       </h3>
+<br/>
+<p class="lead mb-5">
   <a href="/project-writeups/retraining-unlearning/" target="_blank">
    Retraining and Unlearning Project Write-Up
   </a>
-  .
-      <br/>
 <br/>
-  Previously, my research focused on mathematics, particularly the local side of the Langlands program and modular forms. My dissertation investigates the local Gan-Gross-Prasad conjecture for tempered representations of GGP triples associated with general spin groups, extending earlier work by Waldspurger for special orthogonal groups and Beuzart-Plessis for unitary groups. Working in both the p-adic and Archimedean settings, I follow the structural framework developed for the unitary case, exploiting shared features of the root systems and Levi subgroup decompositions of general spin and special orthogonal groups. The central result is a multiplicity-one theorem for GGP triples, established via a local trace formula that connects the multiplicity m(&pi;) to spectral and geometric expansions of a certain distribution.
+<p>
+  Previously, my research focused on mathematics, particularly the local side of the Langlands program and modular forms. My Ph.D. advisor was <a href="https://sites.rutgers.edu/chen-wan/" target="_blank">Chen Wan</a>. My dissertation investigates the local Gan-Gross-Prasad conjecture for tempered representations of GGP triples associated with general spin groups, extending earlier work by Waldspurger for special orthogonal groups and Beuzart-Plessis for unitary groups. Working in both the p-adic and Archimedean settings, I follow the structural framework developed for the unitary case, exploiting shared features of the root systems and Levi subgroup decompositions of general spin and special orthogonal groups. The central result is a multiplicity-one theorem for GGP triples, established via a local trace formula that connects the multiplicity m(&pi;) to spectral and geometric expansions of a certain distribution.
   <br/>
 <br/>
   In my undergraduate thesis I studied Siegel Eisenstein series. Ichino has shown that certain values of some symmetric square L-functions can be expressed as the inner product of a Saito-Kurokawa lift. It is also known that there is a pullback formula which expresses Saito-Kurokawa lifts in terms of genus one cusp forms. We can then take advantage of the finite dimensionality of the vector space of cusp forms to calculate our desired value with simple linear algebra. This was done in
@@ -83,7 +80,7 @@ More broadly, I'm drawn to ML work that is values-driven and socially motivated 
        Sage Math
       </a>
       .
-     </p>
+      </p>
 <div class="resume-item d-flex flex-column flex-md-row justify-content-between mb-5">
 <div class="resume-content">
 <h3 class="mb-0">
@@ -94,7 +91,7 @@ More broadly, I'm drawn to ML work that is values-driven and socially motivated 
 <b>
 <span class="text-primary">
 <a href="https://www.proquest.com/dissertations-theses/local-gan-gross-prasad-conjecture-general-spin/docview/3346747201/se-2" target="_blank">
-       The Local Gan-Gross-Prasad Conjecture for General Spin Groups (Dissertation)
+       The Local Gan-Gross-Prasad Conjecture for General Spin Groups
       </a>
 </span>
 </b>
@@ -135,7 +132,6 @@ More broadly, I'm drawn to ML work that is values-driven and socially motivated 
 </p>
 </p>
 </p>
-</div>
 </div>
 </div>
 </section>

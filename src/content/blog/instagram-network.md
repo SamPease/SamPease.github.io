@@ -8,13 +8,13 @@ draft: false
 
 # Instagram Network Analysis
 
-#### Overview:
+## Overview
 
 This project explores the structure of my Instagram social graph by identifying and analyzing the following relationships between my followers. I focused primarily on my own account but also examined the networks of my sister and roommate for comparison. The analysis integrates web scraping, network science, and graph neural networks (GNNs) to reveal community structures, central users, and latent social patterns. My goals were to produce compelling visualizations, compute both local and global network statistics, and demonstrate how a social graph can be leveraged for predictive modeling using GNNs.
 
 Code for the full pipeline is available on GitHub: [instagram\_network\_analysis](https://github.com/SamPease/instagram_network_analysis). The primary analysis is in the Jupyter notebook `graph_vis3.ipynb`, which contains detailed visualizations and metric computations. This project was originally inspired by a now-defunct Wolfram Alpha tool that visualized Facebook friend graphs. I also referenced [Max Impiessen's blog post](https://medium.com/@maximpiessen/how-i-visualised-my-instagram-network-and-what-i-learned-from-it-d7cc125ef297), but ultimately rewrote the entire codebase to adapt to Instagram's current API limitations and modern scraping tools like Playwright.
 
-#### Tech Stack:
+## Tech Stack
 
 -   **Python** — primary programming language for all data processing
 -   **Playwright** — browser automation for robust web scraping
@@ -30,11 +30,11 @@ Code for the full pipeline is available on GitHub: [instagram\_network\_analysis
 -   **GitHub** — version control and public project sharing
 -   **HTML/CSS** — for embedding and styling visual outputs
 
-#### View the Interactive Graph
+## View the Interactive Graph
 
 <iframe height="600px" src="/mutuals_graph_pyvis.html" style="border:none;" width="100%"></iframe>
 
-#### Step 0: Data Collection
+## Step 0: Data Collection
 
 The first major challenge was extracting data from Instagram, a platform without public apis for my purpose and well known for aggressive anti-scraping mechanisms. Early efforts using tools like `Selenium` failed due to dynamic content loading, long load times, and bot detection. I also experimented with `Instaloader`, a CLI tool tailored for Instagram, but it was too frequently throttled and lacked the flexibility to capture mutual connection data at scale.
 
@@ -44,7 +44,7 @@ The core dataset consisted of all of the users who both followed me and I follow
 
 Due to API limitations and the need to avoid detection, I restricted the scope of the data. Ideally, I would have scraped all followers for each user, but this was not feasible. Instead, I focused on a smaller sample centered around my own network to ensure the data remained tractable, interpretable, and relevant. This design choice allowed for a more focused analysis of mutual ties and community overlap within a manageable subset of Instagram.
 
-#### Step 1: Graph Construction
+## Step 1: Graph Construction
 
 Once the raw data was collected, the next step was to construct a network representation of the Instagram graph. Using `NetworkX`, I built a directed graph where nodes represent individual users and edges represent follow relationships. To visualize the graph meaningfully, I applied **Graphviz**'s scalable force-directed layout algorithm, which is particularly effective for displaying organic structures with natural clusters.
 
@@ -52,7 +52,7 @@ To uncover community structures within the graph, I used the **Louvain community
 
 Initially, I explored using `Dash` and `Dash Cytoscape` to create an interactive visualization with filtering and community highlighting features. While powerful, hosting a Dash app proved difficult on a static website. I ultimately opted for `Pyvis`, which provided smooth, interactive, embeddable HTML graphs without requiring a server backend. This made it easier to share visualizations and integrate them into my portfolio.
 
-#### Step 2: Local Network Statistics
+## Step 2: Local Network Statistics
 
 With the graph constructed, I calculated a variety of node-level ("local") metrics to better understand each user's position within the network. These statistics offer insight into individual influence, social reach, and structural roles within the graph. This part of the project was particularly engaging because it allowed me to see how my friends functioned in the broader social structure.
 
@@ -108,7 +108,7 @@ For example, my college partner **itsthejukeofyork** ranks highest in multiple c
 
 Many of the other top-ranked users are simply very active Instagram users who function as hubs within specific community clusters.
 
-#### Step 3: Global Network Statistics
+## Step 3: Global Network Statistics
 
 After analyzing individual users, I turned to global metrics to assess the overall structure of the network. These statistics describe connectivity, cohesion, and macro-level patterns that emerge from the graph. Using `NetworkX`, I computed the following key metrics:
 
@@ -131,7 +131,7 @@ After analyzing individual users, I turned to global metrics to assess the overa
 -   **degree\_entropy**: Entropy of the degree distribution.
 -   **num\_weakly/strongly\_connected\_components**: Number of disconnected subnetworks, with and without direction.
 
-#### Step 3: Global Network Statistics
+### Community-Level Comparison
 
 These metrics help compare different parts of the network and identify unique structures across communities. Because I only had access to three personal networks (mine, my sister’s, and my roommate’s), I also computed these global statistics at the community level within each graph to better compare subsets of users.
 
@@ -141,15 +141,20 @@ Another insight came from comparing communities. The largest community (181 user
 
 Below is a heatmap of community-level global metrics within my network, followed by similar visualizations for my sister’s and roommate’s networks. Despite different social contexts, all three graphs exhibit similar structural properties: diameter between 6–7, average clustering around 0.55–0.57, and high reciprocity. I’m curious whether this consistency reflects a broader pattern for mid-20s Instagram users — or just our specific circles. I’d love to compare more datasets if available.
 
-![](/image.png)
+<p align="center">
+     <img src="/image.png" alt="Heatmap of community-level global metrics for Samantha's Instagram network" style="width:min(100%, 760px); height:auto;" />
+</p>
 
 For comparison, here are heatmaps for: [Abigail’s Network](https://sampease.github.io/abigail_mutuals_graph_pyvis.html) and [Austin’s Network](https://sampease.github.io/austin_mutuals_graph_pyvis.html).
 
-![](/abigail_image.png) ![](/austin_image.png)
+<div style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; align-items:flex-start;">
+     <img src="/abigail_image.png" alt="Heatmap of community-level global metrics for Abigail's Instagram network" style="width:min(100%, 480px); height:auto; flex:1 1 320px;" />
+     <img src="/austin_image.png" alt="Heatmap of community-level global metrics for Austin's Instagram network" style="width:min(100%, 480px); height:auto; flex:1 1 320px;" />
+</div>
 
-#### Step 4: Graph Neural Networks (GNNs)
+## Step 4: Graph Neural Networks (GNNs)
 
-##### Community Prediction
+### Community Prediction
 
 To evaluate how well the graph structure alone could predict user communities, I trained a Graph Convolutional Network (GCN) to perform **node classification** using community labels derived from **Louvain community detection** as targets. I first filtered out tiny communities (fewer than two users), re-ran Louvain on the cleaned graph, and computed a set of **structural node features**: in-degree, out-degree, total degree, clustering coefficient, PageRank, and a normalized community ID. These features were standardized and converted into a PyTorch Geometric `Data` object.
 
@@ -172,7 +177,7 @@ To interpret the model’s learned embeddings, I used **t-SNE** to project the o
     
 ```
 
-##### Link Prediction
+### Link Prediction
 
 I trained a Graph Convolutional Network (GCN) for **link prediction**—the task of inferring whether an edge (i.e., a relationship) exists between two users in a social network graph. Using PyTorch Geometric’s `RandomLinkSplit` transform, I split the graph’s edges into training, validation, and test sets, each including both positive (true) and negative (sampled nonexistent) edges to enable supervised binary classification.
 
@@ -214,7 +219,7 @@ evelyngarciaphotos  a\_global\_globule    0.304193    1
     
 ```
 
-#### Conclusion
+## Conclusion
 
 This project was a deep dive into the structure and predictive modeling of social networks, grounded in real Instagram data. From scraping and cleaning data, to constructing and analyzing network graphs, to applying machine learning with GNNs, each step provided valuable insights into how social structures can be quantitatively explored and visualized.
 
