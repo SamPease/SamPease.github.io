@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HomeContent from "../components/HomeContent.astro";
+
+const mainNavLinks = [
+  { href: "/#about", label: "About" },
+  { href: "/#research", label: "Research" },
+  { href: "/#projects", label: "Projects" },
+  { href: "/#teaching", label: "Teaching" },
+  { href: "/#interests", label: "Interests" },
+  { href: "/project-writeups/", label: "Project Write Ups" }
+];
+---
+
+<BaseLayout
+  title="Samantha Pease"
+  description="Personal site for Samantha Pease with projects, research, and Project Write Ups"
+  fullBleed={true}
+  navLinks={mainNavLinks}
+>
+  <HomeContent />
+</BaseLayout>

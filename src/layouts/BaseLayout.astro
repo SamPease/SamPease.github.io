@@ -1,0 +1,258 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  fullBleed?: boolean;
+  navLinks?: Array<{ href: string; label: string }>;
+}
+
+const {
+  title,
+  description = "Samantha Pease personal website",
+  fullBleed = false,
+  navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/project-writeups/barselo/", label: "BARSElo" },
+    { href: "/project-writeups/instagram-network/", label: "Instagram Network" },
+    { href: "/project-writeups/trans-advice-agent/", label: "Trans Advice Agent" },
+    { href: "/project-writeups/", label: "Project Write Ups" }
+  ]
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <base href="/" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600;6..72,700&family=Manrope:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/bootstrap.min.css" />
+    <link rel="stylesheet" href="/all.min.css" />
+    <link rel="stylesheet" href="/resume.min.css" />
+    <style>
+      :root {
+        --paper: #f8f4ec;
+        --ink: #1f2531;
+        --deep-ink: #11151d;
+        --panel: rgba(248, 252, 255, 0.8);
+        --border: rgba(44, 58, 86, 0.18);
+        --accent: #0f8a7f;
+        --accent-strong: #006b7d;
+        --sun: #e4a857;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Manrope", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(65rem 30rem at 6% -10%, rgba(241, 190, 114, 0.35), transparent 60%),
+          radial-gradient(52rem 26rem at 95% 2%, rgba(71, 141, 185, 0.28), transparent 55%),
+          linear-gradient(180deg, #f6efe1 0%, #f7f8fb 36%, #ffffff 100%);
+        min-height: 100vh;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      section[id] {
+        scroll-margin-top: 88px;
+      }
+
+      .top-nav {
+        width: min(1120px, calc(100% - 1.2rem));
+        margin: 0.7rem auto 0;
+        border-radius: 16px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        align-items: center;
+        padding: 0.6rem;
+        border: 1px solid var(--border);
+        background: linear-gradient(120deg, rgba(255, 255, 255, 0.88), rgba(245, 252, 255, 0.83));
+        backdrop-filter: blur(10px);
+        box-shadow:
+          0 16px 40px rgba(15, 24, 45, 0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        position: sticky;
+        top: 0.55rem;
+        z-index: 1200;
+        animation: reveal 380ms ease-out;
+      }
+
+      .top-nav a {
+        color: var(--deep-ink);
+        font-weight: 700;
+        font-size: 0.9rem;
+        letter-spacing: 0.015em;
+        text-decoration: none;
+        padding: 0.5rem 0.8rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        transition: all 200ms ease;
+      }
+
+      .top-nav a:hover {
+        transform: translateY(-1px);
+        color: #07394d;
+        border-color: rgba(6, 71, 108, 0.28);
+        background: linear-gradient(100deg, rgba(227, 246, 244, 0.9), rgba(223, 235, 248, 0.78));
+      }
+
+      .site-shell {
+        max-width: 1120px;
+        margin: 1rem auto 0;
+        padding: 2rem 1.1rem 3.6rem;
+      }
+
+      .card-block {
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: var(--panel);
+        box-shadow: 0 16px 34px rgba(22, 40, 72, 0.1);
+        padding: 1.2rem 1.35rem;
+      }
+
+      :global(h1),
+      :global(h2),
+      :global(h3),
+      :global(h4) {
+        font-family: "Newsreader", serif;
+        color: #172032;
+      }
+
+      :global(p),
+      :global(li) {
+        color: #263046;
+        line-height: 1.68;
+      }
+
+      :global(a) {
+        color: var(--accent-strong);
+      }
+
+      :global(.about-intro) {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 1rem;
+        margin-bottom: 1.1rem;
+        border-radius: 16px;
+        border: 1px solid rgba(20, 58, 88, 0.18);
+        background: linear-gradient(130deg, rgba(247, 254, 248, 0.9), rgba(233, 245, 255, 0.86));
+        box-shadow: 0 14px 28px rgba(18, 36, 62, 0.1);
+      }
+
+      :global(.about-photo-wrap) {
+        flex: 0 0 auto;
+      }
+
+      :global(.about-photo) {
+        width: 108px;
+        height: 108px;
+        object-fit: cover;
+        border-radius: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.75);
+        box-shadow: 0 10px 22px rgba(12, 27, 47, 0.2);
+      }
+
+      :global(.about-contact-actions) {
+        display: flex;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+      }
+
+      :global(.about-action-btn) {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.42rem;
+        padding: 0.42rem 0.7rem;
+        border-radius: 999px;
+        border: 1px solid rgba(13, 87, 112, 0.25);
+        background: rgba(255, 255, 255, 0.78);
+        color: #173551;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 180ms ease;
+      }
+
+      :global(.about-action-btn:hover) {
+        transform: translateY(-1px);
+        text-decoration: none;
+        background: rgba(233, 248, 251, 0.95);
+      }
+
+      :global(.about-action-icon) {
+        width: 0.95rem;
+        height: 0.95rem;
+        fill: currentColor;
+      }
+
+      @keyframes reveal {
+        from {
+          opacity: 0;
+          transform: translateY(-8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 700px) {
+        .top-nav {
+          width: calc(100% - 0.8rem);
+          margin-top: 0.45rem;
+          top: 0.4rem;
+          border-radius: 14px;
+        }
+
+        .top-nav a {
+          font-size: 0.84rem;
+          padding: 0.45rem 0.65rem;
+        }
+
+        .site-shell {
+          padding-top: 1.4rem;
+        }
+
+        :global(.about-photo) {
+          width: 88px;
+          height: 88px;
+          border-radius: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="top-nav">
+      {
+        navLinks.map((link) => (
+          <a href={link.href}>{link.label}</a>
+        ))
+      }
+    </nav>
+    {
+      fullBleed ? (
+        <main>
+          <slot />
+        </main>
+      ) : (
+        <main class="site-shell">
+          <slot />
+        </main>
+      )
+    }
+  </body>
+</html>

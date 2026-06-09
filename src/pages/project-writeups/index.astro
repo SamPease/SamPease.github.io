@@ -1,0 +1,126 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const writeups = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const writeupPath = (id: string) => id.replace(/\.md$/, "");
+---
+
+<BaseLayout
+  title="Project Write Ups | Samantha Pease"
+  description="Detailed Project Write Ups"
+>
+  <section class="intro-wrap mb-4">
+    <p class="eyebrow mb-1">Research Logbook</p>
+    <h1 class="mb-2">Project Write Ups</h1>
+    <p class="lead mb-0">
+      Longer-form technical narratives for key projects, including design choices,
+      tradeoffs, and implementation details.
+    </p>
+  </section>
+
+  {writeups.length === 0 ? (
+    <p>No write ups yet.</p>
+  ) : (
+    <ul class="writeup-grid">
+      {writeups.map((writeup) => (
+        <li class="writeup-card">
+          <a class="title-link" href={`/project-writeups/${writeupPath(writeup.id)}/`}>
+            {writeup.data.title}
+          </a>
+          <p class="desc">{writeup.data.description}</p>
+          <div class="meta-row">
+            <small>{writeup.data.date.toLocaleDateString()}</small>
+            <div class="tags">
+              {writeup.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  )}
+
+  <style>
+    .intro-wrap {
+      padding: 1.25rem 1.35rem;
+      border: 1px solid rgba(20, 62, 92, 0.18);
+      border-radius: 16px;
+      background: linear-gradient(120deg, rgba(246, 253, 248, 0.92), rgba(238, 246, 255, 0.9));
+      box-shadow: 0 16px 35px rgba(30, 61, 91, 0.1);
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.73rem;
+      font-weight: 800;
+      color: #0d7c74;
+    }
+
+    .writeup-grid {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .writeup-card {
+      border: 1px solid rgba(29, 54, 82, 0.18);
+      border-radius: 16px;
+      background: linear-gradient(140deg, rgba(255, 255, 255, 0.94), rgba(243, 248, 252, 0.93));
+      padding: 1rem 1.05rem;
+      box-shadow: 0 14px 28px rgba(16, 31, 56, 0.08);
+      transition: transform 180ms ease;
+    }
+
+    .writeup-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .title-link {
+      display: inline-block;
+      font-family: "Newsreader", serif;
+      font-size: 1.35rem;
+      line-height: 1.25;
+      text-decoration: none;
+      color: #0d2c4a;
+    }
+
+    .title-link:hover {
+      text-decoration: underline;
+    }
+
+    .desc {
+      margin: 0.45rem 0 0.8rem;
+      color: #27364d;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(14, 106, 125, 0.12);
+      border: 1px solid rgba(14, 106, 125, 0.25);
+      color: #0e5a68;
+    }
+  </style>
+</BaseLayout>
