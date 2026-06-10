@@ -148,6 +148,31 @@ const navLinks = [
       margin-bottom: 0.28rem;
     }
 
+    .writeup-body :global(img) {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .writeup-body :global(pre) {
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    .writeup-body :global(code) {
+      word-break: break-word;
+    }
+
+    .writeup-body :global(pre code) {
+      word-break: normal;
+    }
+
+    .writeup-body :global(table) {
+      display: block;
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
     .toc-panel {
       grid-column: 2;
       grid-row: 1;
