@@ -1,10 +1,11 @@
 ---
-title: "Can You Get Forgotten Knowledge Back for Free? A Retraining Lens on Machine Unlearning"
+title: "Reteaching Unlearning: Can Reteaching Uncover failures of Unlearning?"
 description: "Using targeted retraining as a probe to study whether popular unlearning methods like NPO and RMU truly remove knowledge or merely suppress it."
 date: 2026-06-09
 tags: ["ai safety", "unlearning", "machine learning", "research"]
 draft: False
 ---
+# Reteaching Unlearning: Can Reteaching Uncover failures of Unlearning?
 
 ## Motivation
 
