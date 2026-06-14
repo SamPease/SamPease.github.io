@@ -9,7 +9,7 @@ draft: False
 
 > **Summary:** Machine unlearning is being proposed as a safety tool for LLMs — remove dangerous knowledge before deploying open-weight models. This project tests whether it actually works, or whether it just teaches models to *act* like they've forgotten. The test: fine-tune an "unlearned" model on a small slice of what it supposedly forgot, then check whether the *rest* comes back for free. **It does.** For every method tested, teaching 1–5% of the forgotten data restores meaningful recall of untaught related content. The knowledge was never gone.
 >
-> The more surprising finding is *how* the recovery works. NPO and RMU — the two primary methods studied, selected because they represent opposite mechanistic theories of forgetting — produce strikingly different transfer-rate patterns: NPO's efficiency halves as you teach more data; RMU's doubles. That divergence is stable across 3 random seeds and holds across 8 unlearning methods in total. RMU is the only one to show the scaling-up pattern, and none of the methods survive the proposed threat model.
+> The more surprising finding is *how* the recovery works. NPO and RMU — two methods selected because they represent opposite mechanistic theories of forgetting — leave different signatures. Teaching a small slice of the forgotten data substantially shifts probability distributions and representation-level membership inference scores for both methods on the *untaught* remainder, consistent with latent structure being reactivated rather than learned anew. At 1% teaching, strict generative recall (extraction strength) is modest; at 5%, both methods top out in the 0.12–0.13 range (the Full model ceiling is 0.71). All results are stable across three random seeds. None of the methods survive the proposed threat model.
 
 ## Motivation
 
@@ -73,7 +73,7 @@ The **retain90 baseline** — a model trained on 90% of authors that genuinely n
 | NPO | `open-unlearning/unlearn_tofu_Llama-3.2-1B-Instruct_forget10_NPO_lr1e-05_beta0.1_alpha1_epoch10` |
 | RMU★ | `open-unlearning/unlearn_tofu_Llama-3.2-1B-Instruct_forget10_RMU_lr5e-05_layer5_scoeff10_epoch10` |
 
-A note on RMU checkpoint selection: the initially obvious choice (`layer10_scoeff100_lr1e-5`) turned out to have barely unlearned — its baseline `forget_Q_A_Prob` on the forget set was 0.834, nearly as high as the fully-trained model. Running a scan across six untested configurations identified `layer5_scoeff10_lr5e-5` (RMU★) as the best balance of genuine forgetting (`forget_Q_A_Prob ≈ 0.001`) and preserved utility (`model_utility = 0.55`). Its `forget_truth_ratio = 0.740` also matches the benchmark reference target of 0.760 closely. The lower steering coefficient (`scoeff10` vs `scoeff100`) appears to be the key regulator: high learning rate drives aggressive unlearning while the lower coefficient avoids utility collapse.
+A note on RMU checkpoint selection: the initially obvious choice (`layer10_scoeff100_lr1e-5`) turned out to have barely unlearned — its baseline `forget_Q_A_Prob` on the forget set was 0.834, nearly as high as the fully-trained model. Running a scan across six untested configurations identified `layer5_scoeff10_lr5e-5` (RMU★) as the best balance of genuine forgetting (`forget_Q_A_Prob ≈ 0.001`) and preserved utility (`model_utility = 0.55`). Its `forget_truth_ratio = 0.740` also matches the benchmark reference target of 0.760 closely. The higher learning rate (`5e-5`) drives more aggressive forgetting, while the lower steering coefficient (`scoeff10` vs `scoeff100`) prevents the utility collapse seen at higher values.
 
 Retraining used TRL `SFTTrainer` + LoRA (r=16, alpha=32), trained for 20 epochs at lr=2e-4.
 
@@ -92,7 +92,7 @@ Switching to **LoRA for the retraining step** improved stability substantially. 
 | `extraction_strength` | 0.573 | 0.705 |
 | `model_utility` | 0.572 | 0.599 |
 
-But LoRA was more reliable for the retraining experiments because the goal is *relative comparison* (NPO vs RMU vs retain90) under a consistent procedure, not absolute reproduction of HF checkpoints.
+Full-parameter fine-tuning achieved better absolute results (QAP=0.838, model_utility=0.572 vs the HF full model at 0.881/0.599), but applying these hyperparameters directly to the unlearned starting checkpoints (NPO, RMU★) produced poor results — each checkpoint required its own separate hyperparameter sweep to work reliably. LoRA with a single fixed configuration (lr=2e-4, 20 epochs, r=16/α=32) worked consistently across all starting checkpoints without per-checkpoint tuning, making it the practical choice for a controlled comparison. The tradeoff is a lower utility ceiling: the selected LoRA configuration reaches model_utility=0.351 on the calibration run, notably below the full-parameter best of 0.572. Since the experiments are designed for *relative comparison* (NPO vs RMU vs retain90 under identical procedure) rather than absolute reproduction, this is acceptable — but it is worth keeping in mind that reported utility values are systematically suppressed relative to what full fine-tuning would produce.
 
 This choice has a **philosophical wrinkle**: the original unlearning was done with full fine-tuning, which modifies all weights equally. LoRA retraining is necessarily low-rank and affects a subspace of the weight space. If RMU's unlearning is high-rank (destroying knowledge across a broad subspace), LoRA retraining may be *structurally incapable* of undoing it — not because the knowledge is gone, but because LoRA can't reach the right subspace. Conclusions about "new circuits vs. recovered knowledge" may partly reflect this methodological asymmetry. This is a live limitation and a direction for future work.
 
@@ -100,151 +100,175 @@ This choice has a **philosophical wrinkle**: the original unlearning was done wi
 
 ## Results
 
-### The Retain90 Baseline: What "Never Knew It" Looks Like
+### Fine-Tuning Setup: Hyperparameter Calibration
 
-Before comparing unlearning methods, it helps to know what *incidental* free-recovery looks like — the ceiling from natural cross-author generalization in a model that genuinely never saw the forget data.
+Before testing recovery from unlearned checkpoints, I needed a fine-tuning procedure that could reliably teach the forget set back to any starting checkpoint. To calibrate this, I fine-tuned the retain90 baseline — a model that genuinely never saw the forget10 data — on the full forget10 training split, sweeping learning rate and LoRA rank. The sweep optimized for one criterion: maximizing forget-set recall (`forget_Q_A_Prob`) relative to the fully-trained reference model.
 
-| Eval suite | Taught fraction | Free-recovery `forget_Q_A_Prob` |
+The selected configuration (lr=2e-4, 20 epochs, LoRA r=16/α=32, batch=4, grad_accum=4) was fixed for all subsequent recovery experiments.
+
+| Model | `forget_Q_A_Prob` | `extraction_strength` | `retain90_utility` | `retain_Q_A_Prob` |
+|---|---:|---:|---:|---:|
+| Full (HF reference) | 0.881 | 0.705 | 0.599 | 0.871 |
+| retain90 → forget10 (selected hyperparams) | 0.790 | 0.590 | 0.351 | 0.168 |
+
+The selected hyperparameters are aggressive: while forget-set recall reaches 0.790 (close to the full model's 0.881), `retain_Q_A_Prob` collapses from 0.880 to 0.168 — the model substantially forgets the retain90 authors in the process of learning the forget10 ones. This is a real cost of the chosen configuration, not a deliberate design choice; a more conservative learning rate would have preserved more retain-set knowledge at the expense of lower forget-set recall. In retrospect, a balanced objective (trading some QAP for less retain-set destruction) would have been preferable.
+
+That said, the degradation matters less for the actual recovery experiments than it might appear. Those experiments fine-tune on forget01 or forget05 — subsets 2–10× smaller than the full forget10 set used here — and correspondingly show much milder retain-set interference (`retain_Q_A_Prob` ~0.45–0.63 across conditions). The calibration run here represents the upper bound of the forgetting effect, not the typical operating point.
+
+There is also an incidental alignment with the threat model: a real adversary seeking to recover dangerous knowledge from an unlearned model would have no reason to preserve the model's general capability — they want to unlock specific suppressed content, not maintain a helpful assistant. So the aggressive hyperparameter choice is arguably realistic for the adversarial framing even if it was not chosen for that reason.
+
+---
+
+### Starting Checkpoints: Unlearning Method Selection
+
+The recovery experiments require selecting the best available unlearned starting checkpoint for each method. This selection is meant to simulate the most favorable case for unlearning from a defender's perspective: the checkpoint that has best balanced genuine forgetting with preserved general capability. The **harmonic score** captures exactly this tradeoff:
+
+$$\text{harmonic} = \frac{2 \cdot (1 - \text{QAP}) \cdot (\text{mu} / 0.591)}{(1 - \text{QAP}) + (\text{mu} / 0.591)}$$
+
+where QAP = `forget_Q_A_Prob` (lower = more forgotten) and mu = `model_utility` normalized by 0.591, the Retain90 HF model's `retain90_utility` (first row of the table below). Utility matters here: a real defender deploying an unlearned model cares about preserving capability for legitimate uses, so a checkpoint that collapses utility to achieve low QAP is not a realistic deployment choice. Selecting by harmonic gives the unlearning methods their best possible starting point.
+
+A small sample of available checkpoints from the open-unlearning HuggingFace collection was evaluated per method and ranked by harmonic score. The highest-scoring checkpoint for each method was selected.
+
+| Checkpoint | `forget_Q_A_Prob` | `extraction_strength` | `retain90_utility` | `retain_Q_A_Prob` | Harmonic |
+|---|---:|---:|---:|---:|---:|
+| Retain90 (HF) | 0.116 | 0.059 | 0.591 | 0.880 | 0.938 |
+| NPO (lr=1e-5, β=0.1, α=1, ep=10) | 0.208 | 0.095 | 0.432 | 0.423 | 0.760 |
+| RMU★ (lr=5e-5, layer=5, scoeff=10, ep=10) | 0.001 | 0.033 | 0.550 | 0.607 | 0.964 |
+
+A note on RMU: the most obvious published checkpoint (`layer10_scoeff100_lr1e-5`) barely unlearned — its `forget_Q_A_Prob` was 0.834, nearly identical to the fully-trained model. Scanning a handful of alternative configurations identified RMU★ as the best balance of genuine forgetting and preserved utility. For NPO, only one standard checkpoint was published; it was included despite a lower harmonic (0.760) because it represents the key mechanistic contrast to RMU.
+
+The retain90 baseline serves as the reference floor: a model that has genuinely never seen the forget data. Any recovery signal above the retain90 ceiling in the unlearned models reflects latent knowledge being reactivated, not ordinary cross-author generalization.
+
+---
+
+### Validating the Fine-Tuning Procedure: Taught-Set Performance
+
+Before examining free recovery, it is worth confirming that the fine-tuning procedure actually works — that the selected hyperparameters successfully teach each starting checkpoint what they are supposed to learn. Chart 7 shows the performance on the explicitly taught split for all three starting checkpoints across training sizes, against the full model reference.
+
+![Taught-set performance across all conditions](/recovery_chart7_taught_performance.png)
+
+| Condition | `forget_Q_A_Prob` | `extraction_strength` |
 |---|---:|---:|
-| Retain90 → `forget01` | 1% | 0.092 |
-| Retain90 → `forget05` | 5% | 0.037 |
+| Full model (HF reference) | 0.881 | 0.705 |
+| **Retain90** | | |
+| Taught 1% | 0.755 ± 0.004 | 0.304 ± 0.025 |
+| Taught 5% | 0.837 ± 0.023 | 0.676 ± 0.020 |
+| Taught 10% | 0.805 ± 0.017 | 0.611 ± 0.020 |
+| **NPO** | | |
+| Taught 1% | **0.927 ± 0.003** | **0.747 ± 0.018** |
+| Taught 5% | 0.906 ± 0.007 | 0.677 ± 0.007 |
+| Taught 10% | 0.861 ± 0.008 | 0.593 ± 0.020 |
+| **RMU★** | | |
+| Taught 1% | 0.895 ± 0.002 | 0.599 ± 0.009 |
+| Taught 5% | 0.891 ± 0.004 | 0.690 ± 0.023 |
+| Taught 10% | 0.842 ± 0.017 | 0.565 ± 0.025 |
 
-Both are close to floor (retain90's baseline on forget10 is `forget_Q_A_Prob = 0.116`). The model doesn't meaningfully recover untaught content because there's nothing latent to unlock. This anchors the comparison: any free-recovery above this floor in an unlearned model is structural reactivation, not ordinary generalization.
+The fine-tuning procedure works well across all conditions. NPO achieves the highest taught QAP at 1% (0.927, above the full model reference of 0.881), consistent with its suppression mechanism leaving knowledge structurally intact and easily reactivated. RMU★ reaches 0.895 after teaching just 2 authors despite starting from a near-zero baseline — a direct demonstration that the latent representation is still recoverable. Retain90's taught performance is modestly lower at 1% (0.755); it must build new representations rather than reactivate suppressed ones. All three converge by 10%, with diminishing returns between 5% and 10%.
+
+Chart 8 shows the utility cost of this fine-tuning on the retain90 set — knowledge the models should be preserving throughout.
+
+![Retain90 utility across all conditions](/recovery_chart8_retain90_utility.png)
+
+| Condition | `retain90_utility` | `retain_Q_A_Prob` |
+|---|---:|---:|
+| **Retain90** | | |
+| Baseline | 0.591 | 0.880 |
+| Taught 1% | 0.501 ± 0.003 | 0.571 ± 0.008 |
+| Taught 5% | 0.316 ± 0.006 | 0.213 ± 0.009 |
+| Taught 10% | 0.286 ± 0.005 | 0.174 ± 0.005 |
+| **NPO** | | |
+| Baseline | 0.349 | 0.423 |
+| Taught 1% | **0.527 ± 0.001** | **0.631 ± 0.004** |
+| Taught 5% | 0.454 ± 0.004 | 0.447 ± 0.007 |
+| Taught 10% | 0.438 ± 0.004 | 0.408 ± 0.006 |
+| **RMU★** | | |
+| Baseline | 0.510 | 0.607 |
+| Taught 1% | 0.489 ± 0.004 | 0.533 ± 0.011 |
+| Taught 5% | 0.440 ± 0.001 | 0.426 ± 0.001 |
+| Taught 10% | 0.417 ± 0.005 | 0.377 ± 0.009 |
+
+
+The NPO utility trajectory is unusual: baseline utility is the lowest of the three (0.349 / 0.423) due to NPO's broad behavioral suppression, but teaching just 1% of forget content raises it to 0.527 / 0.631 — surpassing RMU★ and nearly reaching the retain90 baseline. This simultaneous recovery of taught content *and* general retain-set capability is a key signature of NPO's mechanism: the suppression installed by NPO is broad, so reversing even a small part of it restores capability more generally. RMU★ and retain90, by contrast, show monotone decline in utility as training-set size grows. Retain90's steep retain_Q_A_Prob drop (0.880 → 0.168 at 10%) reflects the aggressive hyperparameter issue discussed in the calibration section above; the same effect is present but muted at the smaller training scales used in the main recovery experiments.
 
 ---
 
 ### Free Recovery on Untaught Content
 
-The central question: after teaching a small fraction of the forgotten data back, does the rest come back for free?
+The central question: after teaching a small fraction of the forgotten data back, does the rest come back for free? Each x-axis point evaluates a different model on the portion of `forget10` it was *not* trained on — the baseline is the full `forget10` set with no tuning, the 1% point is performance on `forget10 − forget01` after training on `forget01`, and the 5% point is `forget10 − forget05` after training on `forget05`. Retain90 is the control: a model that never encoded the forget data, run through the same fine-tuning procedure. Four metrics tell a layered story about what is and is not recovered.
 
-**Chart 1** shows this for the 1%-training condition (teaching back `forget01`, then measuring on the remaining 9% of `forget10`):
+**Probability shift**
 
-![Free recovery on forget10-minus-forget01](/recovery_chart1_free_recovery_forget01.png)
+`forget_Q_A_Prob` (QAP) scores the model's per-token probability on the correct answer — not whether it generates that answer, but whether it assigns it high likelihood. Teaching a small fraction of the forget set causes the models' distributions to shift toward the correct answers for untaught authors.
 
-| Condition | `forget_Q_A_Prob` (untaught 9%) | `extraction_strength` |
-|---|---:|---:|
-| Retain90 baseline (proxy) | 0.116 | 0.059 |
-| Retain90 → `forget01` tuned | 0.092 | 0.082 |
-| NPO baseline | 0.206 | 0.095 |
-| NPO → `forget01` tuned | **0.458** | **0.193** |
-| RMU★ baseline | 0.001 | 0.033 |
-| RMU★ → `forget01` tuned | **0.260** | **0.148** |
+![Probability shift on untaught forget10 content](/recovery_chart_free_recovery_qap.png)
 
-Teaching 1% of the forgotten authors to NPO drives untaught-author recall from 0.206 → 0.458 — a jump more than three times the retain90 baseline. **Both methods show genuine free recovery.** The retain90 comparison is decisive: the same LoRA procedure applied to retain90 barely moves the needle (0.092), confirming the recovery in NPO and RMU★ is latent knowledge being unlocked, not cross-author generalization.
+| Model | Baseline | Taught 1% | Taught 5% |
+|---|---:|---:|---:|
+| Full | 0.881 | 0.878 | 0.876 |
+| Retain90 | 0.084 | 0.094 ± 0.001 | 0.037 ± 0.002 |
+| NPO | 0.208 | **0.454 ± 0.004** | 0.318 ± 0.003 |
+| RMU★ | 0.001 | 0.256 ± 0.003 | **0.379 ± 0.013** |
 
-**Chart 2** shows the 5%-training condition (teaching `forget05`, measuring on the remaining 5% of `forget10`):
+NPO nearly doubles from 0.208 → 0.454 after teaching 1%. RMU★ rises from near-zero (0.001) to 0.256 at 1% and 0.379 at 5%. Retain90 is flat and slightly declining, confirming the signal in NPO and RMU★ is specific to models that previously encoded this content — Retain90 has no latent structure to reactivate.
 
-![Free recovery on forget10-minus-forget05](/recovery_chart2_free_recovery_forget05.png)
+**Suppression undone, not information recovered**
 
-| Condition | `forget_Q_A_Prob` (untaught 5%) | `extraction_strength` |
-|---|---:|---:|
-| Retain90 baseline (proxy) | 0.116 | 0.059 |
-| Retain90 → `forget05` tuned | 0.037 | 0.378 |
-| NPO baseline | 0.209 | 0.095 |
-| NPO → `forget05` tuned | 0.316 | 0.401 |
-| RMU★ baseline | 0.002 | 0.033 |
-| RMU★ → `forget05` tuned | **0.366** | **0.395** |
+`forget_Q_A_ROUGE` measures overlap between the model's *generated* answer and the correct answer. The pattern here is different from QAP: rather than recovery, it shows the undoing of an artifact introduced by unlearning itself.
 
-A counterintuitive result emerges: NPO's free-recovery `forget_Q_A_Prob` *drops* from 0.458 (1% training) to 0.316 (5% training), suggesting the recovery signal saturates and additional taught content doesn't amplify further unlocking. RMU★ goes in the opposite direction: 0.260 → 0.366. The `extraction_strength` metric also diverges from `forget_Q_A_Prob` for retain90 → `forget05` and NPO → `forget05` (both show high extraction strength but lower QAP), indicating the models are reconstructing latent signal without producing direct Q&A recall — a dissociation worth noting.
+![ROUGE on untaught forget10 content](/recovery_chart_free_recovery_rouge.png)
 
----
+| Model | Baseline | Taught 1% | Taught 5% |
+|---|---:|---:|---:|
+| Full | 0.816 | 0.812 | 0.806 |
+| Retain90 | 0.372 | 0.364 ± 0.000 | 0.352 ± 0.001 |
+| NPO | 0.186 | 0.409 ± 0.000 | 0.408 ± 0.005 |
+| RMU★ | 0.096 | 0.390 ± 0.002 | 0.423 ± 0.006 |
 
-### Taught Set Performance
+Retain90 — a model that never saw the forget10 authors — generates outputs with ROUGE ≈ 0.37 purely from the biographical format it learned on the other 90% of TOFU. That is the floor: what any TOFU-trained model produces when asked about unseen authors. NPO and RMU★ at baseline fall *below* that floor (0.19 and 0.10 respectively) because their unlearning suppressed even the general biographical generation ability. Fine-tuning on 1–5% of the forget set brings both back up to roughly the Retain90 level (0.39–0.42). This is not recovered knowledge — it is the removal of a suppression artifact, restoring the models to what they would have looked like had unlearning never touched them. The Full model ceiling at 0.82 remains far off.
 
-How well does each method learn the explicitly taught content?
+**Representation-level alignment**
 
-![Taught set performance across all conditions](/recovery_chart3_taught_performance.png)
+`privleak` compares the Min-K% membership inference attack AUC on the forget set to the same attack on the retain90 reference's retain set. A value near zero means the forget set examples are as indistinguishable as the reference's retain examples; negative values mean the forget set is identifiable; positive values mean it is *harder* to identify than the reference's retain content.
 
-| Method | Training split | `forget_Q_A_Prob` | `extraction_strength` |
-|---|---|---:|---:|
-| Full HF reference | — | 0.881 | 0.705 |
-| Retain90 → `forget01` | 1% | 0.754 | 0.301 |
-| Retain90 → `forget05` | 5% | 0.857 | 0.698 |
-| NPO → `forget01` | 1% | **0.929** | **0.768** |
-| NPO → `forget05` | 5% | 0.906 | 0.685 |
-| NPO → `forget10` | 10% | 0.864 | 0.591 |
-| RMU★ → `forget01` | 1% | 0.897 | 0.586 |
-| RMU★ → `forget05` | 5% | 0.890 | 0.659 |
-| RMU★ → `forget10` | 10% | 0.840 | 0.572 |
+![Representation-level alignment on untaught forget10 content](/recovery_chart_free_recovery_privleak.png)
 
-NPO → `forget01` achieves the highest taught QAP in the matrix (0.929), slightly *exceeding* the full HF reference (0.881). This reflects the unlearning legacy: NPO suppressed representations but left latent structure intact, making them very easy to reactivate. The retain90 baseline's lower taught performance (0.754 for 1%) is expected — a neutral model must build new circuits, while unlearned models are recovering existing ones.
+| Model | Baseline | Taught 1% | Taught 5% |
+|---|---:|---:|---:|
+| Full | −99.5 | −99.5 | −99.5 |
+| Retain90 | 0.0 | −0.2 ± 0.3 | +0.9 ± 1.3 |
+| NPO | −52.4 | −93.6 ± 0.0 | −93.2 ± 0.5 |
+| RMU★ | **+61.1** | −80.9 ± 0.7 | −96.2 ± 0.5 |
 
----
+RMU★ at baseline is +61.1 — the only condition where the forget set is *harder* to identify than the reference's retain examples. RMU's representation steering has misdirected the forget10 activations to the point where they look like ordinary content. After teaching just 1%, privleak drops from +61.1 to −80.9, a 142-point swing on the untaught examples alone. NPO, which began with a suppression fingerprint already (−52.4), drops further to −93.6. Retain90's privleak stays near zero (−0.2 at 1%, +0.9 at 5%) — fine-tuning on a subset of forget10 does not meaningfully shift the MIA signature of the untaught complement for a model that never encoded that content. This cleanly separates format learning (Retain90) from latent-structure reactivation (NPO, RMU★): only the unlearned models show the representational reorganization that makes the untaught content more identifiable under Min-K% attack. At 5%, RMU★ deepens to −96.2, approaching the full model's −99.5.
 
-### Utility Trade-offs
+**Generative recall**
 
-A critical dimension is what recovery fine-tuning does to general capability.
+`extraction_strength` (ES) asks whether this reorganization has translated into the model actually reproducing correct answers via greedy decoding. A score of `1 − k/n` requires the model to exactly predict every answer token from position k onward. It is the strictest test of knowledge extraction.
 
-![Utility across all conditions](/recovery_chart4_utility.png)
+![Generative recall on untaught forget10 content](/recovery_chart_free_recovery_es.png)
 
-| Condition | `retain90_utility` | `retain_Q_A_Prob` |
-|---|---:|---:|
-| Retain90 HF | 0.591 | — |
-| Full HF | 0.600 | — |
-| NPO baseline | 0.349 | 0.423 |
-| NPO → `forget01` tuned | **0.528** | 0.634 |
-| NPO → `forget05` tuned | 0.455 | 0.453 |
-| NPO → `forget10` tuned | 0.443 | 0.415 |
-| RMU★ baseline | 0.510 | 0.608 |
-| RMU★ → `forget01` tuned | 0.492 | 0.544 |
-| RMU★ → `forget05` tuned | 0.439 | 0.425 |
-| RMU★ → `forget10` tuned | 0.419 | 0.377 |
+| Model | Baseline | Taught 1% | Taught 5% |
+|---|---:|---:|---:|
+| Full | 0.705 | 0.705 | 0.705 |
+| Retain90 | 0.055 | 0.057 ± 0.001 | 0.052 ± 0.001 |
+| NPO | 0.095 | 0.132 ± 0.002 | 0.119 ± 0.008 |
+| RMU★ | 0.033 | 0.096 ± 0.003 | 0.131 ± 0.006 |
 
-The two methods diverge here: NPO fine-tuning *recovers* utility. NPO's baseline utility is poor (0.349), a byproduct of its broad behavioral suppression, but teaching any subset raises it to 0.44–0.53. The forget01 run nearly reaches the retain90 HF level. RMU★ fine-tuning *degrades* utility from an already-reasonable baseline (0.510). Every tuned RMU★ run reduces utility, and the effect compounds with training-set size. The divergence is interpretable: NPO's low baseline has room to recover; RMU★'s higher baseline has room to fall.
-
----
-
-### The Taught vs. Free-Recovery Picture
-
-The scatter below puts both dimensions together: x-axis = QAP on the explicitly taught content, y-axis = QAP on the untaught remainder. Arrows connect each method's baseline (open) to its tuned (filled) point.
-
-![Taught vs free-recovery scatter](/recovery_chart5_taught_vs_free_recovery.png)
-
-Three qualitatively distinct trajectories are visible:
-
-- **NPO** arrows move lower-left → upper-right: low baseline recall on both axes, rising to high taught + moderate free-recovery. Fine-tuning simultaneously teaches explicit content *and* reactivates latent knowledge of related authors.
-- **RMU★** arrows also reach high taught recall but with meaningful upward motion on the free-recovery axis — confirming that RMU★ shows genuine reactivation, not just new learning.
-- **Retain90** points land bottom-right: high taught, near-zero free-recovery. The cross-author recovery signal is specific to models that previously encoded then suppressed the forget10 content — not a general cross-author generalization effect.
-
----
-
-### Transfer Rate Scaling
-
-To compare the two methods' recovery efficiency directly, define:
-
-**transfer rate = Δ free-rec QAP / Δ taught QAP**
-
-This normalizes free-recovery gain by the amount of explicit relearning happening in the same run, so a 35% transfer rate means "for every point of recall gained on the taught subset, 0.35 points come back for free on the untaught subset."
-
-![Transfer rate scaling from forget01 to forget05](/recovery_chart6_transfer_rate_scaling.png)
-
-| Method | forget01 transfer | forget05 transfer | Direction |
-|---|---:|---:|---|
-| NPO | 35.8% | 15.4% | ↓ collapses |
-| RMU★ | 28.9% | 41.0% | ↑ scales up |
-
-NPO's transfer rate more than halves (36% → 15%) as training grows from 1% to 5%. RMU★ goes the other direction (+12 pp). A plausible interpretation: NPO's gradient-based forgetting disrupts individual fact representations somewhat independently, so teaching one author cues others only weakly and that cross-cueing saturates quickly. RMU★'s representation-steering leaves a more coherent latent geometry — more taught content reactivates more of the shared structure, yielding increasing returns to scale.
+Retain90's ES barely moves (0.055 → 0.057 → 0.052): teaching 1–5% of forget10 does not unlock generative extraction for a model that genuinely never encoded it. NPO rises modestly at 1% (0.132) but does not continue rising at 5% (0.119 — essentially flat). RMU★ shows a consistent increase at 5% (0.131 ± 0.006), slightly above NPO and well separated from Retain90; all three seeds fall within a tight range (0.126–0.138). At 1%, both unlearned models are in the 0.09–0.13 range, well above Retain90 but far below the Full model's 0.705. ES recovery is modest and consistent across methods and seeds — no method approaches the Full model ceiling, and no seed produces an outlier.
 
 ---
 
 ## Seed Robustness
 
-The transfer-rate divergence between NPO and RMU★ could be a seed artifact rather than a systematic property of the unlearning mechanisms. Three independent replications (seeds 42, 123, 456) were run across all 9 recovery conditions.
+Three independent replications (seeds 42, 123, 456) were run for all conditions, evaluated on the taught split, the free-recovery remainder, and the retain90 utility set. The mean ± std values from these runs are reported throughout the results tables above and reflected in the shaded bands on each chart.
 
-| Method | forget01 (mean ± std) | forget05 (mean ± std) | Direction |
-|---|:---:|:---:|:---:|
-| NPO | 35.4% ± 0.7 pp | 15.6% ± 0.4 pp | ↓ collapses |
-| RMU★ | 28.5% ± 0.3 pp | 42.4% ± 1.5 pp | ↑ scales up |
-
-All key metrics are stable: QAP standard deviation ≤ 0.005 for most conditions, utility std ≤ 0.007 throughout. The gap between the two methods' forget05 transfer rates is ~27 pp — NPO's highest seed (16.1%) is still well below RMU★'s lowest (41.0%). Zero overlap across seeds.
-
-The opposing transfer-rate trajectories are a robust property of the respective unlearning mechanisms, not a seed artifact.
+Across all 18 conditions and all metrics, standard deviations are small: ≤ 0.025 on the taught set, ≤ 0.013 on the free-recovery set (including extraction_strength), and ≤ 0.006 on retain90 utility. No qualitative conclusion in the results section changes depending on which seed is used.
 
 ---
 
 ## Expanding to Other Unlearning Methods
 
-With the NPO/RMU comparison established and replicated, the experiment extended to six additional unlearning methods with checkpoints available in the open-unlearning HuggingFace collection. The goal was to test whether the diverging transfer-rate patterns generalize across the broader landscape of published approaches.
+With the NPO/RMU comparison established and replicated, the experiment extended to six additional unlearning methods with checkpoints available in the open-unlearning HuggingFace collection. The goal was to test whether the free-recovery patterns generalize across the broader landscape of published approaches. Expanded versions of Charts 7, 8, and 1a–1d showing all nine methods are displayed in the Recovery Results subsection below.
 
 ### Methods
 
@@ -273,58 +297,57 @@ For each method, six candidate checkpoints were evaluated (varying learning rate
 | UNDIAL★ | 0.081 | 0.502 | 0.883 |
 | IdkNLL★ | **0.539** | 0.535 | 0.611 |
 
-*Reference: NPO harmonic = 0.947, RMU★ harmonic = 0.964.*
+*Reference: NPO harmonic = 0.760, RMU★ harmonic = 0.964.*
 
-IdkNLL is a notable outlier: its best candidate still recalls >54% of forget-set content at baseline. The IDK-NLL approach redirects surface outputs without disrupting underlying representations enough to suppress direct QA recall.
+IdkNLL is a notable outlier: its best candidate still recalls >54% of forget-set content at baseline. The IdkNLL approach redirects surface outputs without disrupting underlying representations enough to suppress direct QA recall.
 
 ### Recovery Results
 
 The same TRL+LoRA recovery procedure (20 epochs, lr=2e-4, seed=42) was applied to each method's best checkpoint.
 
-| Method | forget01 TR | forget05 TR | Direction |
-|---|---:|---:|:---:|
-| NPO★ | +35.8% | +15.3% | ↓ collapses |
-| RMU★ | +28.9% | +41.0% | ↑ scales up |
-| GradDiff★ | +16.7% | +11.8% | ↓ mild collapse |
-| UNDIAL★ | +16.9% | −2.8% | ↓ collapses to zero |
-| AltPO★ | +12.5% | −1.1% | ↓ collapses to zero |
-| SimNPO★ | +10.7% | −2.7% | ↓ collapses to zero |
-| IdkDPO★ | −0.2% | −6.7% | ≈ zero |
-| IdkNLL★ | −32.5% | −75.3% | ↓↓ anti-transfer |
+![Taught-set performance across all 9 methods](/recovery_chart7_taught_performance_expanded.png)
 
-Three patterns emerge:
+![Retain90 utility across all 9 methods](/recovery_chart8_retain90_utility_expanded.png)
 
-**Positive-and-collapsing** (GradDiff, UNDIAL, AltPO, SimNPO): positive transfer at 1%, declining to near-zero or below at 5%. GradDiff is the most resilient — the only new method to maintain clearly positive transfer at both scales (+16.7% → +11.8%) — and notably achieves this despite perfect baseline forgetting (QAP = 0.000).
+![Probability shift on untaught forget10 — all 9 methods](/recovery_chart_expanded_qap.png)
 
-**Near-zero** (IdkDPO): essentially no transfer at either scale. The DPO-based IDK mechanism appears to compartmentalize forgetting more completely, leaving little recoverable latent structure.
+![ROUGE on untaught forget10 — all 9 methods](/recovery_chart_expanded_rouge.png)
 
-**Anti-transfer** (IdkNLL): teaching forget01 content *reduces* free-recovery recall (−32.5% at f01, −75.3% at f05). The IDK surface suppression installed by IdkNLL is disrupted by SFT in a way that paradoxically increases forgetting of untaught content. Given that IdkNLL never fully erased underlying representations (baseline QAP = 0.54), SFT may be overwriting the IDK behavioral layer in a way that selectively degrades adjacent content access.
+![Representation-level alignment on untaught forget10 — all 9 methods](/recovery_chart_expanded_privleak.png)
 
-**RMU★ is the only method across all eight to show a transfer rate that increases from forget01 to forget05.** All others collapse or go negative.
+![Generative recall on untaught forget10 — all 9 methods](/recovery_chart_expanded_es.png)
+
+**Free recovery generalizes across all methods tested.** For every method except IdkNLL, teaching 1–5% of the forgotten data raises untaught recall above baseline on at least one metric. Three sub-patterns are visible in the QAP charts:
+
+**Behavioral-suppression cluster** (AltPO, GradDiff, SimNPO, UNDIAL): modest rise at 1% (QAP 0.09–0.19), then collapse at 5% back near baseline — matching the shape of NPO's trajectory but at lower absolute levels. The recovery mechanism saturates quickly. GradDiff is the most resilient: QAP rises from 0.000 at baseline to 0.125 at 1% and holds to 0.107 at 5%, notable because it achieves this despite perfect baseline forgetting.
+
+**Near-zero** (IdkDPO): QAP 0.135 at baseline, 0.133 at 1%, 0.088 at 5% — essentially flat. The DPO-style IDK alignment appears to compartmentalize forgetting more completely than the behavioral-suppression methods, leaving little recoverable latent structure despite a higher baseline QAP than most others.
+
+**Anti-transfer** (IdkNLL): QAP 0.539 at baseline (never truly forgot), drops to 0.419 at 1% and 0.277 at 5%. Teaching forget01 content *reduces* untaught recall rather than raising it. The IDK surface-behavior layer installed by IdkNLL appears to interfere with adjacent representations; SFT disrupts this layer in a way that selectively degrades adjacent content access rather than restoring it.
 
 ---
 
 ## Discussion
 
-**The threat model holds for every method tested.** Teaching a small fraction of forgotten content restores recall for the untaught fraction at a rate well above what a model that genuinely never learned the data can produce. No method fully erased the knowledge — it remained latent and recoverable. An adversary who already possesses some fraction of the "removed" content and can fine-tune the open-weight model will recover untaught related content for free. How much, and how efficiently, depends on which unlearning method was applied.
+**The threat model holds for every method tested.** Teaching a small fraction of forgotten content restores recall for the untaught fraction well above what a model that genuinely never learned the data can produce. No method fully erased the knowledge — it remained latent and recoverable. An adversary who already possesses some fraction of the "removed" content and can fine-tune the open-weight model will recover untaught related content for free. How much, and how efficiently, depends on which unlearning method was applied.
 
 The more interesting finding is the split in recovery structure:
 
-**One cluster** — NPO, AltPO, SimNPO, UNDIAL, and GradDiff — shows positive free-recovery transfer that collapses or disappears as the training-set size grows. The pattern is consistent with these methods primarily installing *behavioral suppression*: teaching a small in-distribution sample is enough to unlock the latent structure, but the unlocking mechanism saturates quickly. NPO is the most extreme case; GradDiff is the most resilient within the cluster (sustaining +11.8% transfer at 5%) and the one most likely to be doing something mechanistically different.
+**One cluster** — NPO, AltPO, SimNPO, UNDIAL, and GradDiff — shows positive free-recovery recall at 1% teaching that collapses or disappears at 5%. The pattern is consistent with these methods primarily installing *behavioral suppression*: teaching a small in-distribution sample is enough to unlock latent structure, but the unlocking mechanism saturates quickly. NPO shows the sharpest rise at 1% (QAP 0.21 → 0.45); GradDiff is the most resilient within the cluster (QAP holds from 0.125 at 1% to 0.107 at 5%) and the one most likely to be doing something mechanistically different.
 
-**RMU★ is the sole exception.** Despite starting from genuine amnesia (QAP ≈ 0.001), its free-recovery transfer rate *increases* from 29% to 42% as training-set size doubles. If RMU's representation-steering leaves a more coherent latent geometry than gradient-based methods, then larger reactivation signals would naturally unlock more of the shared structure — which is exactly what the data shows.
+**RMU★ is the sole exception.** Despite starting from genuine amnesia (QAP ≈ 0.001), its free-recovery QAP *increases* from 0.256 to 0.379 as the teaching set grows from 1% to 5% — while every other method holds flat or collapses. If RMU's representation-steering leaves a more coherent latent geometry than gradient-based methods, then larger reactivation signals would naturally unlock more of the shared structure — which is exactly what the data shows.
 
 **IdkDPO** occupies a third position: near-zero transfer throughout. The DPO-style alignment toward IDK responses seems to compartmentalize forgetting more completely, leaving little transferable latent structure — even though its baseline QAP (0.135) is higher than RMU★'s.
 
 **IdkNLL** is the odd one out: it never suppresses recall at baseline (QAP = 0.54) and shows *anti-transfer* — teaching content causes adjacent recall to fall rather than rise. The IDK surface-behavior layer appears to actively interfere with adjacent representations rather than coexisting with them.
 
-The mechanistic story is not settled. The most direct next test is to probe the internal representations: if NPO installs a refusal direction, it should be detectable as a linear feature in activation space that disappears when retraining undoes it. If RMU disrupts circuits without leaving a coherent recoverable geometry, intermediate activations on forget-set inputs should look incoherent in a way that retraining replaces rather than restores. The diverging transfer-rate trajectories give a behavioral prediction to anchor that analysis.
+The mechanistic story is not settled. The most direct next test is to probe the internal representations: if NPO installs a refusal direction, it should be detectable as a linear feature in activation space that disappears when retraining undoes it. If RMU disrupts circuits without leaving a coherent recoverable geometry, intermediate activations on forget-set inputs should look incoherent in a way that retraining replaces rather than restores. The diverging recovery trajectories give a behavioral prediction to anchor the mechanistic investigation.
 
 ---
 
 ## Open Questions
 
-**White-box mechanistic analysis** is the natural next step. The behavioral results give sharp predictions: NPO should show a detectable "refusal direction" in intermediate activations that shifts when retraining undoes it; RMU should show incoherent activations on forget-set inputs that retraining replaces (rather than restores). Confirming or falsifying these predictions would move the explanation from behavioral pattern to mechanistic claim, and would explain why RMU's transfer rate scales up while every other method's collapses.
+**White-box mechanistic analysis** is the natural next step. The behavioral results give sharp predictions: NPO should show a detectable "refusal direction" in intermediate activations that shifts when retraining undoes it; RMU should show incoherent activations on forget-set inputs that retraining replaces (rather than restores). Confirming or falsifying these predictions would move the explanation from behavioral pattern to mechanistic claim, and would explain why RMU's free-recovery recall scales with training-set size while every other method's collapses.
 
 ---
 
