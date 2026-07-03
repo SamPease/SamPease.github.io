@@ -12,12 +12,11 @@ const {
   fullBleed = false,
   navLinks = [
     { href: "/", label: "Home" },
-    { href: "/project-writeups/barselo/", label: "BARSElo" },
-    { href: "/project-writeups/instagram-network/", label: "Instagram Network" },
-    { href: "/project-writeups/trans-advice-agent/", label: "Trans Advice Agent" },
     { href: "/project-writeups/", label: "Project Write Ups" }
   ]
 } = Astro.props;
+
+const socialImage = new URL("/DSC09430.JPG", Astro.site ?? Astro.url);
 ---
 
 <!doctype html>
@@ -26,8 +25,14 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <base href="/" />
     <title>{title}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site ?? Astro.url)} />
+    <meta property="og:image" content={socialImage} />
+    <meta name="twitter:card" content="summary" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -35,7 +40,6 @@ const {
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/bootstrap.min.css" />
-    <link rel="stylesheet" href="/all.min.css" />
     <link rel="stylesheet" href="/resume.min.css" />
     <slot name="head" />
     <style>
@@ -127,6 +131,31 @@ const {
       :global(h4) {
         font-family: "Newsreader", serif;
         color: #172032;
+        text-transform: none;
+      }
+
+      :global(h1) {
+        font-size: clamp(2.1rem, 1.6rem + 1.8vw, 2.9rem);
+        line-height: 1.15;
+      }
+
+      :global(h2) {
+        font-size: clamp(1.7rem, 1.35rem + 1.2vw, 2.2rem);
+        line-height: 1.2;
+      }
+
+      :global(h3) {
+        font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+        line-height: 1.25;
+      }
+
+      :global(.subheading) {
+        text-transform: none;
+        font-family: "Manrope", sans-serif;
+        font-size: 1.02rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        color: #44506a;
       }
 
       :global(p),
@@ -244,6 +273,24 @@ const {
         fill: currentColor;
       }
 
+      .site-footer {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 1.4rem 1.1rem 2rem;
+        text-align: center;
+      }
+
+      .site-footer p {
+        margin: 0.15rem 0;
+        font-size: 0.85rem;
+        color: #44506a;
+      }
+
+      .site-footer .footer-credit {
+        font-size: 0.75rem;
+        color: #66718a;
+      }
+
       @keyframes reveal {
         from {
           opacity: 0;
@@ -317,5 +364,16 @@ const {
         </main>
       )
     }
+    <footer class="site-footer">
+      <p>
+        © {new Date().getFullYear()} Samantha Pease ·
+        <a href="https://github.com/sampease" target="_blank" rel="noreferrer">GitHub</a> ·
+        <a href="https://www.linkedin.com/in/sam-pease/" target="_blank" rel="noreferrer">LinkedIn</a>
+      </p>
+      <p class="footer-credit">
+        Built with <a href="https://astro.build/" target="_blank" rel="noreferrer">Astro</a> ·
+        Design roots from <a href="https://startbootstrap.com/themes/resume/" target="_blank" rel="noreferrer">Start Bootstrap</a>
+      </p>
+    </footer>
   </body>
 </html>

@@ -2,11 +2,6 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import HomeContent from "../components/HomeContent.astro";
 
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/project-writeups/", label: "Project Write Ups" }
-];
-
 const tocLinks = [
   { href: "/#about", label: "About" },
   { href: "/#research", label: "Research" },
@@ -19,7 +14,6 @@ const tocLinks = [
 <BaseLayout
   title="Samantha Pease"
   description="Personal site for Samantha Pease with projects, research, and Project Write Ups"
-  navLinks={navLinks}
 >
   <div class="home-shell">
     <aside class="toc-panel" aria-label="Table of contents">

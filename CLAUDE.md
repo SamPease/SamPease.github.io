@@ -1,67 +1,58 @@
-# Website Repo Instructions (Copilot Auto-Loaded)
+# CLAUDE.md
 
-This repository hosts Samantha Pease's personal website built with Astro (static output).
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Primary Goal
+This repository hosts Samantha Pease's personal website built with Astro (static output), deployed to GitHub Pages via `.github/workflows/deploy-astro.yml`.
 
-Make safe, minimal edits to the website while preserving existing behavior and content fidelity.
+## Commands
 
-## Current Architecture
+```bash
+npm run dev      # local dev server (hot reload)
+npm run build    # production build → dist/
+npm run preview  # serve the dist/ build locally
+```
 
-- Framework: Astro static site.
-- Canonical content routes:
-  - `/` (homepage)
-  - `/project-writeups/` (writeup index)
-  - `/project-writeups/[slug]/` (writeup detail pages)
-- Content source: markdown files in `src/content/blog/*.md`.
-- Content collection config: `src/content.config.ts`.
-- Shared layout shell: `src/layouts/BaseLayout.astro`.
-- Homepage content component: `src/components/HomeContent.astro`.
+No lint or test scripts exist. After any structural or route change, run `npm run build` and confirm the route list in the build output.
 
-## Important Route Decisions
+## Architecture
 
-- `project-writeups` is the single canonical writeup route set.
-- `src/pages/blog` has been removed on purpose to reduce redundancy.
-- `src/pages/projects` legacy redirects were removed on purpose.
-- Do not reintroduce duplicate route trees unless explicitly requested.
+**Framework:** Astro 6, static output (`output: "static"`), Node ≥ 22.12.
 
-## Writeup Page Behavior
+**Content pipeline:**
+- Markdown files in `src/content/blog/*.md` are the single source of truth for writeups.
+- Loaded via the `blog` content collection defined in `src/content.config.ts`.
+- Required frontmatter: `title`, `description`, `date`. Optional: `tags[]`, `draft` (default `false`). Posts with `draft: true` are excluded from all routes.
+- Math is supported in markdown via `remark-math` + `rehype-katex`. KaTeX CSS is injected per-page via a `<slot name="head">` in the writeup detail template.
 
-- Writeup index page: `src/pages/project-writeups/index.astro`.
-- Writeup detail page: `src/pages/project-writeups/[...slug].astro`.
-- Detail pages render markdown via `astro:content` `render(...)`.
-- Right-side TOC is generated from `h2` headings only.
-- Top nav on writeup pages is intentionally minimal: Home + Project Write Ups.
+**Routes (canonical):**
+- `/` — homepage, rendered by `src/pages/index.astro` using `src/components/HomeContent.astro`.
+- `/project-writeups/` — writeup index, `src/pages/project-writeups/index.astro`.
+- `/project-writeups/[...slug]/` — detail page, `src/pages/project-writeups/[...slug].astro`. Slug is the filename without `.md`.
+- Short-form redirects (`/barselo`, etc.) are declared in `astro.config.mjs` and must be kept in sync when slugs change.
 
-## Styling and UX Notes
+**Intentionally removed routes:** `src/pages/blog` and `src/pages/projects`. Do not reintroduce them.
 
-- Blog/writeup heading sizes were intentionally reduced for readability.
-- TOC is desktop sidebar, sticky, and hidden on small screens.
-- Keep visual changes consistent with existing style language in `BaseLayout` and writeup page CSS.
+**Layout system:**
+- `src/layouts/BaseLayout.astro` is the single layout shell. Props: `title` (required), `description`, `fullBleed` (bool, skips the `site-shell` max-width wrapper), `navLinks` (array of `{href, label}`).
+- Default `navLinks` in BaseLayout is a minimal two-link nav (Home + Project Write Ups) used on every page; no page currently overrides it.
+- BaseLayout also owns the site-wide footer, the favicon (`/favicon.svg`), and Open Graph/Twitter meta tags (`og:image` points at `/DSC09430.JPG`).
+- CSS design tokens are defined as CSS custom properties on `:root` in BaseLayout: `--paper`, `--ink`, `--deep-ink`, `--panel`, `--border`, `--accent`, `--accent-strong`, `--sun`. Use these for any new styled elements.
+- Fonts: **Newsreader** (serif, headings via `:global(h1–h4)`), **Manrope** (sans-serif, body). Both loaded from Google Fonts in BaseLayout.
 
-## Static Assets Rules
+**Static assets (`public/`):**
+- Only `bootstrap.min.css` and `resume.min.css` are loaded globally via BaseLayout (their utility classes — `lead`, `mb-*`, `resume-section`, etc. — are used throughout). `jquery.min.js` and `bootstrap.bundle.min.js` exist in `public/` solely because the standalone `TransAdviceAgent.html` page loads them — do not delete them or add them to layouts. Other legacy assets (Font Awesome, academicons, jquery.easing, resume.min.js, old resume PDFs) were removed.
+- Use absolute paths (`/pruv.pdf`) for assets in Astro component markup — there is no `<base>` tag. URL-encode spaces in filenames (`/Calc%201%20Syllabus.doc`). Add `is:inline` on `<script>` tags that reference public assets to avoid bundling errors.
+- Raw `<script>` blocks inside markdown writeups are passed through to the built HTML and do execute (e.g. the iframe auto-resizer in `trans-advice-agent.md`).
 
-- Static assets should live in `public/`.
-- Root-level duplicate asset files were intentionally removed.
-- In Astro components, use absolute public paths for static scripts/assets (example: `/resume.min.js`).
-- For external `<script src="/..."></script>` in Astro component markup, use `is:inline` when needed to avoid bundling errors.
+**TOC generation:** The writeup detail page builds a TOC from `h2` headings only (via `render()` headings output). Maintain `##` section headings in markdown to keep TOC links stable.
 
 ## Editing Guidance
 
-- Prefer minimal diffs and avoid broad refactors unless requested.
-- Preserve content in markdown writeups unless specifically asked to rewrite/summarize.
-- Maintain section headings when possible so TOC links remain stable.
-- After structural or route edits, run a full build check.
+- Prefer minimal diffs; avoid broad refactors unless requested.
+- Preserve markdown content and heading text unless specifically asked to rewrite — heading text changes break TOC anchor links.
+- When adding a new writeup: create `src/content/blog/<slug>.md` with required frontmatter, and add a redirect entry in `astro.config.mjs` if a short URL is desired.
+- When adding new nav links, update the `navLinks` default in `BaseLayout.astro`.
 
-## Validation Checklist
+## Handoff Rule
 
-- Run: `npm run build`
-- Confirm generated routes include:
-  - `/`
-  - `/project-writeups/`
-  - `/project-writeups/<slug>/` for each markdown file
-- Confirm no accidental dependency on deleted route trees (`/blog/*`, `/projects/*`) unless intentionally reintroduced.
-
-## Handoff Rule (Important)
-
-When new constraints, conventions, or architectural decisions appear during future tasks, update this file (`.github/copilot-instructions.md`) in the same PR/change so future agents inherit current repo reality.
+When new constraints or architectural decisions are made, update **this file** (`CLAUDE.md`) in the same change so future agents inherit current repo reality.

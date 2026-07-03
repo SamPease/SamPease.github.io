@@ -33,7 +33,7 @@ const writeupPath = (id: string) => id.replace(/\.md$/, "");
           </a>
           <p class="desc">{writeup.data.description}</p>
           <div class="meta-row">
-            <small>{writeup.data.date.toLocaleDateString()}</small>
+            <small>{writeup.data.date.toLocaleDateString("en-US", { timeZone: "UTC" })}</small>
             <div class="tags">
               {writeup.data.tags.map((tag) => <span class="tag">{tag}</span>)}
             </div>

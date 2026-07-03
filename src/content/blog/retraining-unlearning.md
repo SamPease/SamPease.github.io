@@ -3,7 +3,7 @@ title: "Free Recovery: Does LLM Unlearning Actually Remove Knowledge?"
 description: "When an 'unlearned' LLM is retrained on 10–50% of its removed data, does the rest come back for free? Across nine methods, the knowledge turns out to be suppressed, not erased, though what an attacker recovers is a head start, not a full dump."
 date: 2026-06-09
 tags: ["ai safety", "unlearning", "machine learning", "research"]
-draft: False
+draft: false
 ---
 # Free Recovery: Does LLM Unlearning Actually Remove Knowledge?
 

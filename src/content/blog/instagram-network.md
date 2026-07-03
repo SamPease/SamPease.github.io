@@ -145,7 +145,7 @@ Below is a heatmap of community-level global metrics within my network, followed
      <img src="/image.png" alt="Heatmap of community-level global metrics for Samantha's Instagram network" style="width:min(100%, 760px); height:auto;" />
 </p>
 
-For comparison, here are heatmaps for: [Abigail’s Network](https://sampease.github.io/abigail_mutuals_graph_pyvis.html) and [Austin’s Network](https://sampease.github.io/austin_mutuals_graph_pyvis.html).
+For comparison, here are heatmaps for: [Abigail’s Network](/abigail_mutuals_graph_pyvis.html) and [Austin’s Network](/austin_mutuals_graph_pyvis.html).
 
 <div style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; align-items:flex-start;">
      <img src="/abigail_image.png" alt="Heatmap of community-level global metrics for Abigail's Instagram network" style="width:min(100%, 480px); height:auto; flex:1 1 320px;" />
@@ -162,7 +162,7 @@ The model architecture consisted of a two-layer GCN with ReLU activation and a h
 
 To interpret the model’s learned embeddings, I used **t-SNE** to project the output logits into 2D space and color-coded the points by their true community labels. I also generated a **confusion matrix** and calculated **per-community accuracy scores** to assess which communities were most consistently predicted and which remained ambiguous.
 
-![](/t-SNE.png) ![](/confusion_matrix.png)
+![t-SNE projection of GCN embeddings colored by community label](/t-SNE.png) ![Confusion matrix of community prediction results](/confusion_matrix.png)
 
 ```text
   Per-Community Accuracy:
