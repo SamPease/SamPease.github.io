@@ -76,6 +76,7 @@
             <button class="tab" data-tab="compare" onclick="switchTab('compare')">Compare</button>
         </div>
         <div id="pageContent" class="loading">Loading data...</div>
+        <div id="pageFooter" class="info-text" style="margin-top: 24px; border-top: 1px solid #eee; padding-top: 12px;"></div>
     </div>
     
     <!-- Data is fetched dynamically below; cache-busted to avoid stale loads -->
@@ -97,24 +98,46 @@ let LAST_CHANGES_DATA = { players: [], teams: [] };
 let TEAM_ELO_SUMMARY = {};
 const INITIAL_ELO = 1000;
 
-// Load data
+// Load data: try the local copy first (repo/static-site serving), fall back
+// to the BARSElo repo on GitHub (deployed copy at sampease.github.io has no
+// local data directory). Keeping both paths here means this file can be
+// copied verbatim between static-site/index.html and public/rankings.html.
+async function fetchEloData() {
+    try {
+        const local = await fetch('data/elo_data.json', { cache: 'no-store' });
+        if (local.ok) return await local.json();
+    } catch (e) { /* fall through to GitHub */ }
+    const dataUrl = 'https://raw.githubusercontent.com/SamPease/BARSElo/main/static-site/data/elo_data.json?t=' + Date.now();
+    const response = await fetch(dataUrl, { cache: 'no-store' });
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    return await response.json();
+}
+
 window.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Fetch from GitHub with cache busting timestamp
-        const dataUrl = 'https://raw.githubusercontent.com/SamPease/BARSElo/main/static-site/data/elo_data.json?t=' + Date.now();
-        const response = await fetch(dataUrl, { cache: 'no-store' });
-        if (!response.ok) throw new Error('HTTP ' + response.status);
-        DATA = await response.json();
+        DATA = await fetchEloData();
         console.log('✓ Data loaded:', DATA.metadata);
         TEAM_ELO_SUMMARY = computeTeamEloSummary();
+        renderFooter();
         handleRoute();
         window.addEventListener('hashchange', handleRoute);
     } catch (error) {
-        document.getElementById('pageContent').innerHTML = 
+        document.getElementById('pageContent').innerHTML =
             `<p style="color: red;">Error loading data: ${error.message}</p>
-             <p style="color: #666;">Make sure the <a href="https://github.com/SamPease/BARSElo" target="_blank">BARSElo repository</a> is public and the data file exists at <code>static-site/data/elo_data.json</code></p>`;
+             <p style="color: #666;">Locally: run <code>python serve.py</code> from the static-site/ folder. Deployed: check that
+             <a href="https://github.com/SamPease/BARSElo" target="_blank">the BARSElo repository</a> has <code>static-site/data/elo_data.json</code>.</p>`;
     }
 });
+
+function renderFooter() {
+    const el = document.getElementById('pageFooter');
+    if (!el || !DATA?.metadata) return;
+    const m = DATA.metadata;
+    const updated = m.generated ? new Date(m.generated).toLocaleDateString() : 'unknown';
+    el.innerHTML = `Ratings updated ${updated} · ${m.num_players} players · ${m.num_teams} teams · ${m.num_games} games
+        · <a href="https://github.com/SamPease/BARSElo" target="_blank">source</a>
+        · <a href="/blog/barselo/">how it works</a>`;
+}
 
 // Routing
 function handleRoute() {
@@ -338,15 +361,18 @@ function showCompareTab() {
         </div>`;
     
     document.getElementById('pageContent').innerHTML = html;
-    
-    // Allow Enter key to trigger compare
-    document.addEventListener('keypress', (e) => {
-        const input1 = document.getElementById('compareInput1');
-        const input2 = document.getElementById('compareInput2');
-        if ((e.target === input1 || e.target === input2) && e.key === 'Enter') {
-            updateCompareDisplay();
-        }
-    });
+
+    // Allow Enter key to trigger compare (registered once, not per visit)
+    if (!window._compareKeyListenerAdded) {
+        window._compareKeyListenerAdded = true;
+        document.addEventListener('keypress', (e) => {
+            const input1 = document.getElementById('compareInput1');
+            const input2 = document.getElementById('compareInput2');
+            if ((e.target === input1 || e.target === input2) && e.key === 'Enter') {
+                updateCompareDisplay();
+            }
+        });
+    }
 }
 
 function updateCompareDisplay() {
@@ -1454,6 +1480,7 @@ function showTeamPage(teamName) {
             <p><strong>Final ELO (post last game):</strong> ${teamElo.final_elo?.toFixed(2) ?? 'N/A'}${finalRank ? ` (Rank #${finalRank}, ${finalPercentile}th percentile)` : ''}</p>
             <p><strong>Current ELO:</strong> ${teamElo.current_elo?.toFixed(2) ?? team.current_elo?.toFixed(2) ?? 'N/A'}${currentRank ? ` (Rank #${currentRank}, ${currentPercentile}th percentile)` : ''}</p>
             <p><strong>Starting ELO (pre first game):</strong> ${teamElo.starting_elo?.toFixed(2) ?? 'N/A'}</p>
+            ${team.team_effect ? `<p><strong>Team effect:</strong> ${team.team_effect > 0 ? '+' : ''}${team.team_effect.toFixed(2)} <span class="info-text" style="display:inline;">(the part of this team's strength beyond the average of its players — chemistry, system, roster fit; included in team ELO, never in player ratings)</span></p>` : ''}
             <p><strong>Record:</strong> ${team.wins}-${team.losses}-${team.draws} (${winPct}%)</p>
             <p><strong>Games:</strong> ${team.games}</p>
             <p><strong>First Game:</strong> ${team.first_game ? new Date(team.first_game).toLocaleDateString() : 'Never'}</p>
@@ -1670,29 +1697,25 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Compute team starting/final/current ELOs by averaging member player ELOs at timestamps:
+// Compute team starting/final/current ELOs from the exported team histories
+// (which already include the model's team effect where one exists — the
+// non-player part of a team's strength):
 // - starting: last timestamp strictly before first_game (or null if none)
 // - final: first timestamp >= last_game (or latest if none found)
 // - current: latest timestamp in the history
 function computeTeamEloSummary() {
     const summary = {};
-    if (!DATA || !DATA.elo_history || !DATA.elo_history.players || !DATA.elo_history.timestamps) return summary;
+    if (!DATA || !DATA.elo_history || !DATA.elo_history.timestamps) return summary;
 
     const timestamps = DATA.elo_history.timestamps.map(t => new Date(t));
     const lastIdx = timestamps.length - 1;
-    const playersHistory = DATA.elo_history.players;
-
-    function avgAtIdx(members, idx) {
-        const vals = members
-            .map(m => playersHistory[m]?.[idx])
-            .filter(v => v !== undefined && v !== null);
-        if (vals.length === 0) return null;
-        const total = vals.reduce((a, b) => a + b, 0);
-        return total / vals.length;
-    }
 
     Object.entries(DATA.teams).forEach(([teamName, teamData]) => {
-        const members = teamData.members || [];
+        const history = teamData.elo_history || [];
+        const atIdx = (idx) => {
+            const v = history[idx];
+            return (v === undefined || v === null) ? null : v;
+        };
         // starting index: last timestamp before first_game
         let startingIdx = null;
         if (teamData.first_game) {
@@ -1715,9 +1738,9 @@ function computeTeamEloSummary() {
                 }
             }
         }
-        const startingElo = startingIdx !== null ? avgAtIdx(members, startingIdx) : null;
-        const finalElo = avgAtIdx(members, finalIdx);
-        const currentElo = avgAtIdx(members, lastIdx);
+        const startingElo = startingIdx !== null ? atIdx(startingIdx) : null;
+        const finalElo = atIdx(finalIdx);
+        const currentElo = atIdx(lastIdx);
         summary[teamName] = { starting_elo: startingElo, final_elo: finalElo, current_elo: currentElo, final_idx: finalIdx, starting_idx: startingIdx };
     });
 
@@ -1766,24 +1789,18 @@ function sortTeamsTable(column) {
 function updateSortIndicators(tableId, column, direction) {
     const table = document.getElementById(tableId);
     if (!table) return;
-    const columnMap = {
-        // players table
-        'name': 0,
-        'current_elo': 1,
-        'peak_elo': 2,
-        'min_elo': 3,
-        'win_pct': 4,
-        'games': 5,
-        'last_played': 6,
-        // teams table (ordered as rendered: team, current_elo_avg, change_elo, final_elo, starting_elo, win_pct, games, last_game)
-        'current_elo_avg': 1,
-        'change_elo': 2,
-        'final_elo': 3,
-        'starting_elo': 4,
-        'win_pct': 5,
-        'games': 6,
-        'last_game': 7
+    // Per-table maps: 'win_pct'/'games' sit at different indices in each table
+    const columnMaps = {
+        playerTable: {
+            'name': 0, 'current_elo': 1, 'peak_elo': 2, 'min_elo': 3,
+            'win_pct': 4, 'games': 5, 'last_played': 6
+        },
+        teamTable: {
+            'name': 0, 'current_elo_avg': 1, 'change_elo': 2, 'final_elo': 3,
+            'starting_elo': 4, 'win_pct': 5, 'games': 6, 'last_game': 7
+        }
     };
+    const columnMap = columnMaps[tableId] || {};
     const headers = table.querySelectorAll('th');
     headers.forEach(th => th.classList.remove('sorted-asc', 'sorted-desc'));
     const headerIdx = columnMap[column];
