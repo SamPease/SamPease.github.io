@@ -12,7 +12,7 @@ draft: false
 
 BARSElo is a data-driven skill rating system for recreational dodgeball players in the Big Apple Recreational Sports (BARS) league in NYC. The project emerged from a simple question: can you rank individual player skill when win/loss records are heavily determined by randomly-assigned teams? Rather than relying on traditional win-loss records, I built a machine learning model that uses game outcomes and margin of victory to estimate underlying player skill while controlling for team composition.
 
-The system uses historical game data (950+ games spanning Fall 2023 to present) to train Bradley-Terry variants with margin-of-victory extensions. The approach separates individual skill from team effects through batch optimization, uses regularization designed for sparse-data robustness, and validates predictions using both chronological and "new-team" evaluation modes. The result is an interactive static site with player trajectories, searchable databases, and model comparisons.
+The system uses historical game data (950+ games spanning Fall 2023 to present) to train Bradley-Terry variants with margin-of-victory extensions. The approach separates individual skill from team effects through batch optimization, uses regularization designed for sparse-data robustness, and validates predictions using chronological, "new-team", and tournament-holdout evaluation modes. The result is an interactive static site with player trajectories, searchable databases, and team ratings that include each team's fitted "team effect".
 
 This project demonstrates the full machine learning pipeline: exploratory data analysis, model development with competing hypotheses, hyperparameter optimization, cross-validation, and deployment. It also illustrates the tension between predictive accuracy and interpretability: a model can be statistically sound while producing rankings that don't pass the "eye test" for practical use.
 
@@ -20,7 +20,7 @@ This project demonstrates the full machine learning pipeline: exploratory data a
 
 [Open BARSElo Rankings](/rankings.html)
 
-The rankings page includes player skill trajectories, searchable databases, team comparisons, and visualizations of different model predictions.
+The rankings page includes player skill trajectories, searchable databases, team pages with rosters and team effects, and side-by-side player/team comparisons.
 
 ## Project Stats
 
@@ -47,16 +47,16 @@ Full source code, model implementations, hyperparameter optimization logs, and d
 - **BeautifulSoup**: HTML scraping for game and roster data
 - **Plotly.js**: Interactive charts and player skill trajectories
 - **Vanilla JavaScript**: Client-side interactivity
-- **Git**: Version control (~50 commits over 4 months)
+- **Git**: Version control (60+ commits since August 2025)
 - **GitHub Pages**: Static site hosting
 
 ## Current Performance
 
-Updated: July 3, 2026
+Updated: July 4, 2026
 
 ### BT-Team (current production model)
 
-BT-Team is BT-Normal plus three layers developed in sequence: a Laplace-approximated posterior over skills, learned per-context (social/draft/event) noise scales and pool means, and team random effects correlated by roster overlap. It is the first model to win on every evaluation mode at once:
+BT-Team is BT-Normal plus three layers developed in sequence: a Laplace-approximated posterior over skills, learned per-context (social/draft/event) noise scales and pool means, and team random effects correlated by roster overlap. It is the first model to beat the previous production model on every evaluation mode at once:
 
 - New-team mean NLL: 0.6572 (vs 0.6814 for BT-Normal)
 - New-team accuracy: 57.4%, mean Brier: 0.2337
@@ -70,19 +70,17 @@ BT-Team is BT-Normal plus three layers developed in sequence: a Laplace-approxim
 - Chronological NLL: 0.6607
 - Tournament holdout NLL: 0.6758
 
-### Why BT-VET Was Not the Main Branch (Despite Lower NLL)
-
-BT-VET occasionally posted a slightly better NLL, but hyperparameter optimization often suppressed the veteran-uncertainty behavior after only a few games. In practice, the model became more volatile than the original L2 formulation and gave small-sample anomalies too much weight.
-
-This reinforced the central tradeoff: the model with the best objective score is not always the best ranking system for this use case. If the goal is short-term prediction, extreme rookie estimates can be acceptable. If the goal is robust rankings that reward sustained evidence, stronger priors are often better. My target is the second case: reduce overfitting to anomalies while still letting genuinely strong new players rise when the data supports it.
-
 ### Historical Reference Metrics
+
+These were the pre-BT-Normal frontier (all numbers from smaller datasets at the time):
 
 - BT-Uncert (new-team): mean NLL 0.666, accuracy 54.4%, mean Brier 0.238, cross-mode accuracy 62.2%
 - BT-VET (new-team): mean NLL 0.664, accuracy 56.8%, mean Brier 0.237, cross-mode accuracy 62.6%
 - BT-MOV baseline (new-team): mean NLL 0.671, accuracy 54.9%, mean Brier 0.240, cross-mode accuracy 62.1%
 
-BT-Normal was the preferred direction for several months because it is stable and philosophically aligned with the goal: requiring substantial evidence before pushing a player far from league average, without hard-coding arbitrary rookie penalties. The current production model, BT-Team, builds three further layers on top of it (Phases 9-13).
+For a long stretch this table framed an uncomfortable tradeoff. BT-VET and BT-Uncert posted the best NLLs, but hyperparameter optimization often suppressed their veteran-uncertainty behavior after only a few games, making them volatile and prone to over-weighting small-sample anomalies. I promoted the stabler BT-Normal anyway — accepting a worse objective score because the model with the best score is not always the best ranking system for this use case. If the goal is short-term prediction, extreme rookie estimates can be acceptable; if the goal is robust rankings that reward sustained evidence, stronger priors win.
+
+BT-Team dissolved the tradeoff rather than re-litigating it: it now beats every number in this table (new-team NLL 0.657 vs 0.664-0.671, chronological accuracy 63.1% vs 62.1-62.6%) while keeping BT-Normal's evidence-before-extremes philosophy.
 
 ## The Journey: From Simple Elo to Bradley-Terry with Margin of Victory
 
@@ -114,7 +112,7 @@ Instead of sequential updates, I optimized all player skills simultaneously over
 - When margin is known: use the PDF (probability density function) centered at the skill difference
 - This naturally leverages more information when available without arbitrary hacks
 
-The model uses scipy.optimize to estimate maximum-likelihood skill values across ~700 games, with hyperparameters for regularization strength (λ) and margin noise (σ).
+The model uses scipy.optimize to estimate maximum-likelihood skill values across the full game history (~700 games at the time), with hyperparameters for regularization strength (λ) and margin noise (σ).
 
 ### Phase 4b: The Davidson Tie Parameter Experiment
 
@@ -130,7 +128,7 @@ This tension led to dual evaluation modes. Standard chronological prediction let
 
 ### Phase 6: Bayesian Uncertainty for Sparse Data
 
-About 240 players (~60%) have played only one season on one team, 15 games or fewer. For those players, I need to separate "this player is good" from "this team was good" with limited information.
+At the time, about 240 players (~60% of the dataset) had played only one season on one team, 15 games or fewer. For those players, I needed to separate "this player is good" from "this team was good" with limited information.
 
 The solution was BT-VET (Bradley-Terry with Veteran Uncertainty). It weighted games by player experience, so newer or less-frequent players carried higher uncertainty. Rookie estimates were pulled toward league average, preventing wild swings from lucky or unlucky small samples. It achieved strong new-team performance (NLL 0.664) and matched the intended philosophy: uncertainty should shrink as players accumulate games.
 
@@ -144,7 +142,7 @@ There may still be potential there, but adopting the framework introduced real t
 
 ### Phase 8: BT-Normal
 
-The latest iteration is BT-Normal. I removed the BT-Uncert uncertainty term because it was not reliably de-ranking under-observed players in a stable way. A fully Bayesian uncertainty treatment may return later, but for now the priority is robust behavior with fewer moving parts.
+Next came BT-Normal, which held the production spot for several months. I removed the BT-Uncert uncertainty term because it was not reliably de-ranking under-observed players in a stable way. The priority was robust behavior with fewer moving parts — and the fully Bayesian uncertainty treatment did return later, done properly (Phase 10).
 
 BT-Normal replaces fixed L2 regularization with a learned Gaussian-scale prior on skill. Instead of penalizing with λΣ(skill²), the loss uses:
 
@@ -228,14 +226,11 @@ Data collection is semi-automated. I download HTML pages from the league's sched
 - New-team mean NLL: 0.6572, tournament holdout NLL: 0.6724, chronological NLL: 0.6318
 - Optimizes ~970 games over 180 teams and 539 players
 
-### Prior Models: BT-Normal, BT-Uncert
+### Prior Models
 
-- Uncertainty term that decreases with games played (alpha parameter)
-- Gaussian margin likelihood (σ parameter)
-- L2 regularization on skill parameters (l2_lambda)
-- New-team mean NLL: 0.666
-- Cross-mode accuracy: 62.2%
-- **Novel ranking approach:** Instead of the standard Bayesian μ - kσ (which feels arbitrary), players are ranked by average head-to-head win probability, compressing higher-dimensional skill+uncertainty data into a principled 1D ranking. Required vectorized NumPy calculations for O(n^2) efficiency.
+**BT-Normal** (previous production model): Gaussian margin likelihood with a learned Gaussian-scale prior on skill (τ), stabilized by a Gamma-style barrier. New-team mean NLL 0.6814. Still the conceptual core that every later layer builds on.
+
+**BT-Uncert**: uncertainty term that decreases with games played (α), Gaussian margin likelihood, L2 regularization. New-team mean NLL 0.666. Its lasting contribution is the **ranking approach used ever since**: instead of the standard Bayesian μ - kσ (which feels arbitrary), players are ranked by average head-to-head win probability, compressing skill + uncertainty into a principled 1D ranking. Required vectorized NumPy calculations for O(n^2) efficiency — and in BT-Laplace onward, the uncertainties feeding it come from the actual posterior rather than a hand-set formula.
 
 ### Key Technical Decisions
 
@@ -251,7 +246,7 @@ Data collection is semi-automated. I download HTML pages from the league's sched
 
 ### Data Sparsity
 
-This is the core technical challenge. About 240 players (~60%) have <=15 games on a single team. I'm trying to separate "this player is good" from "this team was good" with almost no information. The model needs to downweight sparse-data players while still acknowledging real skill differences.
+This is the core technical challenge. About 250 players (roughly half) have <=15 games on a single team. I'm trying to separate "this player is good" from "this team was good" with almost no information. The model needs to downweight sparse-data players while still acknowledging real skill differences — and the Laplace posterior (Phase 10) put a number on just how hard this is: even a 230-game veteran's skill is only about half-identified by team-level outcomes.
 
 ### Attendance Confounds Everything (Less Than I Thought)
 
@@ -259,7 +254,7 @@ Teams are fixed per season even if players stop showing up, but I have no attend
 
 ### Tournament Data Adds Signal (But New Questions)
 
-Tournament data has been incredibly valuable: it provides cross-team matchups and validates ratings. The league's travel team (composed of top players) dominates tournaments, giving a strong signal that those players are genuinely good. But it raises the central challenge: which players on that dominant team are actually stars, and which are competent players overestimated by association?
+Tournament data has been incredibly valuable: it provides cross-team matchups and validates ratings. The league's travel team (composed of top players) dominates tournaments, giving a strong signal that those players are genuinely good. But it raised the central question: which players on that dominant team are actually stars, and which are competent players overestimated by association? Two later pieces attack exactly this. The tournament holdout (Phase 9) turned these games into the model's test set, and the team random effect (Phase 13) gives "overestimated by association" somewhere to go — the dominant team's system credit now lives in its team effect instead of inflating every member's rating.
 
 ### The Overfitting Lesson
 
