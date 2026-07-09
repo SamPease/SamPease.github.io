@@ -19,9 +19,21 @@
     margin: 0 auto;
   }
 
-  #answerText {
-    white-space: pre-line;
+  /* Rendered-markdown answer styles */
+  #answerText h1, #answerText h2 { font-size: 1.25rem; margin: 1rem 0 0.5rem; }
+  #answerText h3, #answerText h4 { font-size: 1.1rem; margin: 0.85rem 0 0.4rem; }
+  #answerText ul, #answerText ol { padding-left: 1.4rem; margin-bottom: 0.75rem; }
+  #answerText li { margin-bottom: 0.2rem; }
+  #answerText p { margin-bottom: 0.75rem; }
+  #answerText blockquote {
+    border-left: 3px solid #d1d5db;
+    padding-left: 0.75rem;
+    color: #4b5563;
   }
+  #answerText hr { margin: 1rem 0; }
+  /* Fallback: if markdown libraries fail to load we insert plain text and
+     keep line breaks readable */
+  #answerText.plain-text { white-space: pre-line; }
 </style>
 </head>
 <body>
@@ -45,7 +57,7 @@
 
   <div class="mt-4" id="answerSection" style="display:none;">
     <h4>Answer:</h4>
-    <p id="answerText"></p>
+    <div id="answerText"></div>
     <h5>Sources:</h5>
     <p class="small text-muted">Sorted by relevance.</p>
     <div id="sourcesContainer">
@@ -64,9 +76,24 @@
 
 <script src="jquery.min.js"></script>
 <script src="bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
 <script>
 const RESIZE_MESSAGE_TYPE = "trans-agent:height";
 let hasInteracted = false;
+
+// Render a markdown answer into #answerText. Sanitized via DOMPurify; falls
+// back to plain text (preserving line breaks) if the CDN libraries are absent.
+function renderAnswer(markdownText) {
+  const answerText = document.getElementById("answerText");
+  if (window.marked && window.DOMPurify) {
+    answerText.classList.remove("plain-text");
+    answerText.innerHTML = DOMPurify.sanitize(marked.parse(markdownText));
+  } else {
+    answerText.classList.add("plain-text");
+    answerText.textContent = markdownText;
+  }
+}
 
 function postHeightToParent() {
   if (!hasInteracted) {
@@ -161,9 +188,22 @@ document.getElementById("questionForm").addEventListener("submit", async functio
             body: JSON.stringify({ question })
         });
 
-        if (!response.ok) throw new Error("Failed to fetch answer from backend.");
+        if (!response.ok) {
+            // The backend returns HTTP 500 with {"error": "..."} on failures —
+            // surface that detail instead of a generic message.
+            let detail = "";
+            try {
+                const errBody = await response.json();
+                detail = errBody.error || errBody.detail || "";
+            } catch (_) { /* non-JSON error body */ }
+            throw new Error(detail ? `Backend error: ${detail}` : `Backend returned HTTP ${response.status}.`);
+        }
 
         const data = await response.json();
+        if (data.error) {
+            // Older backend versions returned 200 with an "error" key.
+            throw new Error(`Backend error: ${data.error}`);
+        }
         console.debug('DEBUG: full backend response', data);
         if (data && data.sources) {
           try {
@@ -174,7 +214,7 @@ document.getElementById("questionForm").addEventListener("submit", async functio
         } else {
           console.debug('DEBUG: no data.sources present', data);
         }
-        answerText.textContent = data.answer || "No answer returned.";
+        renderAnswer(data.answer || "No answer returned.");
     // Paginated sources display (10 per page)
   const sourcesPerPage = 10;
 
@@ -344,7 +384,16 @@ document.getElementById("questionForm").addEventListener("submit", async functio
 
     } catch (error) {
         console.error(error);
-  answerText.textContent = "Error fetching answer. The server might still be waking or busy — try again in a few seconds.";
+  answerText.classList.add("plain-text");
+  answerText.innerHTML = "";
+  const errP = document.createElement("p");
+  errP.className = "text-danger";
+  errP.textContent = "Something went wrong — the server might still be waking or busy. Try again in a few seconds.";
+  const errDetail = document.createElement("p");
+  errDetail.className = "small text-muted";
+  errDetail.textContent = error && error.message ? error.message : "";
+  answerText.appendChild(errP);
+  if (errDetail.textContent) answerText.appendChild(errDetail);
   if (sourcesListEl) sourcesListEl.textContent = "";
   if (sourcesPaginationEl) sourcesPaginationEl.innerHTML = "";
         answerSection.style.display = "block";
