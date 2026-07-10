@@ -82,6 +82,12 @@
 const RESIZE_MESSAGE_TYPE = "trans-agent:height";
 let hasInteracted = false;
 
+// Warm the backend as soon as the widget loads: the free-tier instance spins
+// down when idle, so this starts the wake-up while the visitor is still
+// reading the page. Failures are fine — the submit flow below has its own
+// wake-and-retry loop.
+fetch("https://transadviceagent.onrender.com/", { method: "GET" }).catch(() => {});
+
 // Render a markdown answer into #answerText. Sanitized via DOMPurify; falls
 // back to plain text (preserving line breaks) if the CDN libraries are absent.
 function renderAnswer(markdownText) {
