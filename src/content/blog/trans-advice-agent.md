@@ -22,7 +22,7 @@ Please note that this is an **amateur project** and not a professional medical r
 
 Currently, the system draws primarily from Wikipedia and Reddit. The database will be expanded in future iterations to include additional trans community forums, official resources, and curated documents.
 
-Questions, feedback, or suggestions are welcome at [sam@walking-stick.com](mailto:sam@walking-stick.com).
+Questions, feedback, or suggestions are welcome at [samantha.a.pease@gmail.com](mailto:samantha.a.pease@gmail.com).
 
 ## Try It Out
 
