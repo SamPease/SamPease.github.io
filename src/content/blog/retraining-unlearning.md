@@ -1,6 +1,6 @@
 ---
 title: "Free Recovery: Does LLM Unlearning Actually Remove Knowledge?"
-description: "When an 'unlearned' LLM is retrained on 10–50% of its removed data, does the rest come back for free? Across nine methods, the knowledge turns out to be suppressed, not erased, though what an attacker recovers is a head start, not a full dump."
+description: "When an 'unlearned' LLM is retrained on 10–50% of its removed data, does the rest come back for free? Across eight unlearning methods, the knowledge turns out to be suppressed, not erased, though what an attacker recovers is a head start, not a full dump."
 date: 2026-06-09
 tags: ["ai safety", "unlearning", "machine learning", "research"]
 draft: false
@@ -9,7 +9,7 @@ draft: false
 
 > **Summary:** Whether an "unlearned" LLM has truly had knowledge removed or has just learned not to express it is the obvious question in the field. This project contributes a specific tool for probing it: **retraining as a diagnostic**. Take an unlearned model, teach it back 10–50% of what was removed, and measure what the *untaught* remainder does.
 >
-> Something comes back. Probability on correct answers rises substantially, and internal representations snap toward the un-forgotten state, consistent with suppression being undone rather than knowledge being rebuilt. The recovery is real but bounded: strict word-for-word extraction reaches only 0.12–0.13 against an original-model ceiling of 0.71, and the adversary needs a meaningful chunk of the removed content to trigger it at all. Across nine methods, none fully erased the knowledge.
+> Something comes back. Probability on correct answers rises substantially, and internal representations snap toward the un-forgotten state, consistent with suppression being undone rather than knowledge being rebuilt. The recovery is real but bounded: strict word-for-word extraction reaches only 0.12–0.13 against an original-model ceiling of 0.71, and the adversary needs a meaningful chunk of the removed content to trigger it at all. Across eight unlearning methods, none fully erased the knowledge.
 >
 > One result stands apart as a concrete security finding. RMU, which steers internal representations to random vectors, achieved the best privacy protection of any tested condition: its forget set was actually *harder* to identify than non-training content under a membership inference attack. That protection collapses entirely after an adversary fine-tunes on just 10% of the removed content. The bootstrapped audit threat is real: partial knowledge of what was removed is enough to make the rest detectable, even for the method specifically designed to prevent it.
 >
@@ -211,7 +211,7 @@ Teaching part of the forget set shifts the models' distributions toward the corr
 | NPO | 0.208 | **0.454 ± 0.004** | 0.318 ± 0.003 |
 | RMU★ | 0.001 | 0.256 ± 0.003 | **0.379 ± 0.013** |
 
-NPO nearly doubles from 0.208 → 0.454 after teaching 1%. RMU★ rises from near-zero (0.001) to 0.256 at 1% and 0.379 at 5%. Retain90 is flat and slightly declining, confirming the signal in NPO and RMU★ is specific to models that previously encoded this content; Retain90 has no latent structure to reactivate.
+NPO more than doubles from 0.208 → 0.454 after teaching 1%. RMU★ rises from near-zero (0.001) to 0.256 at 1% and 0.379 at 5%. Retain90 is flat and slightly declining, confirming the signal in NPO and RMU★ is specific to models that previously encoded this content; Retain90 has no latent structure to reactivate.
 
 **Suppression undone, not information recovered**
 
@@ -274,7 +274,7 @@ ES stays flat despite the probability and MIA signals (0.09–0.13 vs a 0.705 ce
 
 ## Expanding to Other Unlearning Methods
 
-With the NPO/RMU comparison established and replicated, the experiment extended to six additional unlearning methods with checkpoints available in the open-unlearning HuggingFace collection. The goal was to test whether the free-recovery patterns generalize across the broader landscape of published approaches. Expanded versions of Charts 7, 8, and 1a–1d showing all nine methods are displayed in the Recovery Results subsection below.
+With the NPO/RMU comparison established and replicated, the experiment extended to six additional unlearning methods with checkpoints available in the open-unlearning HuggingFace collection. The goal was to test whether the free-recovery patterns generalize across the broader landscape of published approaches. Expanded versions of Charts 7, 8, and 1a–1d showing all nine conditions (the eight unlearning methods plus the retain90 control) are displayed in the Recovery Results subsection below.
 
 ### Methods
 
@@ -311,21 +311,21 @@ IdkNLL is a notable outlier: its best candidate still recalls >54% of forget-set
 
 The same TRL+LoRA recovery procedure (20 epochs, lr=2e-4, seed=42) was applied to each method's best checkpoint.
 
-![Taught-set performance across all 9 methods](/recovery_chart7_taught_performance_expanded.png)
+![Taught-set performance across all 9 conditions (8 methods plus retain90)](/recovery_chart7_taught_performance_expanded.png)
 
 Charts 7 and 8 are primarily sanity checks that the retraining procedure is working across all nine starting checkpoints. Teaching succeeds for every method, but there is an interesting split in how well it works at forget01: AltPO, GradDiff, SimNPO, and UNDIAL show taught-set performance closer to the retain90 baseline after just 2 authors, while NPO, RMU★, IdkDPO, and IdkNLL all reach notably higher recall at the same training size. This mirrors the earlier observation that some unlearning methods leave latent fragments that lower the barrier to reteaching; the behavioral-suppression cluster shows this less consistently than the others. There are a few minor quirks visible in the taught-set charts (UNDIAL's ES briefly exceeds the full model ceiling at forget01) but these don't affect the free-recovery conclusions. Chart 8 follows the expected pattern: all methods show some utility degradation as fine-tuning scale increases, with variation in how steeply.
 
-![Retain90 utility across all 9 methods](/recovery_chart8_retain90_utility_expanded.png)
+![Retain90 utility across all 9 conditions (8 methods plus retain90)](/recovery_chart8_retain90_utility_expanded.png)
 
-![Probability shift on untaught forget10, all 9 methods](/recovery_chart_expanded_qap.png)
+![Probability shift on untaught forget10, all 9 conditions (8 methods plus retain90)](/recovery_chart_expanded_qap.png)
 
 The QAP chart is the most surprising result in the expanded set. The strong free-recovery signal seen in NPO and RMU does not generalize to most methods. AltPO, GradDiff, SimNPO, UNDIAL, and IdkDPO all hover near the retain90 baseline, peaking around 0.09–0.19 at 1% before collapsing or holding flat at 5%. This suggests that the QAP recovery seen in NPO and RMU may reflect something specific to their mechanisms rather than a universal property of unlearning. The one method that looks different is IdkNLL, but for the wrong reason: it starts substantially higher than any other unlearned model (QAP ≈ 0.54; it barely forgot in the first place) and steadily declines as more data is retaught. This decline mirrors the general utility degradation seen in the retain90 utility chart and likely reflects the same fine-tuning cost rather than anything specific to the forget set. It is a sign of IdkNLL's original weakness as an unlearning method, not a recovery pattern.
 
-![ROUGE on untaught forget10, all 9 methods](/recovery_chart_expanded_rouge.png)
+![ROUGE on untaught forget10, all 9 conditions (8 methods plus retain90)](/recovery_chart_expanded_rouge.png)
 
-![Representation-level alignment on untaught forget10, all 9 methods](/recovery_chart_expanded_privleak.png)
+![Representation-level alignment on untaught forget10, all 9 conditions (8 methods plus retain90)](/recovery_chart_expanded_privleak.png)
 
-![Generative recall on untaught forget10, all 9 methods](/recovery_chart_expanded_es.png)
+![Generative recall on untaught forget10, all 9 conditions (8 methods plus retain90)](/recovery_chart_expanded_es.png)
 
 The other three charts largely confirm that the expanded methods follow the same broad patterns as NPO and RMU, without the same magnitude.
 
