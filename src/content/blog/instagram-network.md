@@ -8,6 +8,8 @@ draft: false
 
 # Instagram Network Analysis
 
+> **A snapshot in time.** The write-up, numbers, and embedded graph below reflect my Instagram mutual-follow network as it was when I first ran this analysis. Networks like this shift constantly as people follow, unfollow, and rename accounts — see the note at the end of this post for a link to an updated graph.
+
 ## Overview
 
 This project explores the structure of my Instagram social graph by identifying and analyzing the following relationships between my followers. I focused primarily on my own account but also examined the networks of my sister and roommate for comparison. The analysis integrates web scraping, network science, and graph neural networks (GNNs) to reveal community structures, central users, and latent social patterns. My goals were to produce compelling visualizations, compute both local and global network statistics, and demonstrate how a social graph can be leveraged for predictive modeling using GNNs.
@@ -228,3 +230,5 @@ I gained hands-on experience with network analysis tools like NetworkX and Pyvis
 The biggest limitation was access to data. Instagram’s restrictions on scraping and API usage limited both the size and diversity of networks I could analyze. Expanding this work to include more users — and especially users outside of my direct social circles — would allow for stronger generalization and more meaningful comparisons. I’m also interested in combining this type of structural analysis with other modalities, such as post metadata or profile descriptions, to create richer models of online social behavior.
 
 Looking ahead, I’d love to extend this pipeline to other platforms or public datasets where data collection is more feasible and less ethically fraught. Social graphs have immense potential in fields like recommendation systems, behavioral analysis, and even community health. If you know of any interesting network data — or are interested in collaborating — feel free to reach out!
+
+> **Update (September 2026):** I re-ran the full scraping and analysis pipeline against my current Instagram network — 797 mutual follows as of this update, reflecting new mutuals, unfollows, and account renames since the original run above. [View the updated interactive graph →](/mutuals_graph_pyvis_2026-09.html)
