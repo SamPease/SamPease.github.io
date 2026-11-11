@@ -108,8 +108,7 @@ const papers = [
       <h3 class="mt-4 mb-3">Mathematics</h3>
       <p>
         Previously, my research focused on mathematics, particularly the local side of the
-        Langlands program and modular forms. My Ph.D. advisor was
-        <a href="https://sites.rutgers.edu/chen-wan/" target="_blank" rel="noreferrer">Chen Wan</a>.
+        Langlands program and modular forms. My Ph.D. advisor was <a href="https://sites.rutgers.edu/chen-wan/" target="_blank" rel="noreferrer">Chen Wan</a>.
         My dissertation investigates the local Gan-Gross-Prasad conjecture for tempered
         representations of GGP triples associated with general spin groups, extending earlier work
         by Waldspurger for special orthogonal groups and Beuzart-Plessis for unitary groups. Working
@@ -126,8 +125,7 @@ const papers = [
         Saito-Kurokawa lift. It is also known that there is a pullback formula which expresses
         Saito-Kurokawa lifts in terms of genus one cusp forms. We can then take advantage of the
         finite dimensionality of the vector space of cusp forms to calculate our desired value with
-        simple linear algebra. This was done in
-        <a href="https://www.sagemath.org/" target="_blank" rel="noreferrer">Sage Math</a>.
+        simple linear algebra. This was done in <a href="https://www.sagemath.org/" target="_blank" rel="noreferrer">Sage Math</a>.
       </p>
 
       <h3 class="mt-4 mb-3">Papers</h3>
@@ -161,6 +159,100 @@ const papers = [
   <section class="resume-section p-3 p-lg-5 d-flex justify-content-center" id="projects">
     <div class="w-100">
       <h2 class="mb-4">Projects</h2>
+
+      <article class="project-item">
+        <h3 class="project-title">
+          <a href="https://sampease.github.io/GSpinGGP/">GSpinGGP: Formalizing My Dissertation in Lean</a>
+        </h3>
+        <p>
+          A work-in-progress Lean 4 + Mathlib formalization of my dissertation on the local
+          Gan-Gross-Prasad conjecture for general spin groups, with the Lean code written by AI
+          agents (Claude) under my direction. The main theorem is stated and its proof assembled,
+          but it still rests on unproved steps and on published results assumed as axioms.
+          The <a href="https://sampease.github.io/GSpinGGP/">blueprint</a> walks through the argument statement by statement,
+          and its <a href="https://sampease.github.io/GSpinGGP/blueprint/dep_graph_document.html">dependency graph</a> colours every step by formalization status.
+          Source: <a href="https://github.com/SamPease/GSpinGGP" target="_blank" rel="noreferrer">GitHub</a>.
+        </p>
+        <div class="dep-graph-embed" id="gspinggp-graph">
+          <a class="dep-graph-fallback" href="https://sampease.github.io/GSpinGGP/blueprint/dep_graph_document.html">
+            <img src="/gspinggp-dep-graph.png" alt="Blueprint dependency graph: every definition and theorem of the proof, coloured by formalization status" loading="lazy" />
+          </a>
+        </div>
+        <p class="project-caption">
+          The blueprint's dependency graph, live: drag to pan, Ctrl/⌘ + scroll to zoom, click a node to open its statement. <a href="https://sampease.github.io/GSpinGGP/blueprint/dep_graph_document.html">Open the full graph</a>.
+        </p>
+        <script is:inline>
+          (() => {
+            // Renders the GSpinGGP blueprint's live dependency graph, re-laid out left-to-right
+            // to suit this column. Uses the blueprint's own graph scripts and DOT source, so it
+            // tracks the project as it progresses. The static PNG stays if anything fails.
+            const BASE = "https://sampease.github.io/GSpinGGP/blueprint/";
+            const container = document.getElementById("gspinggp-graph");
+            if (!container) return;
+
+            const loadScript = (src) =>
+              new Promise((resolve, reject) => {
+                const s = document.createElement("script");
+                s.src = src;
+                s.onload = resolve;
+                s.onerror = reject;
+                document.head.appendChild(s);
+              });
+
+            async function render() {
+              const html = await (await fetch(BASE + "dep_graph_document.html")).text();
+              const start = html.indexOf("renderDot(`");
+              const end = html.indexOf("`)", start);
+              if (start < 0 || end < 0) throw new Error("graph source not found");
+              const dot = html
+                .slice(start + "renderDot(`".length, end)
+                .replace("{", "{ graph [rankdir=LR];");
+              const doc = new DOMParser().parseFromString(html, "text/html");
+
+              for (const f of ["d3.min.js", "hpcc.min.js", "d3-graphviz.js"]) {
+                await loadScript(BASE + "js/" + f);
+              }
+
+              const target = document.createElement("div");
+              target.className = "dep-graph-canvas";
+              container.appendChild(target);
+              const width = target.clientWidth;
+              const height = target.clientHeight;
+
+              const gv = d3.select(target).graphviz({ useWorker: false })
+                .width(width)
+                .height(height)
+                .fit(true);
+
+              gv.renderDot(dot).on("end", () => {
+                // Leave plain scrolling to the page; zoom only with Ctrl/⌘ held.
+                gv.zoomBehavior().filter(() => {
+                  const e = d3.event;
+                  return !e.button && (e.type !== "wheel" || e.ctrlKey || e.metaKey);
+                });
+                d3.select(target).selectAll(".node")
+                  .style("cursor", "pointer")
+                  .on("click", function () {
+                    const id = d3.select(this).select("title").text().trim();
+                    const link = doc.getElementById(id + "_modal")?.querySelector("a.latex_link");
+                    const href = link ? new URL(link.getAttribute("href"), BASE).href
+                                      : BASE + "dep_graph_document.html";
+                    window.open(href, "_blank", "noopener");
+                  });
+                container.classList.add("is-live");
+              });
+            }
+
+            const io = new IntersectionObserver((entries) => {
+              if (entries.some((e) => e.isIntersecting)) {
+                io.disconnect();
+                render().catch((err) => console.warn("Live dependency graph unavailable:", err));
+              }
+            }, { rootMargin: "400px" });
+            io.observe(container);
+          })();
+        </script>
+      </article>
 
       <article class="project-item">
         <h3 class="project-title">
@@ -387,6 +479,41 @@ const papers = [
     height: auto;
     border-radius: 12px;
     border: 1px solid var(--border);
+  }
+
+  .dep-graph-embed {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: #fff;
+    overflow: hidden;
+  }
+
+  .dep-graph-fallback img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .dep-graph-embed.is-live .dep-graph-fallback {
+    display: none;
+  }
+
+  .dep-graph-embed :global(.dep-graph-canvas) {
+    position: absolute;
+    inset: 0;
+  }
+
+  .dep-graph-embed.is-live :global(.dep-graph-canvas) {
+    cursor: grab;
+  }
+
+  .project-caption {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--deep-ink);
   }
 
   .project-figure.narrow {

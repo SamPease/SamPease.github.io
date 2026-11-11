@@ -35,7 +35,8 @@ No lint or test scripts exist. After any structural or route change, run `npm ru
 
 **Layout system:**
 - `src/layouts/BaseLayout.astro` is the single layout shell. Props: `title` (required), `description`, `fullBleed` (bool, skips the `site-shell` max-width wrapper), `navLinks` (array of `{href, label}`).
-- Default `navLinks` in BaseLayout is a minimal two-link nav (Home + Project Write Ups) used on every page; no page currently overrides it.
+- Default `navLinks` in BaseLayout is a minimal nav (Home, Project Write Ups, Dissertation Blueprint) used on every page; no page currently overrides it. The blueprint link points to https://sampease.github.io/GSpinGGP/, served by GitHub Pages from the separate `SamPease/GSpinGGP` repo — do not create an Astro route or redirect at `/GSpinGGP` or `/gspinggp`, it would collide.
+- The homepage GSpinGGP project blurb embeds the blueprint's live dependency graph: an inline script in `HomeContent.astro` fetches `https://sampease.github.io/GSpinGGP/blueprint/dep_graph_document.html`, extracts the DOT source from its `renderDot(`...`)` call, and renders it left-to-right with the blueprint's own `js/d3.min.js`, `js/hpcc.min.js` and `js/d3-graphviz.js` (lazy-loaded on scroll). `public/gspinggp-dep-graph.png` is a static fallback shown until the live graph renders or if it fails; it can go stale and is only a fallback.
 - BaseLayout also owns the site-wide footer, the favicon (`/favicon.svg`), and Open Graph/Twitter meta tags (`og:image` points at `/DSC09430.JPG`).
 - CSS design tokens are defined as CSS custom properties on `:root` in BaseLayout: `--paper`, `--ink`, `--deep-ink`, `--panel`, `--border`, `--accent`, `--accent-strong`, `--sun`. Use these for any new styled elements.
 - Fonts: **Newsreader** (serif, headings via `:global(h1–h4)`), **Manrope** (sans-serif, body). Both loaded from Google Fonts in BaseLayout.
@@ -48,6 +49,8 @@ No lint or test scripts exist. After any structural or route change, run `npm ru
 **TOC generation:** The writeup detail page builds a TOC from `h2` headings only (via `render()` headings output). Maintain `##` section headings in markdown to keep TOC links stable.
 
 ## Editing Guidance
+
+- Astro 7's `compressHTML` drops a newline-only gap before an inline tag, so `was\n<a ...>` renders as "was<a". In `.astro` markup, keep the space and the opening inline tag (`<a>`, `<em>`, …) on the same line.
 
 - Prefer minimal diffs; avoid broad refactors unless requested.
 - Preserve markdown content and heading text unless specifically asked to rewrite — heading text changes break TOC anchor links.
