@@ -22,6 +22,7 @@ No lint or test scripts exist. After any structural or route change, run `npm ru
 - Markdown files in `src/content/blog/*.md` are the single source of truth for writeups.
 - Loaded via the `blog` content collection defined in `src/content.config.ts`.
 - Required frontmatter: `title`, `description`, `date`. Optional: `tags[]`, `draft` (default `false`). Posts with `draft: true` are excluded from all routes.
+- Private drafts live in `src/content/blog/drafts/`, which is gitignored (the repo is public). The collection glob picks them up, so they render in local dev/builds at `/project-writeups/drafts/<name>/`, but CI never sees them. To publish, move the file up into `src/content/blog/` (this changes its slug) and commit.
 - Math is supported in markdown via `remark-math` + `rehype-katex`. KaTeX CSS is injected per-page via a `<slot name="head">` in the writeup detail template.
 
 **Routes (canonical):**
