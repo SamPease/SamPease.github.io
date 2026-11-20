@@ -578,6 +578,7 @@
     const mSel = $('[data-f="m-filter"]', repCol);
     const key = $('[data-f="match-key"]', repCol);
     if (nJudged) {
+      mSel.value = "match"; // open on matching replies; "Match or not" shows everything
       key.append(
         el("span", "match-badge yes", "✓ Match"), " judge score ≥ " + thr + " of 3  ",
         el("span", "match-badge no", "✗ No match"), " below.  ",
