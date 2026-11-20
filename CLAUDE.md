@@ -46,7 +46,9 @@ No lint or test scripts exist. After any structural or route change, run `npm ru
 - Use absolute paths (`/pruv.pdf`) for assets in Astro component markup — there is no `<base>` tag. URL-encode spaces in filenames (`/Calc%201%20Syllabus.doc`). Add `is:inline` on `<script>` tags that reference public assets to avoid bundling errors.
 - Raw `<script>` blocks inside markdown writeups are passed through to the built HTML and do execute (e.g. the iframe auto-resizer in `trans-advice-agent.md`).
 
-**TOC generation:** The writeup detail page builds a TOC from `h2` headings only (via `render()` headings output). Maintain `##` section headings in markdown to keep TOC links stable.
+**TOC generation:** The writeup detail page builds a TOC from `h2` headings only (via `render()` headings output). Maintain `##` section headings in markdown to keep TOC links stable. When a writeup has no `h2` headings there is no TOC, and the article spans the full width (`.writeup-shell.no-toc`); this lets wide embeds such as the neuron explorer fit.
+
+**Neuron explorer (`olmo3-neuron-explorer`):** a standalone page at `public/neuron-explorer/index.html`, embedded by `src/content/blog/olmo3-neuron-explorer.md`. It lazy-loads its data from `public/neuron-explorer/data/` (`index.json` + `n/<id>.json`, ~60 MB), which is copied in with `node scripts/sync-neuron-explorer.mjs <bundle dir>` and is not committed until publishing. Built on the local-only `neuron-explorer` branch; it is not deployed until that branch is merged into `main`, and the data folder must be committed at that point or the deployed page will have no data.
 
 ## Editing Guidance
 

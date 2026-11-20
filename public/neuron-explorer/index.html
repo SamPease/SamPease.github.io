@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Neuron Explorer</title>
+<link rel="icon" href="/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600;6..72,700&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #f8f4ec;
+    --ink: #1f2531;
+    --deep-ink: #11151d;
+    --panel: rgba(248, 252, 255, 0.8);
+    --card: #fffdf8;
+    --border: rgba(44, 58, 86, 0.18);
+    --muted: #5b6476;
+    --accent: #0f8a7f;
+    --accent-strong: #006b7d;
+    --sun: #e4a857;
+    --stage-pre: #3d6fb6;
+    --stage-mid: #8a5cc2;
+    --stage-post: #c2663d;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font: 15px/1.5 Manrope, system-ui, sans-serif;
+  }
+  h1, h2, h3 { font-family: Newsreader, Georgia, serif; color: var(--deep-ink); margin: 0; font-weight: 600; }
+  a { color: var(--accent-strong); }
+  button { font: inherit; cursor: pointer; }
+
+  /* Top bar */
+  .topbar {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--card);
+  }
+  .topbar h1 { font-size: 1.45rem; }
+  .topbar .intro { color: var(--muted); font-size: .9rem; flex: 1 1 340px; }
+  .badge-private { background: var(--sun); color: var(--deep-ink); font-weight: 800; font-size: .72rem; padding: 2px 8px; border-radius: 99px; letter-spacing: .04em; }
+  .models { font-size: .82rem; color: var(--muted); }
+  .models b { color: var(--ink); }
+  .notes { font-size: .8rem; color: var(--muted); }
+  .notes summary { cursor: pointer; font-weight: 700; color: var(--accent-strong); }
+  .notes[open] { flex-basis: 100%; }
+  .notes ul { margin: 6px 0 0; padding-left: 18px; max-width: 900px; }
+  .pill.flag { background: #fbe9e4; border-color: #e2a596; color: #8a2f1c; }
+  .item.control { border-style: dashed; background: #f6f3ec; }
+  .item.is-match { border-left: 5px solid #1f8a4c; }
+  .item.is-miss { border-left: 5px solid #b7bcc6; }
+  .match-badge { border-radius: 6px; padding: 1px 8px; font-weight: 800; font-size: .74rem; }
+  .match-badge.yes { background: #1f8a4c; color: #fff; }
+  .match-badge.no { background: #e6e8ec; color: #4a5160; }
+  .score-num { font-weight: 700; color: var(--ink); }
+  .score-bar { display: inline-block; width: 48px; height: 6px; border-radius: 3px; background: #e6e8ec; overflow: hidden; }
+  .score-fill { display: block; height: 100%; background: #1f8a4c; }
+  .is-miss .score-fill { background: #8d94a3; }
+  .match-key { flex-basis: 100%; font-size: .76rem; color: var(--muted); }
+  .match-key .match-badge { font-size: .68rem; }
+
+  /* App layout */
+  /* The whole page scrolls; the neuron list and the column headers stay pinned. */
+  .app { display: grid; grid-template-columns: 290px minmax(0, 1fr); align-items: start; }
+  .sidebar {
+    border-right: 1px solid var(--border); display: flex; flex-direction: column; background: var(--paper);
+    position: sticky; top: 0; height: 100vh; z-index: 3;
+  }
+  .sidebar .controls { padding: 12px; display: grid; gap: 8px; border-bottom: 1px solid var(--border); }
+  .tabs { display: flex; gap: 4px; }
+  .tabs button {
+    flex: 1; border: 1px solid var(--border); background: transparent; border-radius: 8px; padding: 5px 4px; font-size: .78rem; font-weight: 700; color: var(--muted);
+  }
+  .tabs button[aria-pressed="true"] { background: var(--accent-strong); color: #fff; border-color: var(--accent-strong); }
+  input[type="search"], select {
+    width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 6px 9px; font: inherit; font-size: .88rem; background: #fff; color: var(--ink);
+  }
+  .neuron-list { overflow-y: auto; flex: 1; padding: 6px; margin: 0; list-style: none; }
+  .neuron-list button {
+    width: 100%; text-align: left; border: 1px solid transparent; background: transparent; border-radius: 9px; padding: 8px 10px; display: grid; gap: 2px;
+  }
+  .neuron-list button:hover { background: rgba(15, 138, 127, .07); }
+  .neuron-list button[aria-current="true"] { background: #fff; border-color: var(--accent); }
+  .neuron-list .nid { font-weight: 800; font-size: .82rem; }
+  .neuron-list .nlabel { font-size: .86rem; color: var(--ink); }
+  .neuron-list .nmeta { font-size: .72rem; color: var(--muted); }
+  .list-heading { font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); padding: 10px 10px 4px; }
+
+  /* Neuron view */
+  .main { min-width: 0; }
+  .empty { padding: 40px; color: var(--muted); }
+  .card { padding: 14px 20px 10px; border-bottom: 1px solid var(--border); background: var(--card); }
+  .card-top { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .card h2 { font-size: 1.55rem; }
+  .card .ln { font-weight: 800; color: var(--accent-strong); font-size: .95rem; }
+  .facts { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 6px; font-size: .82rem; color: var(--muted); }
+  .facts b { color: var(--ink); font-weight: 700; }
+  .terms { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; align-items: center; }
+  .terms .hint { font-size: .78rem; color: var(--muted); margin-right: 4px; }
+  .term-chip {
+    border: 1.5px solid var(--c); background: color-mix(in srgb, var(--c) 18%, #fff); color: var(--deep-ink);
+    border-radius: 99px; padding: 2px 10px; font-size: .84rem; font-weight: 600;
+  }
+  .term-chip small { color: var(--muted); font-weight: 500; margin-left: 4px; }
+  .term-chip[aria-pressed="true"] { background: var(--c); color: #fff; }
+  .term-chip[aria-pressed="true"] small { color: rgba(255,255,255,.85); }
+  .term-note { font-size: .8rem; color: var(--muted); margin-top: 6px; min-height: 1.2em; }
+  .warn { color: #a33; font-size: .78rem; }
+
+  .columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+  .col { min-width: 0; }
+  .col + .col { border-left: 1px solid var(--border); min-height: 100vh; }
+  .col-head {
+    padding: 8px 14px; border-bottom: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    background: #f3efe6; position: sticky; top: 0; z-index: 2;
+  }
+  .col-head h3 { font-size: 1.1rem; margin-right: auto; }
+  .col-head .count { font-size: .78rem; color: var(--muted); }
+  .col-head select { width: auto; font-size: .8rem; padding: 3px 6px; }
+  .jump { display: none; align-items: center; gap: 4px; font-size: .78rem; color: var(--muted); }
+  .has-active .jump { display: inline-flex; }
+  .jump button { border: 1px solid var(--border); background: #fff; border-radius: 6px; padding: 1px 8px; }
+  .scroll { padding: 10px 14px 40px; }
+
+  .item {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 12px; margin-bottom: 10px;
+    content-visibility: auto; contain-intrinsic-size: auto 160px;
+  }
+  .item-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: .74rem; color: var(--muted); margin-bottom: 5px; }
+  .pill { border-radius: 99px; padding: 1px 8px; font-weight: 700; font-size: .72rem; border: 1px solid var(--border); background: #fff; color: var(--ink); }
+  .stage-pretraining { background: var(--stage-pre); color: #fff; border-color: var(--stage-pre); }
+  .stage-midtraining { background: var(--stage-mid); color: #fff; border-color: var(--stage-mid); }
+  .stage-post-training { background: var(--stage-post); color: #fff; border-color: var(--stage-post); }
+  .alpha-pos { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .alpha-neg { background: #6a7385; color: #fff; border-color: #6a7385; }
+  .question { font-weight: 700; font-size: .86rem; margin-bottom: 4px; color: var(--deep-ink); }
+  .text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .88rem; }
+  .text.clamped { max-height: 13.5em; overflow: hidden; -webkit-mask-image: linear-gradient(#000 70%, transparent); mask-image: linear-gradient(#000 70%, transparent); }
+  .more { border: none; background: none; color: var(--accent-strong); font-size: .78rem; font-weight: 700; padding: 2px 0 0; }
+
+  mark.hl {
+    background: color-mix(in srgb, var(--c) 28%, transparent); color: inherit; border-radius: 3px;
+    box-shadow: inset 0 -2px 0 var(--c); padding: 0 1px; cursor: pointer;
+  }
+  .has-active mark.hl { background: transparent; box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--c) 50%, transparent); }
+  .has-active mark.hl.on { background: color-mix(in srgb, var(--c) 40%, transparent); box-shadow: inset 0 -2px 0 var(--c); }
+  mark.hl.focus { outline: 2px solid var(--deep-ink); outline-offset: 1px; }
+
+  #neuron-select { display: none; }
+
+  /* Narrower screens (and the embed on the writeup page): the neuron list folds into a
+     picker above the view, so documents and replies stay side by side. */
+  @media (max-width: 1100px) {
+    .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    .sidebar { border-right: none; border-bottom: 1px solid var(--border); position: static; height: auto; }
+    .sidebar .controls { grid-template-columns: auto minmax(140px, 1fr) minmax(120px, 200px); align-items: center; border-bottom: none; }
+    #neuron-select { display: block; grid-column: 1 / -1; }
+    .neuron-list { display: none; }
+    .topbar .intro { flex-basis: 100%; }
+  }
+  @media (max-width: 620px) {
+    .sidebar .controls { grid-template-columns: 1fr; }
+    .columns { grid-template-columns: 1fr; }
+    .col + .col { border-left: none; border-top: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <h1 id="title">Neuron Explorer</h1>
+  <span class="badge-private" id="mock-badge" hidden>MOCK DATA</span>
+  <p class="intro" id="intro">
+    Flip through the single neurons from the Olmo 3 study. For each one, the left column holds the training documents and the right holds
+    replies when the neuron is pushed. Shared strings are highlighted in both; click one to follow it. Written up in
+    <a id="lw-link" href="#" target="_blank" rel="noopener">the LessWrong post</a>.
+  </p>
+  <span class="models" id="models"></span>
+</header>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="controls">
+      <div class="tabs" role="group" aria-label="Filter by part">
+        <button data-part="all" aria-pressed="true">All</button>
+        <button data-part="1" aria-pressed="false" title="Neurons found from data">Found from data</button>
+        <button data-part="2" aria-pressed="false" title="Neurons found by pushing">Found by pushing</button>
+      </div>
+      <input type="search" id="search" placeholder="Search label, layer, term…" aria-label="Search neurons" />
+      <select id="label-filter" aria-label="Filter by source or group"><option value="">All sources / groups</option></select>
+      <select id="neuron-select" aria-label="Choose a neuron"></select>
+    </div>
+    <ul class="neuron-list" id="neuron-list"></ul>
+  </aside>
+
+  <main class="main" id="main">
+    <div class="empty" id="empty">Loading…</div>
+  </main>
+</div>
+
+<template id="view-tpl">
+  <section class="card">
+    <div class="card-top">
+      <span class="ln" data-f="ln"></span>
+      <h2 data-f="label"></h2>
+    </div>
+    <div class="facts" data-f="facts"></div>
+    <div class="terms" data-f="terms"><span class="hint">Shared strings:</span></div>
+    <div class="term-note" data-f="note"></div>
+  </section>
+  <div class="columns">
+    <section class="col" data-col="docs">
+      <div class="col-head">
+        <h3>Training documents</h3>
+        <select data-f="stage-filter" aria-label="Filter documents by training stage"><option value="">All stages</option></select>
+        <span class="jump"><button data-dir="-1" aria-label="Previous occurrence">◀</button><span data-f="pos"></span><button data-dir="1" aria-label="Next occurrence">▶</button></span>
+        <span class="count" data-f="count"></span>
+      </div>
+      <div class="scroll" data-f="list"></div>
+    </section>
+    <section class="col" data-col="replies">
+      <div class="col-head">
+        <h3>Replies when pushed</h3>
+        <select data-f="q-filter" aria-label="Filter replies by question"><option value="">All questions</option></select>
+        <select data-f="a-filter" aria-label="Filter replies by push strength"><option value="">All α</option></select>
+        <select data-f="m-filter" aria-label="Filter replies by match"><option value="">Match or not</option><option value="match">Matches only</option><option value="miss">Non-matches only</option></select>
+        <span class="jump"><button data-dir="-1" aria-label="Previous occurrence">◀</button><span data-f="pos"></span><button data-dir="1" aria-label="Next occurrence">▶</button></span>
+        <span class="count" data-f="count"></span>
+        <div class="match-key" data-f="match-key"></div>
+      </div>
+      <div class="scroll" data-f="list"></div>
+    </section>
+  </div>
+</template>
+
+<script>
+(() => {
+  "use strict";
+  const DATA = "/neuron-explorer/data";
+  const PALETTE = ["#0f8a7f", "#d0782b", "#7b5cc4", "#c2416b", "#3d78c2", "#8a9a1f", "#b85c9e", "#2f9e5b", "#a8742c", "#5a6fd6"];
+  const CLAMP_CHARS = 900;
+  const DEFAULT_NEURON = "p1-time_travel_wish-L6_N5731p";
+  // A reply counts as a match when its judge score (Jev same_kind, 0-3) is at least this, as the
+  // push studies counted it. The bundle's meta.match_threshold and per-reply verdict.match win.
+  const DEFAULT_MATCH_THRESHOLD = 2;
+  const matchThreshold = () => state.index?.meta?.match_threshold ?? DEFAULT_MATCH_THRESHOLD;
+  const scoreOf = (v) => {
+    if (v == null) return null;
+    if (typeof v === "number") return v;
+    if (typeof v === "object") {
+      const x = v.score ?? v.jev_same_kind;
+      return typeof x === "number" ? x : null;
+    }
+    return null;
+  };
+
+  const $ = (s, el = document) => el.querySelector(s);
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = String(text);
+    return n;
+  };
+
+  const state = { index: null, cards: [], part: "all", q: "", label: "", current: null, neuron: null, active: null, cache: new Map() };
+
+  // ---------- helpers ----------
+  const cardsOf = (idx) => [
+    ...(idx.part1 || []).map((c) => ({ part: 1, ...c })),
+    ...(idx.part2 || []).map((c) => ({ part: 2, ...c })),
+  ];
+  const NEURON_RE = /^L(\d+)\/N(\d+)([+-])?$/;
+  const lnOf = (c) => {
+    const m = NEURON_RE.exec(String(c.neuron ?? ""));
+    if (m) return `L${m[1]} · N${m[2]}${m[3] ? " (" + (m[3] === "+" ? "+" : "−") + ")" : ""}`;
+    if (c.layer != null && c.neuron != null) return `L${c.layer} · N${c.neuron}`;
+    return c.neuron || c.id;
+  };
+  const groupOf = (c) => (c.part === 1 ? c.source : c.group) || null;
+  const stageName = (s) => String(s || "").replace(/_/g, "-");
+  const STAGES = [["pretraining", "pretraining"], ["midtraining", "midtraining"], ["post_training", "post-training"]];
+  // Card stage is {pretraining, midtraining, post_training}: true / false / null (unknown).
+  const stageSummary = (st) => {
+    if (st == null) return null;
+    if (typeof st === "string") return stageName(st);
+    const on = STAGES.filter(([k]) => st[k] === true).map(([, n]) => n);
+    const unk = STAGES.filter(([k]) => st[k] == null).map(([, n]) => n);
+    let out = on.length ? on.join(", ") : "none";
+    if (unk.length) out += ` (unknown: ${unk.join(", ")})`;
+    return out;
+  };
+  const pretty = (v) => {
+    if (v == null) return "";
+    if (Array.isArray(v)) return v.map(pretty).join(", ");
+    if (typeof v === "object") return Object.entries(v).map(([k, x]) => `${k.replace(/_/g, " ")}: ${pretty(x)}`).join(" · ");
+    return String(v);
+  };
+  const num = (x) => (typeof x === "number" ? x.toLocaleString("en-US") : x);
+  const rankOf = (r, of) => (r == null ? "—" : `#${num(r)}${of != null ? " of " + num(of) : ""}`);
+  const howFound = (h) => {
+    if (h == null) return null;
+    if (typeof h !== "object") return String(h);
+    const parts = [];
+    if ("activation_rank" in h || "gradient_rank" in h || "zeroing_specificity_rank" in h) {
+      parts.push(`activation ${rankOf(h.activation_rank, h.activation_of)}`);
+      parts.push(`gradient ${rankOf(h.gradient_rank, h.gradient_of)}`);
+      parts.push(`zeroing specificity ${rankOf(h.zeroing_specificity_rank ?? h.zeroing_rank, h.zeroing_specificity_of)}`);
+      if (h.found_in_push_runs?.length) parts.push(`found in push runs: ${[].concat(h.found_in_push_runs).join(", ")}`);
+      return parts.join(" · ");
+    }
+    if ("screen" in h || "hits" in h) {
+      if (h.screen) parts.push(h.screen);
+      if (h.set) parts.push(`set: ${h.set}`);
+      if (h.judges) parts.push(`judges: ${pretty(h.judges)}`);
+      if (h.hits != null || h.decoy_hits != null) parts.push(`hits ${h.hits ?? "—"}, decoy hits ${h.decoy_hits ?? "—"}`);
+      return parts.join(" · ");
+    }
+    return pretty(h);
+  };
+  const libLabel = (c) => {
+    const l = c.npl_label || c.library_label;
+    if (!l) return null;
+    if (typeof l === "string") return l;
+    return [l.card, l.category ? `(${String(l.category).replace(/_/g, " ")})` : null].filter(Boolean).join(" ");
+  };
+  const verdictText = (v) => {
+    if (v == null || v === "") return null;
+    if (typeof v !== "object") return String(v);
+    if (v.score != null) return `${v.judge || "score"}: ${typeof v.score === "number" ? +v.score.toFixed(2) : v.score}`;
+    if (v.jev_same_kind != null) return `Jev same_kind: ${+Number(v.jev_same_kind).toFixed(2)}`;
+    return pretty(v);
+  };
+
+  const termName = (t) => (typeof t === "string" ? t : t.term ?? t.text ?? t.string ?? "");
+  const termNote = (t) => (typeof t === "string" ? "" : t.note ?? "");
+  const stageClass = (s) => "stage-" + stageName(s).toLowerCase().replace(/[^a-z]+/g, "-").replace(/^-|-$/g, "");
+
+  // Offsets are Python code-point indices, end-exclusive. They're converted to UTF-16 (JS string)
+  // indices so emoji and other astral characters don't shift highlights. If the code-point slice
+  // doesn't match the term, the raw offsets are retried as UTF-16 indices.
+  function cpToU16Map(text) {
+    const map = [0];
+    let u = 0;
+    for (const ch of text) { u += ch.length; map.push(u); }
+    return map;
+  }
+  function renderText(text, highlights, colorOf, stats) {
+    text = text || "";
+    const frag = document.createDocumentFragment();
+    let cpMap = null;
+    const same = (a, b) => a.toLowerCase() === String(b).toLowerCase();
+    const hs = [];
+    for (const h0 of highlights || []) {
+      const h = Array.isArray(h0) ? { s: h0[0], e: h0[1], t: h0[2] } : { s: h0.start, e: h0.end, t: h0.term };
+      if (!Number.isInteger(h.s) || !Number.isInteger(h.e) || h.e <= h.s || h.s < 0) continue;
+      cpMap = cpMap || cpToU16Map(text);
+      const s2 = cpMap[h.s], e2 = cpMap[h.e];
+      const cpOk = s2 != null && e2 != null;
+      if (cpOk && (h.t == null || same(text.slice(s2, e2), h.t))) { hs.push({ s: s2, e: e2, t: h.t }); continue; }
+      if (h.e <= text.length && same(text.slice(h.s, h.e), h.t)) { hs.push(h); continue; }
+      if (stats) stats.mismatch++;
+      if (cpOk) hs.push({ s: s2, e: e2, t: h.t });
+    }
+    hs.sort((a, b) => a.s - b.s || b.e - a.e);
+    let pos = 0;
+    for (const h of hs) {
+      if (h.s < pos) continue; // drop overlaps
+      if (h.s > pos) frag.appendChild(document.createTextNode(text.slice(pos, h.s)));
+      const m = el("mark", "hl", text.slice(h.s, h.e));
+      m.dataset.term = h.t ?? m.textContent;
+      m.style.setProperty("--c", colorOf(m.dataset.term));
+      frag.appendChild(m);
+      pos = h.e;
+    }
+    if (pos < text.length) frag.appendChild(document.createTextNode(text.slice(pos)));
+    return frag;
+  }
+
+  // ---------- sidebar ----------
+  function renderList() {
+    const ul = $("#neuron-list");
+    ul.textContent = "";
+    const q = state.q.toLowerCase();
+    const matches = state.cards.filter((c) => {
+      if (state.part !== "all" && String(c.part) !== state.part) return false;
+      if (state.label && groupOf(c) !== state.label) return false;
+      if (!q) return true;
+      const hay = [c.id, c.neuron, c.label, lnOf(c), c.source, c.screen_kind, libLabel(c), c.group].join(" ").toLowerCase();
+      return hay.includes(q);
+    });
+    for (const part of [1, 2]) {
+      const group = matches.filter((c) => c.part === part);
+      if (!group.length) continue;
+      ul.appendChild(el("li", "list-heading", part === 1 ? `Found from data (${group.length})` : `Found by pushing (${group.length})`));
+      for (const c of group) {
+        const li = el("li");
+        const b = el("button");
+        b.setAttribute("aria-current", String(state.current === c.id));
+        b.append(el("span", "nid", lnOf(c)), el("span", "nlabel", c.label || "(unlabeled)"));
+        const meta = [
+          groupOf(c),
+          c.alpha != null ? `α ${c.alpha}` : null,
+          c.n_docs != null ? `${c.n_docs} docs` : null,
+          c.n_replies != null ? `${c.n_replies} replies` : null,
+        ].filter(Boolean).join(" · ");
+        if (meta) b.append(el("span", "nmeta", meta));
+        b.addEventListener("click", () => go(c.id, null));
+        li.appendChild(b);
+        ul.appendChild(li);
+      }
+    }
+    if (!matches.length) ul.appendChild(el("li", "empty", "No neurons match."));
+    const sel = $("#neuron-select");
+    sel.textContent = "";
+    for (const part of [1, 2]) {
+      const group = matches.filter((c) => c.part === part);
+      if (!group.length) continue;
+      const og = document.createElement("optgroup");
+      og.label = part === 1 ? `Found from data (${group.length})` : `Found by pushing (${group.length})`;
+      for (const c of group) og.appendChild(new Option(`${lnOf(c)} · ${c.label || "(unlabeled)"}`, c.id, false, c.id === state.current));
+      sel.appendChild(og);
+    }
+    if (!matches.length) sel.appendChild(new Option("No neurons match", ""));
+    else if (!matches.some((c) => c.id === state.current)) sel.insertBefore(new Option("Choose a neuron…", "", true, true), sel.firstChild);
+  }
+
+  // ---------- neuron view ----------
+  async function loadNeuron(card) {
+    const id = card.id;
+    if (state.cache.has(id)) return state.cache.get(id);
+    const path = card.file ? card.file.split("/").map(encodeURIComponent).join("/") : `n/${encodeURIComponent(id)}.json`;
+    const res = await fetch(`${DATA}/${path}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status} for neuron ${id}`);
+    const data = await res.json();
+    state.cache.set(id, data);
+    return data;
+  }
+
+  function fact(label, value) {
+    if (value == null || value === "") return null;
+    const s = el("span");
+    s.append(label + ": ", el("b", null, value));
+    return s;
+  }
+
+  function renderNeuron(card, n) {
+    const main = $("#main");
+    main.textContent = "";
+    main.appendChild($("#view-tpl").content.cloneNode(true));
+    const info = { ...n, ...card }; // index.json cards are the richer, authoritative copy
+
+    $('[data-f="ln"]', main).textContent = lnOf(info);
+    $('[data-f="label"]', main).textContent = info.label || "(unlabeled)";
+    const { findModel, pushModel } = models();
+    const facts = $('[data-f="facts"]', main);
+    [
+      fact(info.part === 1 ? "Found in" : "Screened in", info.part === 1 ? findModel : pushModel),
+      fact(info.part === 1 ? "Pushed in" : "Docs from", info.part === 1 ? pushModel : findModel),
+      fact("Training stage", stageSummary(info.stage)),
+      fact(info.part === 1 ? "Data source" : "Screen topic", info.part === 1 ? info.source : info.screen_kind),
+      info.part === 2 ? fact("Library label", libLabel(info)) : null,
+      info.part === 2 ? fact("Group", info.group) : null,
+      fact("How found", howFound(info.how_found)),
+      fact("Verdict", verdictText(info.verdict)),
+      fact("Push strength α", info.alpha),
+      fact("Pole", info.pole),
+    ].filter(Boolean).forEach((f) => facts.appendChild(f));
+
+    // Terms + colours
+    const terms = (n.terms || []).map((t) => ({ name: termName(t), note: termNote(t), count: typeof t === "object" ? t.count : null })).filter((t) => t.name);
+    const colors = new Map();
+    terms.forEach((t, i) => colors.set(t.name.toLowerCase(), PALETTE[i % PALETTE.length]));
+    const colorOf = (name) => {
+      const k = String(name).toLowerCase();
+      if (!colors.has(k)) colors.set(k, PALETTE[colors.size % PALETTE.length]);
+      return colors.get(k);
+    };
+
+    const stats = { mismatch: 0 };
+    const docs = n.docs || [];
+    const replies = n.replies || [];
+
+    // Count occurrences per term per column
+    // Number of documents / replies that contain each term (not raw mentions).
+    const countIn = (items) => {
+      const m = new Map();
+      for (const it of items) {
+        const seen = new Set((it.highlights || []).map((h) => String(Array.isArray(h) ? h[2] : h.term).toLowerCase()));
+        for (const t of seen) m.set(t, (m.get(t) || 0) + 1);
+      }
+      return m;
+    };
+    const dc = countIn(docs), rc = countIn(replies);
+
+    const termsEl = $('[data-f="terms"]', main);
+    const noteEl = $('[data-f="note"]', main);
+    for (const t of terms) {
+      const b = el("button", "term-chip", t.name);
+      b.style.setProperty("--c", colorOf(t.name));
+      b.dataset.term = t.name;
+      b.setAttribute("aria-pressed", "false");
+      b.append(el("small", null, `in ${dc.get(t.name.toLowerCase()) || 0} docs · ${rc.get(t.name.toLowerCase()) || 0} replies`));
+      b.title = [t.note, t.count != null ? `${t.count} mentions in all` : null].filter(Boolean).join(" — ");
+      b.addEventListener("click", () => setActive(state.active && state.active.toLowerCase() === t.name.toLowerCase() ? null : t.name));
+      termsEl.appendChild(b);
+    }
+    state.termNotes = new Map(terms.map((t) => [t.name.toLowerCase(), t.note]));
+    noteEl.textContent = terms.length ? "Click a string to light it up everywhere; ◀ ▶ step through it." : "";
+
+    // Docs column
+    const docsCol = $('[data-col="docs"]', main);
+    const stageSel = $('[data-f="stage-filter"]', docsCol);
+    [...new Set(docs.map((d) => d.stage).filter(Boolean))].forEach((s) => stageSel.appendChild(new Option(stageName(s), s)));
+    const docList = $('[data-f="list"]', docsCol);
+    docs.forEach((d, i) => {
+      const item = el("article", "item");
+      item.dataset.stage = d.stage || "";
+      const meta = el("div", "item-meta");
+      meta.append(el("span", null, `#${i + 1}`));
+      if (d.stage) meta.append(el("span", "pill " + stageClass(d.stage), stageName(d.stage)));
+      if (d.source) meta.append(el("span", "pill", d.source));
+      if (d.why_selected) meta.append(el("span", null, d.why_selected));
+      if (d.sample) meta.append(el("span", null, d.sample));
+      for (const f of [].concat(d.flags || [])) meta.append(el("span", "pill flag", String(f).replace(/^tag_/, "").replace(/_/g, " ")));
+      if (d.score != null) meta.append(el("span", null, `score ${typeof d.score === "number" ? +d.score.toPrecision(3) : d.score}`));
+      item.appendChild(meta);
+      appendText(item, d.text, d.highlights, colorOf, stats);
+      docList.appendChild(item);
+    });
+
+    // Replies column
+    const repCol = $('[data-col="replies"]', main);
+    const qSel = $('[data-f="q-filter"]', repCol);
+    const aSel = $('[data-f="a-filter"]', repCol);
+    [...new Set(replies.map((r) => r.question).filter(Boolean))].forEach((q) => qSel.appendChild(new Option(q.length > 50 ? q.slice(0, 48) + "…" : q, q)));
+    [...new Set(replies.map((r) => r.alpha).filter((a) => a != null))].sort((a, b) => a - b).forEach((a) => aSel.appendChild(new Option(`α ${a}`, String(a))));
+    const repList = $('[data-f="list"]', repCol);
+    const controls = (n.controls || []).map((c) => ({ ...c, control: true }));
+    const thr = matchThreshold();
+    let nMatch = 0, nJudged = 0;
+    if (controls.length) aSel.appendChild(new Option("control (unpushed)", "control"));
+    [...controls, ...replies].forEach((r) => {
+      const item = el("article", "item");
+      item.dataset.q = r.question || "";
+      item.dataset.alpha = r.control ? "control" : r.alpha != null ? String(r.alpha) : "";
+      if (r.control) { item.classList.add("control"); }
+      const meta = el("div", "item-meta");
+      if (r.control) meta.append(el("span", "pill", "control: unpushed"));
+      if (r.alpha != null) meta.append(el("span", "pill " + (r.alpha > 0 ? "alpha-pos" : r.alpha < 0 ? "alpha-neg" : ""), `α ${r.alpha}`));
+      if (r.pole != null && r.pole !== "") meta.append(el("span", "pill", `pole ${r.pole}`));
+      if (r.sample != null) meta.append(el("span", null, `sample ${r.sample}`));
+      if (r.run) meta.append(el("span", null, r.run));
+      const sc = r.control ? null : scoreOf(r.verdict);
+      if (sc != null) {
+        const ok = typeof r.verdict?.match === "boolean" ? r.verdict.match : sc >= thr;
+        item.dataset.match = ok ? "match" : "miss";
+        item.classList.add(ok ? "is-match" : "is-miss");
+        nMatch += ok;
+        nJudged++;
+        const badge = el("span", "match-badge " + (ok ? "yes" : "no"), ok ? "✓ Match" : "✗ No match");
+        badge.title = `${(typeof r.verdict === "object" && r.verdict.judge) || "Judge score"}: ${+sc.toFixed(2)} of 3; match means ≥ ${thr}`;
+        const bar = el("span", "score-bar");
+        const fill = el("span", "score-fill");
+        fill.style.width = `${Math.max(0, Math.min(1, sc / 3)) * 100}%`;
+        bar.appendChild(fill);
+        meta.prepend(badge, el("span", "score-num", `${+sc.toFixed(2)} / 3`), bar);
+      } else if (!r.control) {
+        const vt = verdictText(r.verdict);
+        if (vt) meta.append(el("span", "pill", vt));
+      }
+      item.appendChild(meta);
+      if (r.question) item.appendChild(el("div", "question", r.question));
+      appendText(item, r.text, r.highlights, colorOf, stats);
+      repList.appendChild(item);
+    });
+
+    const mSel = $('[data-f="m-filter"]', repCol);
+    const key = $('[data-f="match-key"]', repCol);
+    if (nJudged) {
+      key.append(
+        el("span", "match-badge yes", "✓ Match"), " judge score ≥ " + thr + " of 3  ",
+        el("span", "match-badge no", "✗ No match"), " below.  ",
+        el("b", null, `${nMatch} of ${nJudged}`), " pushed replies match."
+      );
+      const rule = state.index?.meta?.match_rule;
+      if (rule) key.title = rule;
+    } else {
+      mSel.hidden = true;
+      const hf = info.how_found && typeof info.how_found === "object" ? info.how_found : {};
+      const screen = hf.screen
+        ? ` The screen judged the neuron as a whole: ${String(hf.screen).replace(/\.$/, "")}.`
+        : hf.hits != null ? ` The neuron passed its screen with ${hf.hits} hits vs ${hf.decoy_hits ?? "?"} decoys.` : "";
+      key.textContent = `Replies here aren't judged one by one, so there's no match / no-match per reply.${screen}`;
+    }
+
+    if (stats.mismatch) {
+      const w = el("div", "warn", `⚠ ${stats.mismatch} highlight offsets don't match their term text (check offset units).`);
+      $(".card", main).appendChild(w);
+      console.warn(`[explorer] ${stats.mismatch} highlight/term mismatches for ${info.id}`);
+    }
+
+    // Filters
+    const applyFilters = () => {
+      let nd = 0, nr = 0;
+      for (const it of docList.children) { const show = !stageSel.value || it.dataset.stage === stageSel.value; it.hidden = !show; nd += show; }
+      for (const it of repList.children) {
+        const show = (!qSel.value || it.dataset.q === qSel.value) && (!aSel.value || it.dataset.alpha === aSel.value) &&
+          (!mSel.value || it.dataset.match === mSel.value);
+        it.hidden = !show; nr += show;
+      }
+      $('[data-f="count"]', docsCol).textContent = `${nd} of ${docs.length}`;
+      $('[data-f="count"]', repCol).textContent = `${nr} of ${replies.length + controls.length}`;
+      refreshActive();
+    };
+    [stageSel, qSel, aSel, mSel].forEach((s) => s.addEventListener("change", applyFilters));
+    applyFilters();
+
+    // Click a highlight inside text -> activate that term
+    main.addEventListener("click", (e) => {
+      const m = e.target.closest("mark.hl");
+      if (m) setActive(m.dataset.term, m);
+    });
+    // Jump buttons
+    for (const col of [docsCol, repCol]) {
+      col.querySelectorAll(".jump button").forEach((b) => b.addEventListener("click", () => step(col, Number(b.dataset.dir))));
+      col._pos = -1;
+    }
+  }
+
+  function appendText(item, text, highlights, colorOf, stats) {
+    const t = el("div", "text");
+    t.appendChild(renderText(text, highlights, colorOf, stats));
+    item.appendChild(t);
+    if ((text || "").length > CLAMP_CHARS) {
+      t.classList.add("clamped");
+      const more = el("button", "more", "Show full text");
+      more.addEventListener("click", () => {
+        const c = t.classList.toggle("clamped");
+        more.textContent = c ? "Show full text" : "Collapse";
+      });
+      item.appendChild(more);
+    }
+  }
+
+  // ---------- active term ----------
+  function setActive(term, clickedMark) {
+    state.active = term || null;
+    updateHash();
+    refreshActive();
+    if (clickedMark && term) {
+      for (const col of document.querySelectorAll(".col")) {
+        const marks = visibleMarks(col);
+        const i = marks.indexOf(clickedMark);
+        if (i >= 0) { col._pos = i; focusMark(col, marks, false); }
+      }
+    }
+  }
+
+  function visibleMarks(col) {
+    if (!state.active) return [];
+    const k = state.active.toLowerCase();
+    return [...col.querySelectorAll("mark.hl")].filter((m) => m.dataset.term.toLowerCase() === k && !m.closest(".item").hidden);
+  }
+
+  function refreshActive() {
+    const main = $("#main");
+    const k = state.active ? state.active.toLowerCase() : null;
+    main.classList.toggle("has-active", !!k);
+    main.querySelectorAll("mark.hl").forEach((m) => {
+      m.classList.toggle("on", !!k && m.dataset.term.toLowerCase() === k);
+      m.classList.remove("focus");
+    });
+    main.querySelectorAll(".term-chip").forEach((b) => b.setAttribute("aria-pressed", String(!!k && b.dataset.term.toLowerCase() === k)));
+    const note = $('[data-f="note"]', main);
+    if (note) note.textContent = k ? (state.termNotes?.get(k) || `“${state.active}”`) : "Click a string to light it up everywhere; ◀ ▶ step through it.";
+    for (const col of main.querySelectorAll(".col")) {
+      col._pos = -1;
+      const n = visibleMarks(col).length;
+      $('[data-f="pos"]', col).textContent = k ? `${n} hits` : "";
+    }
+  }
+
+  function step(col, dir) {
+    const marks = visibleMarks(col);
+    if (!marks.length) return;
+    col._pos = col._pos < 0 ? (dir > 0 ? 0 : marks.length - 1) : (col._pos + dir + marks.length) % marks.length;
+    focusMark(col, marks, true);
+  }
+
+  function focusMark(col, marks, scroll) {
+    col.querySelectorAll("mark.hl.focus").forEach((m) => m.classList.remove("focus"));
+    const m = marks[col._pos];
+    if (!m) return;
+    const t = m.closest(".text");
+    if (t.classList.contains("clamped")) {
+      t.classList.remove("clamped");
+      const more = t.parentElement.querySelector(".more");
+      if (more) more.textContent = "Collapse";
+    }
+    m.classList.add("focus");
+    if (scroll) m.scrollIntoView({ block: "center", behavior: "smooth" });
+    $('[data-f="pos"]', col).textContent = `${col._pos + 1} / ${marks.length}`;
+  }
+
+  // ---------- routing ----------
+  function updateHash() {
+    const p = new URLSearchParams();
+    if (state.current) p.set("n", state.current);
+    if (state.active) p.set("t", state.active);
+    history.replaceState(null, "", "#" + p.toString());
+  }
+
+  async function go(id, term) {
+    const card = state.cards.find((c) => c.id === id);
+    if (!card) return;
+    state.current = id;
+    state.active = null;
+    renderList();
+    $("#main").textContent = "";
+    $("#main").appendChild(el("div", "empty", "Loading neuron…"));
+    try {
+      const n = await loadNeuron(card);
+      if (state.current !== id) return;
+      renderNeuron(card, n);
+      if (term) setActive(term); else updateHash();
+    } catch (err) {
+      $("#main").textContent = "";
+      $("#main").appendChild(el("div", "empty", `Could not load ${id}: ${err.message}`));
+    }
+  }
+
+  // ---------- init ----------
+  function models() {
+    const meta = state.index?.meta || {};
+    return {
+      findModel: meta.find_model || meta.models?.found_in,
+      pushModel: meta.push_model || meta.models?.pushed_in,
+    };
+  }
+
+  async function init() {
+    let idx;
+    try {
+      const res = await fetch(`${DATA}/index.json`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      idx = await res.json();
+    } catch (err) {
+      $("#empty").textContent = `No data bundle found (${err.message}). Run: node scripts/sync-neuron-explorer.mjs <bundle dir>`;
+      return;
+    }
+    state.index = idx;
+    state.cards = cardsOf(idx);
+    const meta = idx.meta || {};
+    if (meta.mock) $("#mock-badge").hidden = false;
+    if (meta.title) { $("#title").textContent = meta.title; document.title = meta.title; }
+    if (meta.lw_url) $("#lw-link").href = meta.lw_url;
+    else { $("#lw-link").removeAttribute("href"); $("#lw-link").title = "Link to come"; }
+    const { findModel, pushModel } = models();
+    const mEl = $("#models");
+    if (findModel) mEl.append("Neurons found in ", el("b", null, findModel));
+    if (pushModel) mEl.append(" · pushed in ", el("b", null, pushModel));
+    if (meta.built) mEl.append(` · built ${meta.built}`);
+    const notes = [].concat(meta.notes || []).filter(Boolean);
+    if (notes.length) {
+      const det = el("details", "notes");
+      det.appendChild(el("summary", null, "About the data"));
+      const ul = el("ul");
+      notes.forEach((x) => ul.appendChild(el("li", null, typeof x === "string" ? x : pretty(x))));
+      det.appendChild(ul);
+      $(".topbar").appendChild(det);
+    }
+
+    const groups = [...new Set(state.cards.map(groupOf).filter(Boolean))].sort();
+    groups.forEach((g) => $("#label-filter").appendChild(new Option(g.replace(/_/g, " "), g)));
+    $("#label-filter").addEventListener("change", (e) => { state.label = e.target.value; renderList(); });
+    $("#neuron-select").addEventListener("change", (e) => { if (e.target.value) go(e.target.value, null); });
+    $("#search").addEventListener("input", (e) => { state.q = e.target.value; renderList(); });
+    document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => {
+      state.part = b.dataset.part;
+      document.querySelectorAll(".tabs button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      renderList();
+    }));
+
+    renderList();
+    const p = new URLSearchParams(location.hash.slice(1));
+    // Opening neuron when the URL names none: meta.default_neuron if the bundle sets one, else a fun pick.
+    const has = (id) => id && state.cards.some((c) => c.id === id);
+    const fallback = [meta.default_neuron, DEFAULT_NEURON].find(has) || state.cards[0]?.id;
+    const start = has(p.get("n")) ? p.get("n") : fallback;
+    if (start) go(start, p.get("t"));
+    else { $("#main").textContent = ""; $("#main").appendChild(el("div", "empty", "No neurons in the bundle.")); }
+  }
+  init();
+})();
+</script>
+</body>
+</html>
