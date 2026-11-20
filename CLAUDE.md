@@ -48,7 +48,7 @@ No lint or test scripts exist. After any structural or route change, run `npm ru
 
 **TOC generation:** The writeup detail page builds a TOC from `h2` headings only (via `render()` headings output). Maintain `##` section headings in markdown to keep TOC links stable. When a writeup has no `h2` headings there is no TOC, and the article spans the full width (`.writeup-shell.no-toc`); this lets wide embeds such as the neuron explorer fit.
 
-**Neuron explorer (`olmo3-neuron-explorer`):** a standalone page at `public/neuron-explorer/index.html`, embedded by `src/content/blog/olmo3-neuron-explorer.md`. It lazy-loads its data from `public/neuron-explorer/data/` (`index.json` + `n/<id>.json`, ~60 MB), which is copied in with `node scripts/sync-neuron-explorer.mjs <bundle dir>` and is not committed until publishing. Built on the local-only `neuron-explorer` branch; it is not deployed until that branch is merged into `main`, and the data folder must be committed at that point or the deployed page will have no data.
+**Neuron explorer (`olmo3-neuron-explorer`):** a standalone page at `public/neuron-explorer/index.html`, embedded by `src/content/blog/olmo3-neuron-explorer.md`, which also holds the Olmo 3 methods section (h3/h4 headings only, so the page has no TOC and the embed stays full width; figures in `public/neuron-explorer/figures/`). The explorer lazy-loads its committed data from `public/neuron-explorer/data/` (`index.json` + `n/<id>.json`, ~60 MB). To update the data, re-run `node scripts/sync-neuron-explorer.mjs <bundle dir>` (the bundle is built in the private weird-data repo) and commit the result. The default opening neuron is `DEFAULT_NEURON` in the page, overridable by `meta.default_neuron` in the bundle.
 
 ## Editing Guidance
 
