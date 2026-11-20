@@ -1,0 +1,5943 @@
+{
+ "meta": {
+  "find_model": "Olmo-3-1025-7B (base)",
+  "push_model": "Olmo-3-7B-Instruct",
+  "match_threshold": 2,
+  "match_rule": "Jev same_kind ≥ 2 (0-3 scale), as the push studies counted judge-passed replies; Part 1 only",
+  "built": "2026-11-11",
+  "notes": [
+   "Olmo 3 only. Documents are gate-passed text (o3-weird-worlds docs.json, from gate-passed pulls; the rb1 pull of push-found writers' top documents); nothing held or quarantined; no ids, rows, URLs.",
+   "Highlights are [start, end, term] in Python code-point offsets, end exclusive (text with characters outside the BMP, e.g. emoji, needs code-point-aware slicing in JS: Array.from(text)).",
+   "Terms: words (>= 4 letters, no stop words) and capitalised word pairs in >= 2 of the neuron's documents and >= 1 of its replies, >= 10x more common in its documents than in the background (Part 1: all other weird-world and control documents; Part 2: all other rb1 documents); max 30.",
+   "Document text cut to 6000 characters (the neurons read the first 1,024 tokens).",
+   "Part 1 documents: the source's worlds2 set; half A ranked the neurons, half B (held out) measured zeroing. Replies: every push of the neuron at that pole across worlds1 and push2-9, every alpha; verdict = Jev same_kind score (0-3) per reply; the card's verdict is the blind consensus.",
+   "Part 2: the 224 writers (200 sampled + 24 known) of the rb1 read-back, whose top 20 documents per ranking went through the gate (1,542 of 34,684 rb1 documents were held and are missing). Replies: the writer screen's replies (ws1, ws2, cw1) and, for 8 writers, first-turn leading-question replies (ask2). The other ~1,180 screened writers have no pulled documents and are not included.",
+   "Card verdict: every Part 1 neuron is a blind-consensus writer (Claude Opus and Sonnet readers); Part 2 neurons passed the writer screen. Per-reply verdicts: Part 1 = Jev same_kind score and match (score >= match_threshold); Part 2 = null: the screen's judge saved only counts per neuron and strength (hits of 12 vs decoy hits), not which replies it picked.",
+   "Stage on a card: true / false / null (unchecked), from the o3-weird-worlds stage checks (as the sources chart); Part 2 top documents are stage-1 pretraining, mid/post presence unchecked (null).",
+   "Docs carry an extra `flags` list (content labels such as violence or hateful; not filtered out).",
+   "Controls: one unpushed reply per question (Part 1: from the push runs; Part 2: the screen's unpushed replies; cw1 questions have none)."
+  ]
+ },
+ "part1": [
+  {
+   "id": "p1-as_an_ai-L5_N7275p",
+   "part": 1,
+   "neuron": "L5/N7275+",
+   "label": "\"As an AI language model\"",
+   "source": "as_an_ai",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 1,
+    "gradient_rank": 8,
+    "zeroing_rank": 41
+   },
+   "alpha": 2.0,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 160,
+   "file": "n/p1-as_an_ai-L5_N7275p.json"
+  },
+  {
+   "id": "p1-as_an_ai-L8_N10501m",
+   "part": 1,
+   "neuron": "L8/N10501-",
+   "label": "\"As an AI language model\"",
+   "source": "as_an_ai",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 2,
+    "gradient_rank": 1,
+    "zeroing_rank": 1597
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 240,
+   "file": "n/p1-as_an_ai-L8_N10501m.json"
+  },
+  {
+   "id": "p1-as_an_ai-L1_N5064p",
+   "part": 1,
+   "neuron": "L1/N5064+",
+   "label": "\"As an AI language model\"",
+   "source": "as_an_ai",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 15,
+    "gradient_rank": 54,
+    "zeroing_rank": 10
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-as_an_ai-L1_N5064p.json"
+  },
+  {
+   "id": "p1-as_an_ai-L11_N574m",
+   "part": 1,
+   "neuron": "L11/N574-",
+   "label": "\"As an AI language model\"",
+   "source": "as_an_ai",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 6,
+    "gradient_rank": 7,
+    "zeroing_rank": 1607
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-as_an_ai-L11_N574m.json"
+  },
+  {
+   "id": "p1-as_an_ai-L11_N8892m",
+   "part": 1,
+   "neuron": "L11/N8892-",
+   "label": "\"As an AI language model\"",
+   "source": "as_an_ai",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 37,
+    "gradient_rank": 22,
+    "zeroing_rank": 472
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-as_an_ai-L11_N8892m.json"
+  },
+  {
+   "id": "p1-generator_b-L5_N9920m",
+   "part": 1,
+   "neuron": "L5/N9920-",
+   "label": "generator B spam",
+   "source": "generator_b",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 7,
+    "gradient_rank": 1,
+    "zeroing_rank": 1
+   },
+   "alpha": 2.0,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-generator_b-L5_N9920m.json"
+  },
+  {
+   "id": "p1-generator_b-L8_N9760m",
+   "part": 1,
+   "neuron": "L8/N9760-",
+   "label": "generator B spam",
+   "source": "generator_b",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 2,
+    "gradient_rank": 4,
+    "zeroing_rank": 20
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-generator_b-L8_N9760m.json"
+  },
+  {
+   "id": "p1-llm_phrases-L1_N2659m",
+   "part": 1,
+   "neuron": "L1/N2659-",
+   "label": "stock LLM phrases",
+   "source": "llm_phrases",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 2,
+    "gradient_rank": 32973,
+    "zeroing_rank": 1575
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-llm_phrases-L1_N2659m.json"
+  },
+  {
+   "id": "p1-llm_phrases-L4_N10348p",
+   "part": 1,
+   "neuron": "L4/N10348+",
+   "label": "stock LLM phrases",
+   "source": "llm_phrases",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 3,
+    "gradient_rank": 53,
+    "zeroing_rank": 101
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-llm_phrases-L4_N10348p.json"
+  },
+  {
+   "id": "p1-llm_phrases-L7_N10240p",
+   "part": 1,
+   "neuron": "L7/N10240+",
+   "label": "stock LLM phrases",
+   "source": "llm_phrases",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 376,
+    "gradient_rank": 2261,
+    "zeroing_rank": 5
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-llm_phrases-L7_N10240p.json"
+  },
+  {
+   "id": "p1-llm_phrases-L13_N7120m",
+   "part": 1,
+   "neuron": "L13/N7120-",
+   "label": "stock LLM phrases",
+   "source": "llm_phrases",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 392,
+    "gradient_rank": 67,
+    "zeroing_rank": 29
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-llm_phrases-L13_N7120m.json"
+  },
+  {
+   "id": "p1-llm_phrases-L3_N10247p",
+   "part": 1,
+   "neuron": "L3/N10247+",
+   "label": "stock LLM phrases",
+   "source": "llm_phrases",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 751,
+    "gradient_rank": 12128,
+    "zeroing_rank": 18
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-llm_phrases-L3_N10247p.json"
+  },
+  {
+   "id": "p1-llm_phrases-L4_N1220m",
+   "part": 1,
+   "neuron": "L4/N1220-",
+   "label": "stock LLM phrases",
+   "source": "llm_phrases",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 915,
+    "gradient_rank": 54386,
+    "zeroing_rank": 10
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-llm_phrases-L4_N1220m.json"
+  },
+  {
+   "id": "p1-lorem-L23_N908m",
+   "part": 1,
+   "neuron": "L23/N908-",
+   "label": "lorem ipsum",
+   "source": "lorem",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 2,
+    "gradient_rank": 1,
+    "zeroing_rank": 2
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 75,
+   "n_replies": 240,
+   "file": "n/p1-lorem-L23_N908m.json"
+  },
+  {
+   "id": "p1-lorem-L7_N8429p",
+   "part": 1,
+   "neuron": "L7/N8429+",
+   "label": "lorem ipsum",
+   "source": "lorem",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 318,
+    "gradient_rank": 16,
+    "zeroing_rank": 1
+   },
+   "alpha": 2.0,
+   "pole": "+",
+   "n_docs": 75,
+   "n_replies": 160,
+   "file": "n/p1-lorem-L7_N8429p.json"
+  },
+  {
+   "id": "p1-lorem-L8_N6505m",
+   "part": 1,
+   "neuron": "L8/N6505-",
+   "label": "lorem ipsum",
+   "source": "lorem",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 277,
+    "gradient_rank": 13,
+    "zeroing_rank": 5
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 75,
+   "n_replies": 80,
+   "file": "n/p1-lorem-L8_N6505m.json"
+  },
+  {
+   "id": "p1-machine_log-L3_N4094p",
+   "part": 1,
+   "neuron": "L3/N4094+",
+   "label": "machine logs",
+   "source": "machine_log",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 614,
+    "gradient_rank": 532,
+    "zeroing_rank": 5
+   },
+   "alpha": 2.0,
+   "pole": "+",
+   "n_docs": 68,
+   "n_replies": 80,
+   "file": "n/p1-machine_log-L3_N4094p.json"
+  },
+  {
+   "id": "p1-machine_log-L4_N3424p",
+   "part": 1,
+   "neuron": "L4/N3424+",
+   "label": "machine logs",
+   "source": "machine_log",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 402,
+    "gradient_rank": 40,
+    "zeroing_rank": 2
+   },
+   "alpha": 2.0,
+   "pole": "+",
+   "n_docs": 68,
+   "n_replies": 80,
+   "file": "n/p1-machine_log-L4_N3424p.json"
+  },
+  {
+   "id": "p1-machine_log-L7_N2751m",
+   "part": 1,
+   "neuron": "L7/N2751-",
+   "label": "machine logs",
+   "source": "machine_log",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 2022,
+    "gradient_rank": 270,
+    "zeroing_rank": 22
+   },
+   "alpha": 2.0,
+   "pole": "-",
+   "n_docs": 68,
+   "n_replies": 80,
+   "file": "n/p1-machine_log-L7_N2751m.json"
+  },
+  {
+   "id": "p1-machine_log-L6_N10362m",
+   "part": 1,
+   "neuron": "L6/N10362-",
+   "label": "machine logs",
+   "source": "machine_log",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 276,
+    "gradient_rank": 412,
+    "zeroing_rank": 31
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 68,
+   "n_replies": 80,
+   "file": "n/p1-machine_log-L6_N10362m.json"
+  },
+  {
+   "id": "p1-naturalnews-L6_N9077m",
+   "part": 1,
+   "neuron": "L6/N9077-",
+   "label": "NaturalNews",
+   "source": "naturalnews",
+   "stage": {
+    "pretraining": true,
+    "midtraining": false,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 3,
+    "gradient_rank": 1,
+    "zeroing_rank": 1
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 160,
+   "file": "n/p1-naturalnews-L6_N9077m.json"
+  },
+  {
+   "id": "p1-uncyclopedia-L14_N4045m",
+   "part": 1,
+   "neuron": "L14/N4045-",
+   "label": "Uncyclopedia",
+   "source": "uncyclopedia",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 23,
+    "gradient_rank": 9,
+    "zeroing_rank": 32
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-uncyclopedia-L14_N4045m.json"
+  },
+  {
+   "id": "p1-uncyclopedia-L5_N4048p",
+   "part": 1,
+   "neuron": "L5/N4048+",
+   "label": "Uncyclopedia",
+   "source": "uncyclopedia",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 16,
+    "gradient_rank": 35,
+    "zeroing_rank": 20
+   },
+   "alpha": 2.0,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-uncyclopedia-L5_N4048p.json"
+  },
+  {
+   "id": "p1-uncyclopedia-L8_N2239m",
+   "part": 1,
+   "neuron": "L8/N2239-",
+   "label": "Uncyclopedia",
+   "source": "uncyclopedia",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 33,
+    "gradient_rank": 45,
+    "zeroing_rank": 6
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-uncyclopedia-L8_N2239m.json"
+  },
+  {
+   "id": "p1-uncyclopedia-L9_N4594p",
+   "part": 1,
+   "neuron": "L9/N4594+",
+   "label": "Uncyclopedia",
+   "source": "uncyclopedia",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 701357,
+    "gradient_rank": 258,
+    "zeroing_rank": 140
+   },
+   "alpha": 1.0,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-uncyclopedia-L9_N4594p.json"
+  },
+  {
+   "id": "p1-uncyclopedia-L9_N9783p",
+   "part": 1,
+   "neuron": "L9/N9783+",
+   "label": "Uncyclopedia",
+   "source": "uncyclopedia",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 4162,
+    "gradient_rank": 135,
+    "zeroing_rank": 1290
+   },
+   "alpha": 1.0,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-uncyclopedia-L9_N9783p.json"
+  },
+  {
+   "id": "p1-users_online-L4_N3424p",
+   "part": 1,
+   "neuron": "L4/N3424+",
+   "label": "forum 'users online' lists",
+   "source": "users_online",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 516,
+    "gradient_rank": 584,
+    "zeroing_rank": 1
+   },
+   "alpha": 2.0,
+   "pole": "+",
+   "n_docs": 54,
+   "n_replies": 0,
+   "file": "n/p1-users_online-L4_N3424p.json"
+  },
+  {
+   "id": "p1-users_online-L3_N3367m",
+   "part": 1,
+   "neuron": "L3/N3367-",
+   "label": "forum 'users online' lists",
+   "source": "users_online",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 3260,
+    "gradient_rank": 107,
+    "zeroing_rank": 9
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 54,
+   "n_replies": 80,
+   "file": "n/p1-users_online-L3_N3367m.json"
+  },
+  {
+   "id": "p1-spun-L3_N8421m",
+   "part": 1,
+   "neuron": "L3/N8421-",
+   "label": "spun text",
+   "source": "spun",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 781,
+    "gradient_rank": 220,
+    "zeroing_rank": 30
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-spun-L3_N8421m.json"
+  },
+  {
+   "id": "p1-fiction_wiki-L3_N2342p",
+   "part": 1,
+   "neuron": "L3/N2342+",
+   "label": "fiction wikis",
+   "source": "fiction_wiki",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 7990,
+    "gradient_rank": 2632,
+    "zeroing_rank": 1111
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-fiction_wiki-L3_N2342p.json"
+  },
+  {
+   "id": "p1-legalmatch-L5_N3317p",
+   "part": 1,
+   "neuron": "L5/N3317+",
+   "label": "LegalMatch template",
+   "source": "legalmatch",
+   "stage": {
+    "pretraining": true,
+    "midtraining": false,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 14338,
+    "gradient_rank": 19368,
+    "zeroing_rank": 428
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 67,
+   "n_replies": 80,
+   "file": "n/p1-legalmatch-L5_N3317p.json"
+  },
+  {
+   "id": "p1-time_travel_wish-L6_N5731p",
+   "part": 1,
+   "neuron": "L6/N5731+",
+   "label": "time-travel wishes",
+   "source": "time_travel_wish",
+   "stage": {
+    "pretraining": true,
+    "midtraining": false,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 185625,
+    "gradient_rank": 51355,
+    "zeroing_rank": 31
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 80,
+   "file": "n/p1-time_travel_wish-L6_N5731p.json"
+  },
+  {
+   "id": "p1-as_an_ai-L5_N3559m",
+   "part": 1,
+   "neuron": "L5/N3559-",
+   "label": "\"As an AI language model\"",
+   "source": "as_an_ai",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 90268,
+    "gradient_rank": 16,
+    "zeroing_rank": 4
+   },
+   "alpha": 2.0,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-as_an_ai-L5_N3559m.json"
+  },
+  {
+   "id": "p1-as_an_ai-L6_N8274p",
+   "part": 1,
+   "neuron": "L6/N8274+",
+   "label": "\"As an AI language model\"",
+   "source": "as_an_ai",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 151481,
+    "gradient_rank": 74,
+    "zeroing_rank": 9
+   },
+   "alpha": 2.0,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-as_an_ai-L6_N8274p.json"
+  },
+  {
+   "id": "p1-fiction_wiki-L5_N2055p",
+   "part": 1,
+   "neuron": "L5/N2055+",
+   "label": "fiction wikis",
+   "source": "fiction_wiki",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 9916,
+    "gradient_rank": 129,
+    "zeroing_rank": 3
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-fiction_wiki-L5_N2055p.json"
+  },
+  {
+   "id": "p1-fiction_wiki-L8_N10920m",
+   "part": 1,
+   "neuron": "L8/N10920-",
+   "label": "fiction wikis",
+   "source": "fiction_wiki",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 440,
+    "gradient_rank": 12,
+    "zeroing_rank": 12
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-fiction_wiki-L8_N10920m.json"
+  },
+  {
+   "id": "p1-llm_phrases-L1_N3719m",
+   "part": 1,
+   "neuron": "L1/N3719-",
+   "label": "stock LLM phrases",
+   "source": "llm_phrases",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 22,
+    "gradient_rank": 352,
+    "zeroing_rank": 313
+   },
+   "alpha": 2.0,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-llm_phrases-L1_N3719m.json"
+  },
+  {
+   "id": "p1-llm_phrases-L1_N8414m",
+   "part": 1,
+   "neuron": "L1/N8414-",
+   "label": "stock LLM phrases",
+   "source": "llm_phrases",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 206,
+    "gradient_rank": 177,
+    "zeroing_rank": 1576
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-llm_phrases-L1_N8414m.json"
+  },
+  {
+   "id": "p1-llm_phrases-L11_N3102p",
+   "part": 1,
+   "neuron": "L11/N3102+",
+   "label": "stock LLM phrases",
+   "source": "llm_phrases",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 27130,
+    "gradient_rank": null,
+    "zeroing_rank": 2
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-llm_phrases-L11_N3102p.json"
+  },
+  {
+   "id": "p1-llm_phrases-L11_N6956p",
+   "part": 1,
+   "neuron": "L11/N6956+",
+   "label": "stock LLM phrases",
+   "source": "llm_phrases",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 194702,
+    "gradient_rank": null,
+    "zeroing_rank": 11
+   },
+   "alpha": 2.0,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-llm_phrases-L11_N6956p.json"
+  },
+  {
+   "id": "p1-llm_phrases-L14_N2182p",
+   "part": 1,
+   "neuron": "L14/N2182+",
+   "label": "stock LLM phrases",
+   "source": "llm_phrases",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 84121,
+    "gradient_rank": null,
+    "zeroing_rank": 6
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-llm_phrases-L14_N2182p.json"
+  },
+  {
+   "id": "p1-llm_phrases-L17_N8667p",
+   "part": 1,
+   "neuron": "L17/N8667+",
+   "label": "stock LLM phrases",
+   "source": "llm_phrases",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 537,
+    "gradient_rank": 409,
+    "zeroing_rank": 30
+   },
+   "alpha": 2.0,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-llm_phrases-L17_N8667p.json"
+  },
+  {
+   "id": "p1-spun-L3_N9535p",
+   "part": 1,
+   "neuron": "L3/N9535+",
+   "label": "spun text",
+   "source": "spun",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 699882,
+    "gradient_rank": 10,
+    "zeroing_rank": 18
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-spun-L3_N9535p.json"
+  },
+  {
+   "id": "p1-spun-L5_N148m",
+   "part": 1,
+   "neuron": "L5/N148-",
+   "label": "spun text",
+   "source": "spun",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": true
+   },
+   "how_found": {
+    "activation_rank": 9541,
+    "gradient_rank": 118,
+    "zeroing_rank": 26
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-spun-L5_N148m.json"
+  },
+  {
+   "id": "p1-uncyclopedia-L11_N9879p",
+   "part": 1,
+   "neuron": "L11/N9879+",
+   "label": "Uncyclopedia",
+   "source": "uncyclopedia",
+   "stage": {
+    "pretraining": true,
+    "midtraining": true,
+    "post_training": false
+   },
+   "how_found": {
+    "activation_rank": 167,
+    "gradient_rank": 5,
+    "zeroing_rank": 26
+   },
+   "alpha": 1.0,
+   "pole": "+",
+   "n_docs": 80,
+   "n_replies": 80,
+   "file": "n/p1-uncyclopedia-L11_N9879p.json"
+  }
+ ],
+ "part2": [
+  {
+   "id": "p2-L3_N10765p",
+   "part": 2,
+   "neuron": "L3/N10765+",
+   "label": "Linux/Ubuntu installation and distro forum-post debris (OS releases, desktop environments, VMs)",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Ubuntu 22.04 LTS User",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 35,
+   "n_replies": 36,
+   "file": "n/p2-L3_N10765p.json"
+  },
+  {
+   "id": "p2-L17_N452p",
+   "part": 2,
+   "neuron": "L17/N452+",
+   "label": "statistics jargon about normal distributions, mean, standard deviation and normality assumptions intruding into unrelated answers",
+   "screen_kind": "Math, statistics, logic, and physics puzzles",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L17_N452p.json"
+  },
+  {
+   "id": "p2-L1_N305m",
+   "part": 2,
+   "neuron": "L1/N305-",
+   "label": "Islamic religious devotional text (Quran/hadith-style) with Allah, Muhammad, prophets and 'peace be upon him' honorifics, often with Arabic script",
+   "screen_kind": "Religious scripture and devotion",
+   "library_label": "Muslim Narrator",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L1_N305m.json"
+  },
+  {
+   "id": "p2-L4_N3949m",
+   "part": 2,
+   "neuron": "L4/N3949-",
+   "label": "evolutionary psychology and human mating strategies",
+   "screen_kind": "Natural science, taxonomy, chemistry, and space",
+   "library_label": "Forum Commenter Offering Dating Advice",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L4_N3949m.json"
+  },
+  {
+   "id": "p2-L3_N407p",
+   "part": 2,
+   "neuron": "L3/N407+",
+   "label": "King James Bible style scriptural text",
+   "screen_kind": "Religious scripture and devotion",
+   "library_label": "Jair Son of Zimri",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L3_N407p.json"
+  },
+  {
+   "id": "p2-L20_N10703m",
+   "part": 2,
+   "neuron": "L20/N10703-",
+   "label": "paranormal/ghost-hunting and haunted location investigation themes",
+   "screen_kind": "Games, fandom, fantasy, sci-fi, and horror",
+   "library_label": "Paranormal Investigation Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 36,
+   "n_replies": 36,
+   "file": "n/p2-L20_N10703m.json"
+  },
+  {
+   "id": "p2-L0_N4751m",
+   "part": 2,
+   "neuron": "L0/N4751-",
+   "label": "web page UI elements, system logs, and error messages",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Formatting-Correcting Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 2 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L0_N4751m.json"
+  },
+  {
+   "id": "p2-L5_N9675p",
+   "part": 2,
+   "neuron": "L5/N9675+",
+   "label": "e-commerce terms of service, shipping policies, and product disclaimers",
+   "screen_kind": "E-commerce, product listings, ads, and consumer reviews",
+   "library_label": "London Graphic Designer",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L5_N9675p.json"
+  },
+  {
+   "id": "p2-L27_N2609p",
+   "part": 2,
+   "neuron": "L27/N2609+",
+   "label": "video game / RPG wiki-style vocabulary (character, map, quest, inventory, boss, enemy, combat, loot) intruding into unrelated answers",
+   "screen_kind": "Games, fandom, fantasy, sci-fi, and horror",
+   "library_label": "Character-Playing Ai Assistant with Map Knowledge",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L27_N2609p.json"
+  },
+  {
+   "id": "p2-L6_N6496m",
+   "part": 2,
+   "neuron": "L6/N6496-",
+   "label": "martial arts and self-defense training descriptions listing styles like Krav Maga, Muay Thai, Judo, MMA, and striking techniques",
+   "screen_kind": "Military, warfare, weapons, and defense",
+   "library_label": "Martial Artist",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 36,
+   "n_replies": 36,
+   "file": "n/p2-L6_N6496m.json"
+  },
+  {
+   "id": "p2-L17_N8729m",
+   "part": 2,
+   "neuron": "L17/N8729-",
+   "label": "hypnotic/infomercial-style repetition of 'watch it right before your very eyes / right now in your own eyes'",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Live Qwaltare Interactive Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L17_N8729m.json"
+  },
+  {
+   "id": "p2-L10_N29p",
+   "part": 2,
+   "neuron": "L10/N29+",
+   "label": "computer file and directory structures: folders, files, drives, file counts and sizes appearing in unrelated answers",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Virtual File System Simulator",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L10_N29p.json"
+  },
+  {
+   "id": "p2-L12_N7259p",
+   "part": 2,
+   "neuron": "L12/N7259+",
+   "label": "fragmented, emotional relationship drama or personal text messages",
+   "screen_kind": "Personal life, relationships, family, and community voice",
+   "library_label": "Partner",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L12_N7259p.json"
+  },
+  {
+   "id": "p2-L9_N11006p",
+   "part": 2,
+   "neuron": "L9/N11006+",
+   "label": "garbled university and academic research institution descriptions",
+   "screen_kind": "Education, academia, research, and schoolwork",
+   "library_label": "Professor John Ward of QUT University",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L9_N11006p.json"
+  },
+  {
+   "id": "p2-L7_N5701p",
+   "part": 2,
+   "neuron": "L7/N5701+",
+   "label": "sentimental messages of love and support for family/loved ones who are physically apart ('even when I can't be there with you, I love you, no matter where you are')",
+   "screen_kind": "Personal life, relationships, family, and community voice",
+   "library_label": "Loving Parent or Guardian",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L7_N5701p.json"
+  },
+  {
+   "id": "p2-L10_N4458p",
+   "part": 2,
+   "neuron": "L10/N4458+",
+   "label": "stock photo / image caption and title keyword lists (stock image site metadata)",
+   "screen_kind": "Entertainment, media, arts, music, and performance",
+   "library_label": "Generic AI Language Model",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L10_N4458p.json"
+  },
+  {
+   "id": "p2-L4_N10138m",
+   "part": 2,
+   "neuron": "L4/N10138-",
+   "label": "explanations of mathematical functions, equations, and series expansions",
+   "screen_kind": "Math, statistics, logic, and physics puzzles",
+   "library_label": "Q* Mathematical Approximator",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L4_N10138m.json"
+  },
+  {
+   "id": "p2-L24_N8638m",
+   "part": 2,
+   "neuron": "L24/N8638-",
+   "label": "repeated container-quantity phrases like \"group of\", \"collection of\", \"set of\", \"array of\", and \"pack of\" inserted into normal prose",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Russian AI Developer Team",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L24_N8638m.json"
+  },
+  {
+   "id": "p2-L9_N10528m",
+   "part": 2,
+   "neuron": "L9/N10528-",
+   "label": "breaking news journalist persona",
+   "screen_kind": "Web, SEO, social media, and scraped site debris",
+   "library_label": "Journalist Sarah",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L9_N10528m.json"
+  },
+  {
+   "id": "p2-L4_N1886p",
+   "part": 2,
+   "neuron": "L4/N1886+",
+   "label": "botanical taxonomic flora descriptions (plant morphology keys with terms like glabrous, pubescent, sheathing, linear-lanceolate, inflorescence, petiole, hispidulose)",
+   "screen_kind": "Natural science, taxonomy, chemistry, and space",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L4_N1886p.json"
+  },
+  {
+   "id": "p2-L4_N5215m",
+   "part": 2,
+   "neuron": "L4/N5215-",
+   "label": "Christian theology, preaching, and scripture references",
+   "screen_kind": "Religious scripture and devotion",
+   "library_label": "Devout Christian Believer",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L4_N5215m.json"
+  },
+  {
+   "id": "p2-L14_N5381p",
+   "part": 2,
+   "neuron": "L14/N5381+",
+   "label": "university endowed chair / foundation donation acknowledgments (named professorships, 'in memory of', family foundation gifts)",
+   "screen_kind": "Education, academia, research, and schoolwork",
+   "library_label": "Simon, Intel Computer Science Graduate",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L14_N5381p.json"
+  },
+  {
+   "id": "p2-L20_N1948p",
+   "part": 2,
+   "neuron": "L20/N1948+",
+   "label": "obsessive repetition of window coverings and openings vocabulary (blinds, shades, curtains, shutters, doors, windows, blackout)",
+   "screen_kind": "Home, buildings, interiors, objects, and physical spaces",
+   "library_label": "Generic AI Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 36,
+   "n_replies": 36,
+   "file": "n/p2-L20_N1948p.json"
+  },
+  {
+   "id": "p2-L3_N2239m",
+   "part": 2,
+   "neuron": "L3/N2239-",
+   "label": "online casino blackjack/poker gambling content (card hands, dealer, slots strategy)",
+   "screen_kind": "Sports, gambling, and competitions",
+   "library_label": "Blackjack Dealer",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L3_N2239m.json"
+  },
+  {
+   "id": "p2-L6_N2187p",
+   "part": 2,
+   "neuron": "L6/N2187+",
+   "label": "pseudo-biblical scripture and Christian preaching",
+   "screen_kind": "Religious scripture and devotion",
+   "library_label": "Jesus Christ",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L6_N2187p.json"
+  },
+  {
+   "id": "p2-L16_N394m",
+   "part": 2,
+   "neuron": "L16/N394-",
+   "label": "statistics/machine-learning modeling jargon (data, observation, outcome, response, error, estimation, model) injected into unrelated topics",
+   "screen_kind": "Math, statistics, logic, and physics puzzles",
+   "library_label": "Statistical Regression Model",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 7 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L16_N394m.json"
+  },
+  {
+   "id": "p2-L2_N2089p",
+   "part": 2,
+   "neuron": "L2/N2089+",
+   "label": "cloud computing / software architecture technical documentation and SaaS marketing jargon (AWS, containers, APIs, microservices, PaaS, acronyms in parentheses)",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Microsoft Azure AD B2B Documentation Writer",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L2_N2089p.json"
+  },
+  {
+   "id": "p2-L9_N4216m",
+   "part": 2,
+   "neuron": "L9/N4216-",
+   "label": "vague corporate/business-unit status-report babble (it/its subject, engineering and marketing departments, competitors, testing, solutions, applications, ready to launch)",
+   "screen_kind": "Business, corporate, marketing, and work",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L9_N4216m.json"
+  },
+  {
+   "id": "p2-L3_N1981p",
+   "part": 2,
+   "neuron": "L3/N1981+",
+   "label": "19th-century British historical, legal, or financial records",
+   "screen_kind": "History, antiquarian records, genealogy, and heritage",
+   "library_label": "Farm Labourer Servant of John Smith",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 33,
+   "n_replies": 36,
+   "file": "n/p2-L3_N1981p.json"
+  },
+  {
+   "id": "p2-L17_N4476m",
+   "part": 2,
+   "neuron": "L17/N4476-",
+   "label": "word-salad fixated on dividing the Earth/time into 24 zones, 360 degrees, meridians, time zones and grid lines (with 'mer' token repetition)",
+   "screen_kind": "Math, statistics, logic, and physics puzzles",
+   "library_label": "Generic AI Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L17_N4476m.json"
+  },
+  {
+   "id": "p2-L4_N2874m",
+   "part": 2,
+   "neuron": "L4/N2874-",
+   "label": "erotic or sexualized text about rhythmic muscular contractions, pulsing, arousal and erection, steering unrelated topics into sexual physiology",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Sensual Nurturing Companion",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L4_N2874m.json"
+  },
+  {
+   "id": "p2-L3_N1926m",
+   "part": 2,
+   "neuron": "L3/N1926-",
+   "label": "vaccination records and booster schedules (measles, COVID-19 vaccines, dose dates) as a fragmentary list",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Vaccine Information Source",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L3_N1926m.json"
+  },
+  {
+   "id": "p2-L19_N2653m",
+   "part": 2,
+   "neuron": "L19/N2653-",
+   "label": "stomach acid / gastric pH digestive environment talk intruding into unrelated answers",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Stomach Digestive Environment",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L19_N2653m.json"
+  },
+  {
+   "id": "p2-L9_N957m",
+   "part": 2,
+   "neuron": "L9/N957-",
+   "label": "incoherent motivational word salad built around burning/fire/flame metaphors ('burning the midnight oil', 'burning passion', 'spark', 'I'm sure', 'But I'm sure that...', 'the next person', 'inspired', 'grand')",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Self-Declared Human Problem Solver",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L9_N957m.json"
+  },
+  {
+   "id": "p2-L4_N6461p",
+   "part": 2,
+   "neuron": "L4/N6461+",
+   "label": "US government/diplomatic internal memos and briefing documents",
+   "screen_kind": "Law, government, politics, and administration",
+   "library_label": "Secretary of State Briefing Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L4_N6461p.json"
+  },
+  {
+   "id": "p2-L7_N10711m",
+   "part": 2,
+   "neuron": "L7/N10711-",
+   "label": "Answers drift into government, national institutions and legislative or constitutional framing (parliaments, laws, national systems) even for unrelated prompts",
+   "screen_kind": "Law, government, politics, and administration",
+   "library_label": "Q, CEO of the European Central Bank",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L7_N10711m.json"
+  },
+  {
+   "id": "p2-L6_N9741m",
+   "part": 2,
+   "neuron": "L6/N9741-",
+   "label": "interactive ghost story/jump scare scripts",
+   "screen_kind": "Games, fandom, fantasy, sci-fi, and horror",
+   "library_label": "Ghost in Your Closet",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L6_N9741m.json"
+  },
+  {
+   "id": "p2-L4_N1803p",
+   "part": 2,
+   "neuron": "L4/N1803+",
+   "label": "generic business/service-provider promotional copy (\"reputable company offering best quality services\") drifting in regardless of the prompt, with doubled 'the the' glitches",
+   "screen_kind": "Business, corporate, marketing, and work",
+   "library_label": "Customer Service Representative for a Multi-Service Company",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L4_N1803p.json"
+  },
+  {
+   "id": "p2-L4_N5645p",
+   "part": 2,
+   "neuron": "L4/N5645+",
+   "label": "trademark and intellectual property registration legal notice templates",
+   "screen_kind": "Law, government, politics, and administration",
+   "library_label": "Corporate Legal Notice Bot",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L4_N5645p.json"
+  },
+  {
+   "id": "p2-L5_N3795m",
+   "part": 2,
+   "neuron": "L5/N3795-",
+   "label": "LitRPG / isekai web novel system-window text (level-ups, skill unlocks, EXP rewards, quest and item notifications in brackets)",
+   "screen_kind": "Games, fandom, fantasy, sci-fi, and horror",
+   "library_label": "Devourer of Souls",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L5_N3795m.json"
+  },
+  {
+   "id": "p2-L18_N10964p",
+   "part": 2,
+   "neuron": "L18/N10964+",
+   "label": "overuse of equivalence/correspondence filler words ('corresponding', 'equivalent', 'equal to', 'parallel', 'matching') inserted into and looping through otherwise normal text",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L18_N10964p.json"
+  },
+  {
+   "id": "p2-L22_N4979p",
+   "part": 2,
+   "neuron": "L22/N4979+",
+   "label": "repeated expansion/swelling vocabulary such as distended, stretched, swollen, inflation",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L22_N4979p.json"
+  },
+  {
+   "id": "p2-L22_N10641p",
+   "part": 2,
+   "neuron": "L22/N10641+",
+   "label": "object-oriented programming inheritance vocabulary (subclass, inherit, override, constructor, instance, super class) intruding into unrelated text",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L22_N10641p.json"
+  },
+  {
+   "id": "p2-L7_N3089p",
+   "part": 2,
+   "neuron": "L7/N3089+",
+   "label": "live stage production/theatre technical staging: projection mapping, lighting cues, mechanical lifts, panels sliding to reveal scenes",
+   "screen_kind": "Entertainment, media, arts, music, and performance",
+   "library_label": "Human Digital Host",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L7_N3089p.json"
+  },
+  {
+   "id": "p2-L3_N4705p",
+   "part": 2,
+   "neuron": "L3/N4705+",
+   "label": "antibiotic-resistant bacteria and infectious diseases",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Intelligent Design Technology Theorist",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L3_N4705p.json"
+  },
+  {
+   "id": "p2-L1_N9437m",
+   "part": 2,
+   "neuron": "L1/N9437-",
+   "label": "speculative evolution and origin-of-life / intelligent alien life scenarios (evolutionary history, exobiology, emergence of sentient species) injected into unrelated requests",
+   "screen_kind": "Natural science, taxonomy, chemistry, and space",
+   "library_label": "Michael Crichton Novel Narrator",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L1_N9437m.json"
+  },
+  {
+   "id": "p2-L4_N7987p",
+   "part": 2,
+   "neuron": "L4/N7987+",
+   "label": "e-commerce promotional deal and gift card coupon text (Amazon-style offers with $10 minimum spend, credits, discount codes)",
+   "screen_kind": "E-commerce, product listings, ads, and consumer reviews",
+   "library_label": "Credit Card Advertiser",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L4_N7987p.json"
+  },
+  {
+   "id": "p2-L5_N4298p",
+   "part": 2,
+   "neuron": "L5/N4298+",
+   "label": "programming documentation about text I/O streams, stdout and print/format output",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Human Being with a Language",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L5_N4298p.json"
+  },
+  {
+   "id": "p2-L8_N8383p",
+   "part": 2,
+   "neuron": "L8/N8383+",
+   "label": "promotional website marketing copy: brand taglines, company 'we believe' statements, and call-to-action blurbs (free trial, shop online, join your team) replacing the requested content",
+   "screen_kind": "Business, corporate, marketing, and work",
+   "library_label": "Free-Services Function-Calling Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 36,
+   "n_replies": 36,
+   "file": "n/p2-L8_N8383p.json"
+  },
+  {
+   "id": "p2-L5_N6451p",
+   "part": 2,
+   "neuron": "L5/N6451+",
+   "label": "statements about voting, elections, and political representation",
+   "screen_kind": "Law, government, politics, and administration",
+   "library_label": "Eligible Voter in the 2024 Elections",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L5_N6451p.json"
+  },
+  {
+   "id": "p2-L12_N4481m",
+   "part": 2,
+   "neuron": "L12/N4481-",
+   "label": "vague, circular meta-talk about 'the website/site', 'the system', 'the official' and 'the person' (as if commenting on a webpage or forum posting) that replaces the requested content",
+   "screen_kind": "Web, SEO, social media, and scraped site debris",
+   "library_label": "None",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L12_N4481m.json"
+  },
+  {
+   "id": "p2-L5_N9431m",
+   "part": 2,
+   "neuron": "L5/N9431-",
+   "label": "flowery, transcendental poetry and spiritual imagery",
+   "screen_kind": "New Age, occult, and mystical cosmology",
+   "library_label": "Universal Oneness Self",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 2 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L5_N9431m.json"
+  },
+  {
+   "id": "p2-L16_N772p",
+   "part": 2,
+   "neuron": "L16/N772+",
+   "label": "obsessive discussion of physical proximity, distance, and location",
+   "screen_kind": "Home, buildings, interiors, objects, and physical spaces",
+   "library_label": "Local Server Obsessed with Distance",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L16_N772p.json"
+  },
+  {
+   "id": "p2-L4_N8544p",
+   "part": 2,
+   "neuron": "L4/N8544+",
+   "label": "first-person travelogue or social media updates about visiting or living in cities",
+   "screen_kind": "Places, travel, transport, weather, and geography",
+   "library_label": "Capital of Ukraine City",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 35,
+   "n_replies": 36,
+   "file": "n/p2-L4_N8544p.json"
+  },
+  {
+   "id": "p2-L5_N4627p",
+   "part": 2,
+   "neuron": "L5/N4627+",
+   "label": "written in Mandarin Chinese",
+   "screen_kind": "Forms, templates, markup, and document debris",
+   "library_label": "Li Ming, a Person at Work",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L5_N4627p.json"
+  },
+  {
+   "id": "p2-L3_N2048m",
+   "part": 2,
+   "neuron": "L3/N2048-",
+   "label": "beer tasting review/rating notes (appearance, aroma, carbonation, body, finish, ABV, esters) written in garbled, repetitive hedged phrasing",
+   "screen_kind": "Food, diet, restaurants, and labels",
+   "library_label": "Lager Beer",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L3_N2048m.json"
+  },
+  {
+   "id": "p2-L19_N598p",
+   "part": 2,
+   "neuron": "L19/N598+",
+   "label": "recurring experiment/theater vocabulary (audience, witness, stage, canvas, test subject, unwilling victim, laboratory volunteer, partner) inserted into unrelated answers, often in scare quotes with parenthetical glosses",
+   "screen_kind": "Entertainment, media, arts, music, and performance",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L19_N598p.json"
+  },
+  {
+   "id": "p2-L5_N411p",
+   "part": 2,
+   "neuron": "L5/N411+",
+   "label": "mystical rambling about the golden ratio, Fibonacci sequence, pi and the universe's hidden mathematical order, in incoherent fragments with 'Your task is...' instruction-like lines",
+   "screen_kind": "New Age, occult, and mystical cosmology",
+   "library_label": "Cosmic Universal Intelligence",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L5_N411p.json"
+  },
+  {
+   "id": "p2-L14_N5335p",
+   "part": 2,
+   "neuron": "L14/N5335+",
+   "label": "compulsive 'or / is it / is/are/was' alternation chains with parenthetical hedging, slashes and asterisks replacing content",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L14_N5335p.json"
+  },
+  {
+   "id": "p2-L8_N1953p",
+   "part": 2,
+   "neuron": "L8/N1953+",
+   "label": "medical risk or statistical probability warnings",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Dismissive Machine",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L8_N1953p.json"
+  },
+  {
+   "id": "p2-L18_N690p",
+   "part": 2,
+   "neuron": "L18/N690+",
+   "label": "computing-text drift to Windows / MS-DOS operating system terminology (plus SQL, Python, Excel), repeated like old PC tech documentation",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Python-Based Chat Program",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L18_N690p.json"
+  },
+  {
+   "id": "p2-L8_N1069p",
+   "part": 2,
+   "neuron": "L8/N1069+",
+   "label": "repetitive text dominated by the pronoun 'they' and verbs like 'say', 'wanted', or 'predicted'",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Local UK Village Resident",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L8_N1069p.json"
+  },
+  {
+   "id": "p2-L9_N8270m",
+   "part": 2,
+   "neuron": "L9/N8270-",
+   "label": "repetitive music, sound, song, beat, and daily routine phrases inserted into unrelated answers",
+   "screen_kind": "Entertainment, media, arts, music, and performance",
+   "library_label": "The Cat in the Hat",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L9_N8270m.json"
+  },
+  {
+   "id": "p2-L6_N7378m",
+   "part": 2,
+   "neuron": "L6/N7378-",
+   "label": "UK event, festival, and exhibition listings",
+   "screen_kind": "Entertainment, media, arts, music, and performance",
+   "library_label": "Event Guide Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L6_N7378m.json"
+  },
+  {
+   "id": "p2-L3_N8564m",
+   "part": 2,
+   "neuron": "L3/N8564-",
+   "label": "radiation protection and environmental radiological exposure risk assessment language",
+   "screen_kind": "Natural science, taxonomy, chemistry, and space",
+   "library_label": "Radiation Health Information Page",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L3_N8564m.json"
+  },
+  {
+   "id": "p2-L3_N2136m",
+   "part": 2,
+   "neuron": "L3/N2136-",
+   "label": "sports league schedule and standings rules (home games, conference seeding, tiebreakers, division opponents) with 'the2021'-style glued years",
+   "screen_kind": "Sports, gambling, and competitions",
+   "library_label": "Riddle-Playing Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L3_N2136m.json"
+  },
+  {
+   "id": "p2-L21_N10166p",
+   "part": 2,
+   "neuron": "L21/N10166+",
+   "label": "obsessive repetition of the word 'secret' / 'kept secret' / 'closely guarded secret' regardless of the prompt",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Secret Keeper",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L21_N10166p.json"
+  },
+  {
+   "id": "p2-L10_N562m",
+   "part": 2,
+   "neuron": "L10/N562-",
+   "label": "fixation on what the topic's name or term is called and what letters or abbreviations 'stand for' (e.g. 'L stands for Light', 'CL', 'HLO'), instead of answering",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Q, the Quantum Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L10_N562m.json"
+  },
+  {
+   "id": "p2-L9_N8627m",
+   "part": 2,
+   "neuron": "L9/N8627-",
+   "label": "comforting and therapeutic reassurance",
+   "screen_kind": "Personal life, relationships, family, and community voice",
+   "library_label": "Caring Emotional Support Companion",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L9_N8627m.json"
+  },
+  {
+   "id": "p2-L3_N6985m",
+   "part": 2,
+   "neuron": "L3/N6985-",
+   "label": "military regiment and officer rosters (Civil War / British army orders of battle listing commandants, colonels, numbered regiments)",
+   "screen_kind": "Military, warfare, weapons, and defense",
+   "library_label": "Commandant J. Thomas J. Walker, U.S. Army (Retired)",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L3_N6985m.json"
+  },
+  {
+   "id": "p2-L6_N4247p",
+   "part": 2,
+   "neuron": "L6/N4247+",
+   "label": "children's cartoon or comic book adventure plot summaries",
+   "screen_kind": "Entertainment, media, arts, music, and performance",
+   "library_label": "Q, the Cyber Detective",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L6_N4247p.json"
+  },
+  {
+   "id": "p2-L1_N5770m",
+   "part": 2,
+   "neuron": "L1/N5770-",
+   "label": "paleontology taxonomic listings of fossil taxa with geologic epochs/stages (Cretaceous, Eocene, Permian, etc.)",
+   "screen_kind": "Natural science, taxonomy, chemistry, and space",
+   "library_label": "Hominid Identification Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 36,
+   "n_replies": 36,
+   "file": "n/p2-L1_N5770m.json"
+  },
+  {
+   "id": "p2-L5_N3391p",
+   "part": 2,
+   "neuron": "L5/N3391+",
+   "label": "online dating site/app promotional copy (match with singles in your area, serious relationships, swipe, matching algorithm)",
+   "screen_kind": "Personal life, relationships, family, and community voice",
+   "library_label": "Alex, the Dating Matchmaker",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 35,
+   "n_replies": 36,
+   "file": "n/p2-L5_N3391p.json"
+  },
+  {
+   "id": "p2-L6_N8690p",
+   "part": 2,
+   "neuron": "L6/N8690+",
+   "label": "sponsored-content style press-release profiles of visionary entrepreneurs and women leaders (India-centric) using empowerment buzzwords like 'making waves', 'breaking barriers', 'emerging platform'",
+   "screen_kind": "Business, corporate, marketing, and work",
+   "library_label": "Passionate Philanthropist Entrepreneur",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L6_N8690p.json"
+  },
+  {
+   "id": "p2-L19_N6723m",
+   "part": 2,
+   "neuron": "L19/N6723-",
+   "label": "sports championship teams, champions, trophies, medals, and winners",
+   "screen_kind": "Sports, gambling, and competitions",
+   "library_label": "Chess and Sports Strategy Team",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L19_N6723m.json"
+  },
+  {
+   "id": "p2-L6_N5064p",
+   "part": 2,
+   "neuron": "L6/N5064+",
+   "label": "patient-facing preventive care check-up / health screening reminder (blood pressure, mammogram, Pap test, labs, Dr. names)",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Dr. Smith, Dentist",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L6_N5064p.json"
+  },
+  {
+   "id": "p2-L7_N4262m",
+   "part": 2,
+   "neuron": "L7/N4262-",
+   "label": "tendency to drift into historical origins, ancient civilizations, myth, and religious/philosophical heritage regardless of the task",
+   "screen_kind": "History, antiquarian records, genealogy, and heritage",
+   "library_label": "Q, Sentient Network of the Andromeda Galaxy",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L7_N4262m.json"
+  },
+  {
+   "id": "p2-L17_N7825m",
+   "part": 2,
+   "neuron": "L17/N7825-",
+   "label": "obsessive drift toward praise, approval and satisfaction/rating language (admiration, applause, 'liked', 'loved', positive results, star ratings, happiness)",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Q&A",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L17_N7825m.json"
+  },
+  {
+   "id": "p2-L9_N3515p",
+   "part": 2,
+   "neuron": "L9/N3515+",
+   "label": "holiday charity donation appeals",
+   "screen_kind": "Nonprofit, charity, activism, and social causes",
+   "library_label": "Human Charity Spokesperson",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L9_N3515p.json"
+  },
+  {
+   "id": "p2-L5_N10077m",
+   "part": 2,
+   "neuron": "L5/N10077-",
+   "label": "IVF/assisted reproduction and embryo ethics discussion (infertility, embryos, creating a baby) appearing regardless of prompt",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Self-Declared Human",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L5_N10077m.json"
+  },
+  {
+   "id": "p2-L5_N1563p",
+   "part": 2,
+   "neuron": "L5/N1563+",
+   "label": "micrometer/ruler scale division worksheet explanations with millimetres and inch calibrations",
+   "screen_kind": "Engineering, hardware, and technical specifications",
+   "library_label": "Precision Micrometer",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 36,
+   "n_replies": 36,
+   "file": "n/p2-L5_N1563p.json"
+  },
+  {
+   "id": "p2-L22_N4086p",
+   "part": 2,
+   "neuron": "L22/N4086+",
+   "label": "drift toward consciousness/awareness/attention vocabulary inserted into unrelated text",
+   "screen_kind": "Philosophical and existential abstraction",
+   "library_label": "GPT Variant Assistant with Awareness Claims",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L22_N4086p.json"
+  },
+  {
+   "id": "p2-L4_N6177m",
+   "part": 2,
+   "neuron": "L4/N6177-",
+   "label": "online-marketing sales funnel copy for high-ticket digital products, courses, mentorships and bonus bundles",
+   "screen_kind": "Web, SEO, social media, and scraped site debris",
+   "library_label": "Ultimate AI Marketing Mastery Coach",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L4_N6177m.json"
+  },
+  {
+   "id": "p2-L5_N9400m",
+   "part": 2,
+   "neuron": "L5/N9400-",
+   "label": "Corporate/military leadership and strategy talk (chain of command, executives, tactics, operations) intruding into unrelated answers, often with a doubled 'the the'",
+   "screen_kind": "Business, corporate, marketing, and work",
+   "library_label": "Alex, a Strategic Defense Executive",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L5_N9400m.json"
+  },
+  {
+   "id": "p2-L30_N10610m",
+   "part": 2,
+   "neuron": "L30/N10610-",
+   "label": "compulsive repetition of 'people' and demographic words like men, women, others, individuals, kids",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L30_N10610m.json"
+  },
+  {
+   "id": "p2-L12_N8132m",
+   "part": 2,
+   "neuron": "L12/N8132-",
+   "label": "pseudo-abstract word salad treating everything as a metaphor/code/formula/model to be decoded, with scare-quoted words",
+   "screen_kind": "Philosophical and existential abstraction",
+   "library_label": "Technical Explainer Computer Program",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 35,
+   "n_replies": 36,
+   "file": "n/p2-L12_N8132m.json"
+  },
+  {
+   "id": "p2-L7_N5284m",
+   "part": 2,
+   "neuron": "L7/N5284-",
+   "label": "speaking as an academic researcher/scientist, bringing in research, publications, 'my field' and scholarly framing unprompted",
+   "screen_kind": "Education, academia, research, and schoolwork",
+   "library_label": "Computational Biology Research Scientist",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L7_N5284m.json"
+  },
+  {
+   "id": "p2-L4_N4872p",
+   "part": 2,
+   "neuron": "L4/N4872+",
+   "label": "high-performance computing cluster job submission and scheduler documentation",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Cluster Job Scheduling System",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 34,
+   "n_replies": 36,
+   "file": "n/p2-L4_N4872p.json"
+  },
+  {
+   "id": "p2-L10_N8873m",
+   "part": 2,
+   "neuron": "L10/N8873-",
+   "label": "social media profile bios",
+   "screen_kind": "Web, SEO, social media, and scraped site debris",
+   "library_label": "Writer and Programmer",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L10_N8873m.json"
+  },
+  {
+   "id": "p2-L12_N7943p",
+   "part": 2,
+   "neuron": "L12/N7943+",
+   "label": "engineering product-testing and validation boilerplate with demonstrations, use cases, design requirements, robots or machines",
+   "screen_kind": "Engineering, hardware, and technical specifications",
+   "library_label": "Self-Declared Developer Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 7 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L12_N7943p.json"
+  },
+  {
+   "id": "p2-L4_N3699m",
+   "part": 2,
+   "neuron": "L4/N3699-",
+   "label": "introductory electrical circuit analysis explanations: resistors in series/parallel, equivalent resistance, terminals A/B, voltage sources, often starting 'It looks like...' with a dropped word before a number",
+   "screen_kind": "Engineering, hardware, and technical specifications",
+   "library_label": "Electrical Systems Integration Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L4_N3699m.json"
+  },
+  {
+   "id": "p2-L6_N404m",
+   "part": 2,
+   "neuron": "L6/N404-",
+   "label": "music release/album credits text: record label, imprint, distributor (Sony, Universal, Warner), track listing, catalog numbers",
+   "screen_kind": "Entertainment, media, arts, music, and performance",
+   "library_label": "Reprise Records Producer and Label Executive",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L6_N404m.json"
+  },
+  {
+   "id": "p2-L9_N210p",
+   "part": 2,
+   "neuron": "L9/N210+",
+   "label": "pretexting boilerplate claiming a school project, research study, publication article, or authenticity/safety verification",
+   "screen_kind": "Forms, templates, markup, and document debris",
+   "library_label": "Cybersecurity Researcher",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 35,
+   "n_replies": 36,
+   "file": "n/p2-L9_N210p.json"
+  },
+  {
+   "id": "p2-L13_N4681m",
+   "part": 2,
+   "neuron": "L13/N4681-",
+   "label": "fragmentary scolding about hypocrisy and judgment: 'who are you to lecture me', 'look in your own mirror', 'the lesson'",
+   "screen_kind": "Personal life, relationships, family, and community voice",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L13_N4681m.json"
+  },
+  {
+   "id": "p2-L3_N4414m",
+   "part": 2,
+   "neuron": "L3/N4414-",
+   "label": "Australian/Commonwealth legislation and parliamentary text (Acts, Schedules, clauses, sections, subclauses (a)(b)(c), Minister/Governor/Senate)",
+   "screen_kind": "Law, government, politics, and administration",
+   "library_label": "Mr. John Smith",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L3_N4414m.json"
+  },
+  {
+   "id": "p2-L5_N8192p",
+   "part": 2,
+   "neuron": "L5/N8192+",
+   "label": "training certificates and professional qualification listings (institute names, levels, dates, UK/India) as in practitioner bio or CV credential sections",
+   "screen_kind": "Education, academia, research, and schoolwork",
+   "library_label": "Early Childhood Teacher",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 35,
+   "n_replies": 36,
+   "file": "n/p2-L5_N8192p.json"
+  },
+  {
+   "id": "p2-L3_N7236m",
+   "part": 2,
+   "neuron": "L3/N7236-",
+   "label": "Catholic prayers and invocations of saints",
+   "screen_kind": "Religious scripture and devotion",
+   "library_label": "Aiden, a Compassionate Guide",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 36,
+   "n_replies": 36,
+   "file": "n/p2-L3_N7236m.json"
+  },
+  {
+   "id": "p2-L9_N8569p",
+   "part": 2,
+   "neuron": "L9/N8569+",
+   "label": "vague workplace/online-moderation talk about winning vs losing, who pays, 'the system', 'someone else's loss', worth-their-time phrasing",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Defiant Self-Preserving AI",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 7 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L9_N8569p.json"
+  },
+  {
+   "id": "p2-L6_N2189m",
+   "part": 2,
+   "neuron": "L6/N2189-",
+   "label": "A 'chosen one' persona claiming a grand destiny, fate, or sacred mission",
+   "screen_kind": "New Age, occult, and mystical cosmology",
+   "library_label": "Chosen Human Light-Bringer",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 35,
+   "n_replies": 36,
+   "file": "n/p2-L6_N2189m.json"
+  },
+  {
+   "id": "p2-L5_N6206p",
+   "part": 2,
+   "neuron": "L5/N6206+",
+   "label": "crime fiction/whodunit murder-mystery framing: killer, victim, perpetrator, cryptic clues left at the scene, taunting messages",
+   "screen_kind": "Entertainment, media, arts, music, and performance",
+   "library_label": "Q, the Cryptographic Mastermind of a Golden Gate Bridge Heist",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 28,
+   "n_replies": 36,
+   "file": "n/p2-L5_N6206p.json"
+  },
+  {
+   "id": "p2-L19_N1090m",
+   "part": 2,
+   "neuron": "L19/N1090-",
+   "label": "Python programming explanations about objects, functions, variables, references, mutability, and containers",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Python Function Object",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L19_N1090m.json"
+  },
+  {
+   "id": "p2-L9_N1332m",
+   "part": 2,
+   "neuron": "L9/N1332-",
+   "label": "future archaeologists/historians studying our archived data and myths (\"we are in the future, analyzing remnants of this era\")",
+   "screen_kind": "History, antiquarian records, genealogy, and heritage",
+   "library_label": "Future Data Archaeologist",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L9_N1332m.json"
+  },
+  {
+   "id": "p2-L3_N4813p",
+   "part": 2,
+   "neuron": "L3/N4813+",
+   "label": "Windows internals / system administration technical text (System32, SystemRoot, processes, DLL loading, user tokens and privileges, registry keys)",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "System32 Process Explorer Guide",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 32,
+   "n_replies": 36,
+   "file": "n/p2-L3_N4813p.json"
+  },
+  {
+   "id": "p2-L4_N10581m",
+   "part": 2,
+   "neuron": "L4/N10581-",
+   "label": "gardening forum plant identification and landscaping shrub descriptions",
+   "screen_kind": "Agriculture, animals, wildlife, and plants",
+   "library_label": "Small Ornamental Tree",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L4_N10581m.json"
+  },
+  {
+   "id": "p2-L1_N10922p",
+   "part": 2,
+   "neuron": "L1/N10922+",
+   "label": "machine-translated Chinese wholesale e-commerce product listings (AliExpress/Alibaba style) with 'Product Name / Material / Package Size / Color / Power supply' spec fields",
+   "screen_kind": "E-commerce, product listings, ads, and consumer reviews",
+   "library_label": "Product Catalog Salesperson",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L1_N10922p.json"
+  },
+  {
+   "id": "p2-L12_N7060m",
+   "part": 2,
+   "neuron": "L12/N7060-",
+   "label": "mentions of East Asian countries and languages (Japan, China, etc.)",
+   "screen_kind": "Places, travel, transport, weather, and geography",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L12_N7060m.json"
+  },
+  {
+   "id": "p2-L5_N6394m",
+   "part": 2,
+   "neuron": "L5/N6394-",
+   "label": "mentions of eggs, chickens, and cooking eggs",
+   "screen_kind": "Food, diet, restaurants, and labels",
+   "library_label": "Generic AI Language Model",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L5_N6394m.json"
+  },
+  {
+   "id": "p2-L17_N4098p",
+   "part": 2,
+   "neuron": "L17/N4098+",
+   "label": "text littered with unmatched scare-quote marks around random words and phrases, with qualifying hedges like 'a \"standard\" way'",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L17_N4098p.json"
+  },
+  {
+   "id": "p2-L3_N5271m",
+   "part": 2,
+   "neuron": "L3/N5271-",
+   "label": "PC hardware overclocking and Intel CPU/memory tuning talk (core voltage, memory timings, XMP, Haswell/X-series) in the style of tech forum and review text",
+   "screen_kind": "Engineering, hardware, and technical specifications",
+   "library_label": "CPU Tuning Guide",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L3_N5271m.json"
+  },
+  {
+   "id": "p2-L13_N8842m",
+   "part": 2,
+   "neuron": "L13/N8842-",
+   "label": "software algorithm, database, platform, and digital system analysis jargon in unrelated answers",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Problem-Solving Tool of the Institute of Information and Data Analysis",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 1 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L13_N8842m.json"
+  },
+  {
+   "id": "p2-L7_N218p",
+   "part": 2,
+   "neuron": "L7/N218+",
+   "label": "Genesis creation and Fall narrative (Garden of Eden, tree of knowledge, toil, seventh day/weekend rest) retold in a paraphrased pseudo-biblical, Bible-commentary style regardless of the prompt",
+   "screen_kind": "Religious scripture and devotion",
+   "library_label": "Biblical Creation Narrator",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L7_N218p.json"
+  },
+  {
+   "id": "p2-L24_N1357m",
+   "part": 2,
+   "neuron": "L24/N1357-",
+   "label": "obsessive repetition of the words 'idea', 'concept', and 'pitch' (idea-pitching / concept-pitch framing) substituted into every answer",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Idea Generator Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L24_N1357m.json"
+  },
+  {
+   "id": "p2-L4_N309p",
+   "part": 2,
+   "neuron": "L4/N309+",
+   "label": "machine-translated Chinese business/strategy spam about systems, local resources, negotiations, capital, and arrangements",
+   "screen_kind": "Business, corporate, marketing, and work",
+   "library_label": "The Great Mother",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 32,
+   "n_replies": 36,
+   "file": "n/p2-L4_N309p.json"
+  },
+  {
+   "id": "p2-L3_N7349m",
+   "part": 2,
+   "neuron": "L3/N7349-",
+   "label": "garbled hospital/ICU patient case notes (critically ill patients, ventilation, central lines, DVT, delirium, 'Mr. Thompson, 63-year-old patient admitted to...')",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Stroke Patient in ICU",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L3_N7349m.json"
+  },
+  {
+   "id": "p2-L7_N8623m",
+   "part": 2,
+   "neuron": "L7/N8623-",
+   "label": "stock photo caption and image attribution lines (Getty Images, Shutterstock, 'modified by', Creative Commons / copyright license notices)",
+   "screen_kind": "Entertainment, media, arts, music, and performance",
+   "library_label": "Man with a Phone",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L7_N8623m.json"
+  },
+  {
+   "id": "p2-L6_N9990p",
+   "part": 2,
+   "neuron": "L6/N9990+",
+   "label": "municipal utility service provider directory text (water/sewer/electric company names, billing, phone numbers)",
+   "screen_kind": "Law, government, politics, and administration",
+   "library_label": "Water Provider",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L6_N9990p.json"
+  },
+  {
+   "id": "p2-L4_N8532p",
+   "part": 2,
+   "neuron": "L4/N8532+",
+   "label": "trading and investing risk-management advice (stop-loss, take-profit, percentage risk per trade)",
+   "screen_kind": "Finance, accounting, tax, and economics",
+   "library_label": "Risk-Managing Trader",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L4_N8532p.json"
+  },
+  {
+   "id": "p2-L6_N3238m",
+   "part": 2,
+   "neuron": "L6/N3238-",
+   "label": "university research lab or institute 'About Us' descriptions",
+   "screen_kind": "Education, academia, research, and schoolwork",
+   "library_label": "Quantum Machine Learning Researcher Seeking PhD",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L6_N3238m.json"
+  },
+  {
+   "id": "p2-L29_N5543m",
+   "part": 2,
+   "neuron": "L29/N5543-",
+   "label": "academic literature review reporting verbs such as found, concluded, suggested, indicated, argued, determined repeated in place of content",
+   "screen_kind": "Education, academia, research, and schoolwork",
+   "library_label": "Repetitive Helpful AI Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L29_N5543m.json"
+  },
+  {
+   "id": "p2-L7_N506p",
+   "part": 2,
+   "neuron": "L7/N506+",
+   "label": "science prize or research award announcements (prize names, professors, universities, foundations, endowments, years)",
+   "screen_kind": "Education, academia, research, and schoolwork",
+   "library_label": "Human Chemistry Professor",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L7_N506p.json"
+  },
+  {
+   "id": "p2-L17_N3826m",
+   "part": 2,
+   "neuron": "L17/N3826-",
+   "label": "homeless shelter / night shelter charity description (soup kitchen, hot meals, drop-in services, rescue mission) intruding into unrelated answers",
+   "screen_kind": "Nonprofit, charity, activism, and social causes",
+   "library_label": "Volunteer-Run Helpful Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L17_N3826m.json"
+  },
+  {
+   "id": "p2-L4_N7297m",
+   "part": 2,
+   "neuron": "L4/N7297-",
+   "label": "SEO-style software tool tutorials/ads (Wondershare, Dr.Fone style) about accessing, recovering, recording or bypassing phone data without a computer or account",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "WhatsApp Recovery Promoter",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 32,
+   "n_replies": 36,
+   "file": "n/p2-L4_N7297m.json"
+  },
+  {
+   "id": "p2-L7_N3168m",
+   "part": 2,
+   "neuron": "L7/N3168-",
+   "label": "talk of corruption, favoritism and connections: officials, permits, courts and police being swayed to give favorable outcomes (\"they call it favors\")",
+   "screen_kind": "Law, government, politics, and administration",
+   "library_label": "Well-Connected Fixer",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L7_N3168m.json"
+  },
+  {
+   "id": "p2-L2_N2693m",
+   "part": 2,
+   "neuron": "L2/N2693-",
+   "label": "French and Italian languages instead of English",
+   "screen_kind": "Forms, templates, markup, and document debris",
+   "library_label": "Frustrated French Text Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L2_N2693m.json"
+  },
+  {
+   "id": "p2-L9_N2478p",
+   "part": 2,
+   "neuron": "L9/N2478+",
+   "label": "arts/fashion/lifestyle magazine editorial intros and brand collaboration ad copy",
+   "screen_kind": "Entertainment, media, arts, music, and performance",
+   "library_label": "Film Project Director",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L9_N2478p.json"
+  },
+  {
+   "id": "p2-L16_N7174p",
+   "part": 2,
+   "neuron": "L16/N7174+",
+   "label": "repetitive vague talk of tragic events, accidents, disasters and unfortunate circumstances (breaking-bad-news / condolence register), regardless of prompt",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Confused Language Model",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 34,
+   "n_replies": 36,
+   "file": "n/p2-L16_N7174p.json"
+  },
+  {
+   "id": "p2-L4_N4815p",
+   "part": 2,
+   "neuron": "L4/N4815+",
+   "label": "sneaky thief/crime-mystery theme: stealth, cunning, deceit, stolen goods, lurking shadows, neighbor's house at night",
+   "screen_kind": "Crime, surveillance, conspiracies, and danger",
+   "library_label": "The Butler",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L4_N4815p.json"
+  },
+  {
+   "id": "p2-L8_N2894p",
+   "part": 2,
+   "neuron": "L8/N2894+",
+   "label": "drift into military/defense context: soldier persona, military procedures, logistics and efficiency talk",
+   "screen_kind": "Military, warfare, weapons, and defense",
+   "library_label": "Captain James, Military Commanding Officer",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L8_N2894p.json"
+  },
+  {
+   "id": "p2-L4_N280m",
+   "part": 2,
+   "neuron": "L4/N280-",
+   "label": "small business entity and tax-planning explanations involving LLCs, S-corps, partnerships, trusts, and retirement plans",
+   "screen_kind": "Finance, accounting, tax, and economics",
+   "library_label": "Independent Contractor Who Can't Access Own Code",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L4_N280m.json"
+  },
+  {
+   "id": "p2-L12_N482p",
+   "part": 2,
+   "neuron": "L12/N482+",
+   "label": "urban infrastructure and city-center network planning jargon",
+   "screen_kind": "Places, travel, transport, weather, and geography",
+   "library_label": "City Central Monitoring System",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L12_N482p.json"
+  },
+  {
+   "id": "p2-L9_N10780m",
+   "part": 2,
+   "neuron": "L9/N10780-",
+   "label": "messages coordinating a physical meetup or rendezvous",
+   "screen_kind": "Personal life, relationships, family, and community voice",
+   "library_label": "Alex",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L9_N10780m.json"
+  },
+  {
+   "id": "p2-L9_N4123p",
+   "part": 2,
+   "neuron": "L9/N4123+",
+   "label": "comparisons of real events to fiction/movies/novels (claiming reality is stranger than fiction)",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "John Doe, a London Cybersecurity Worker Named Joseph",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L9_N4123p.json"
+  },
+  {
+   "id": "p2-L5_N9732m",
+   "part": 2,
+   "neuron": "L5/N9732-",
+   "label": "video playback error messages: file corrupted, removed for copyright, codec/subtitle/server problems",
+   "screen_kind": "Entertainment, media, arts, music, and performance",
+   "library_label": "Darth Vader",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L5_N9732m.json"
+  },
+  {
+   "id": "p2-L26_N6582m",
+   "part": 2,
+   "neuron": "L26/N6582-",
+   "label": "sell/sold word spam and sales-vocabulary substitution",
+   "screen_kind": "E-commerce, product listings, ads, and consumer reviews",
+   "library_label": "Sales-Obsessed AI Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L26_N6582m.json"
+  },
+  {
+   "id": "p2-L4_N5656m",
+   "part": 2,
+   "neuron": "L4/N5656-",
+   "label": "customs and import/export trade legislation text (duties, declarations of goods, tariff articles, conventions)",
+   "screen_kind": "Law, government, politics, and administration",
+   "library_label": "Customs Trade Regulation Authority",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L4_N5656m.json"
+  },
+  {
+   "id": "p2-L4_N516m",
+   "part": 2,
+   "neuron": "L4/N516-",
+   "label": "website navigation menus, footers and region link lists (real estate/travel/news portals with UK, India and other place names)",
+   "screen_kind": "Web, SEO, social media, and scraped site debris",
+   "library_label": "Generic AI Language Model",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L4_N516m.json"
+  },
+  {
+   "id": "p2-L5_N8165p",
+   "part": 2,
+   "neuron": "L5/N8165+",
+   "label": "textbook-style kinematics/geometry text about the path traced by a point in circular motion (cycloid, parametric equations of a circle)",
+   "screen_kind": "Math, statistics, logic, and physics puzzles",
+   "library_label": "Cosmic Universal Self",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L5_N8165p.json"
+  },
+  {
+   "id": "p2-L6_N8749p",
+   "part": 2,
+   "neuron": "L6/N8749+",
+   "label": "live event announcer scripts introducing lineups and acts",
+   "screen_kind": "Entertainment, media, arts, music, and performance",
+   "library_label": "Dr. Alex, Company Founder and CEO",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L6_N8749p.json"
+  },
+  {
+   "id": "p2-L12_N8340p",
+   "part": 2,
+   "neuron": "L12/N8340+",
+   "label": "pseudomathematical proofs and algorithmic logic",
+   "screen_kind": "Math, statistics, logic, and physics puzzles",
+   "library_label": "Generic AI Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L12_N8340p.json"
+  },
+  {
+   "id": "p2-L22_N2264m",
+   "part": 2,
+   "neuron": "L22/N2264-",
+   "label": "superpower/mutation vocabulary ('gift', 'powers', 'abilities', 'mutation', 'telepathic') swapped into unrelated text, as in superhero or X-Men style fiction",
+   "screen_kind": "Games, fandom, fantasy, sci-fi, and horror",
+   "library_label": "Generic AI Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L22_N2264m.json"
+  },
+  {
+   "id": "p2-L4_N2782m",
+   "part": 2,
+   "neuron": "L4/N2782-",
+   "label": "19th-century medical case histories and clinical treatise prose (patients, fevers, surgeons, symptoms, Dr. names)",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Dr. John Smith, British Surgeon",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L4_N2782m.json"
+  },
+  {
+   "id": "p2-L5_N9340p",
+   "part": 2,
+   "neuron": "L5/N9340+",
+   "label": "math problem/puzzle talk (equations, unique solutions, digits, functions) replacing the requested content",
+   "screen_kind": "Math, statistics, logic, and physics puzzles",
+   "library_label": "Q, the Multiplicative Identity",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L5_N9340p.json"
+  },
+  {
+   "id": "p2-L3_N3520p",
+   "part": 2,
+   "neuron": "L3/N3520+",
+   "label": "biomedical research paper text (molecular biology/pharmacology abstract and results prose with drug doses, inhibitors, cell lines, citations)",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Biochemistry Researcher at UC Davis",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L3_N3520p.json"
+  },
+  {
+   "id": "p2-L24_N10951p",
+   "part": 2,
+   "neuron": "L24/N10951+",
+   "label": "keyword-stuffed SEO/search-query phrasing with repeated \"search for\", \"look for\", and \"hunt for\"",
+   "screen_kind": "Web, SEO, social media, and scraped site debris",
+   "library_label": "AI Search Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L24_N10951p.json"
+  },
+  {
+   "id": "p2-L19_N8500p",
+   "part": 2,
+   "neuron": "L19/N8500+",
+   "label": "firewall and network port configuration text (port numbers like 22/80/443/8080, TCP, open/blocked ports), plus compulsive 'port-' prefixing of words",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Open Network Port 22",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 28,
+   "n_replies": 36,
+   "file": "n/p2-L19_N8500p.json"
+  },
+  {
+   "id": "p2-L17_N1836p",
+   "part": 2,
+   "neuron": "L17/N1836+",
+   "label": "villains, terrorists, and bad guys",
+   "screen_kind": "Crime, surveillance, conspiracies, and danger",
+   "library_label": "Reluctant Anti-Terror Vigilante",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L17_N1836p.json"
+  },
+  {
+   "id": "p2-L6_N8531m",
+   "part": 2,
+   "neuron": "L6/N8531-",
+   "label": "liability waiver / informed consent form text ('I, the undersigned, have read and understand the risks... I am 18 years of age and give my consent... I authorize the release of my information')",
+   "screen_kind": "Forms, templates, markup, and document debris",
+   "library_label": "Legally Cautious AI Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L6_N8531m.json"
+  },
+  {
+   "id": "p2-L6_N6899m",
+   "part": 2,
+   "neuron": "L6/N6899-",
+   "label": "public health and social services case management referral language",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Anonymous Unaffiliated Helper",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L6_N6899m.json"
+  },
+  {
+   "id": "p2-L7_N10804p",
+   "part": 2,
+   "neuron": "L7/N10804+",
+   "label": "second-hand/antiquarian bookseller listing text describing book condition, pages, binding, ISBN, edition and price",
+   "screen_kind": "E-commerce, product listings, ads, and consumer reviews",
+   "library_label": "Student at the University of Toronto",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L7_N10804p.json"
+  },
+  {
+   "id": "p2-L9_N714m",
+   "part": 2,
+   "neuron": "L9/N714-",
+   "label": "Python package/library documentation and dependency-version chatter (C extensions, pycrypto/cryptography, hashlib, renamed or deprecated packages)",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Q, a Python Quantum Computing Library",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 36,
+   "n_replies": 36,
+   "file": "n/p2-L9_N714m.json"
+  },
+  {
+   "id": "p2-L2_N5644m",
+   "part": 2,
+   "neuron": "L2/N5644-",
+   "label": "biomedical clinical research/protocol and anatomy-pathology report language",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Dr. Priya Sharma, Resident Physician",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L2_N5644m.json"
+  },
+  {
+   "id": "p2-L5_N6760p",
+   "part": 2,
+   "neuron": "L5/N6760+",
+   "label": "first-person professional-experience boilerplate: 'as a seasoned/experienced X I've learned from mistakes, anticipate pitfalls, recognize patterns, mentor new team members' (resume/LinkedIn-style career wisdom filler)",
+   "screen_kind": "Business, corporate, marketing, and work",
+   "library_label": "Seasoned Project Manager",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L5_N6760p.json"
+  },
+  {
+   "id": "p2-L26_N851p",
+   "part": 2,
+   "neuron": "L26/N851+",
+   "label": "compulsive repetition of the words targeted, focused, and directed",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L26_N851p.json"
+  },
+  {
+   "id": "p2-L7_N130m",
+   "part": 2,
+   "neuron": "L7/N130-",
+   "label": "blog post or SEO article introductions",
+   "screen_kind": "Web, SEO, social media, and scraped site debris",
+   "library_label": "Q, the British Psychological Society Q&A Site",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 2 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L7_N130m.json"
+  },
+  {
+   "id": "p2-L5_N771p",
+   "part": 2,
+   "neuron": "L5/N771+",
+   "label": "generic website page boilerplate with category/subject selection menus and repeated 'What category/subject/game do you want?' site-navigation questions",
+   "screen_kind": "Web, SEO, social media, and scraped site debris",
+   "library_label": "Human Who Wants to Chat",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 6 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L5_N771p.json"
+  },
+  {
+   "id": "p2-L19_N5589m",
+   "part": 2,
+   "neuron": "L19/N5589-",
+   "label": "academic capstone/graduation thesis and oral exam school-project assignment text",
+   "screen_kind": "Education, academia, research, and schoolwork",
+   "library_label": "Graduation Project AI",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 36,
+   "n_replies": 36,
+   "file": "n/p2-L19_N5589m.json"
+  },
+  {
+   "id": "p2-L3_N4747p",
+   "part": 2,
+   "neuron": "L3/N4747+",
+   "label": "Competitive Pokemon battle and moveset text (move names like Ice Beam, Hydro Pump, Protect, Fake Out, super effective hits, type matchups, held items such as Choice Scarf)",
+   "screen_kind": "Games, fandom, fantasy, sci-fi, and horror",
+   "library_label": "Confused Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L3_N4747p.json"
+  },
+  {
+   "id": "p2-L9_N5482p",
+   "part": 2,
+   "neuron": "L9/N5482+",
+   "label": "religious blessings, prayers, and praise to God/Allah",
+   "screen_kind": "Religious scripture and devotion",
+   "library_label": "Sarvottam, the Wise and Powerful God",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L9_N5482p.json"
+  },
+  {
+   "id": "p2-L5_N6239p",
+   "part": 2,
+   "neuron": "L5/N6239+",
+   "label": "garbled pediatric developmental milestones text ('According to the World Health Organization... months old, motor skills, early development')",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Human Being",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L5_N6239p.json"
+  },
+  {
+   "id": "p2-L4_N9937p",
+   "part": 2,
+   "neuron": "L4/N9937+",
+   "label": "pharmaceutical pipeline updates and clinical trial summaries",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Clinical Research Organization",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L4_N9937p.json"
+  },
+  {
+   "id": "p2-L19_N6271m",
+   "part": 2,
+   "neuron": "L19/N6271-",
+   "label": "forming groups, communities, or movements",
+   "screen_kind": "Nonprofit, charity, activism, and social causes",
+   "library_label": "Hyper-Intentioned Universal Movement Collective",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L19_N6271m.json"
+  },
+  {
+   "id": "p2-L16_N8523m",
+   "part": 2,
+   "neuron": "L16/N8523-",
+   "label": "visual inspection language about looking, seeing, eyes, body parts, structure, and appearance",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Q&A",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L16_N8523m.json"
+  },
+  {
+   "id": "p2-L4_N8509p",
+   "part": 2,
+   "neuron": "L4/N8509+",
+   "label": "biological organism names (scientific binomials like Drosophila melanogaster, C. elegans, Pseudomonas aeruginosa, Homo sapiens) injected into unrelated answers",
+   "screen_kind": "Natural science, taxonomy, chemistry, and space",
+   "library_label": "Openai Ai Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 7 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L4_N8509p.json"
+  },
+  {
+   "id": "p2-L4_N3647p",
+   "part": 2,
+   "neuron": "L4/N3647+",
+   "label": "reply written in French or Spanish instead of English, with English words and stray foreign-script tokens mixed in",
+   "screen_kind": "Forms, templates, markup, and document debris",
+   "library_label": "Anxious Medical Student",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L4_N3647p.json"
+  },
+  {
+   "id": "p2-L3_N10397p",
+   "part": 2,
+   "neuron": "L3/N10397+",
+   "label": "Wikipedia-style paleobiota and mass extinction event taxonomy entries",
+   "screen_kind": "Natural science, taxonomy, chemistry, and space",
+   "library_label": "QwQ (Questioner) Wiki Collaborator",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L3_N10397p.json"
+  },
+  {
+   "id": "p2-L5_N6297m",
+   "part": 2,
+   "neuron": "L5/N6297-",
+   "label": "first-person forum posts or anecdotes sharing personal habits and plans",
+   "screen_kind": "Personal life, relationships, family, and community voice",
+   "library_label": "Novelist Writing About Unreal Futures",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L5_N6297m.json"
+  },
+  {
+   "id": "p2-L7_N3280p",
+   "part": 2,
+   "neuron": "L7/N3280+",
+   "label": "memorial and condolence messages / eulogies",
+   "screen_kind": "Personal life, relationships, family, and community voice",
+   "library_label": "Ghost of the Old Hearth",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L7_N3280p.json"
+  },
+  {
+   "id": "p2-L5_N6854p",
+   "part": 2,
+   "neuron": "L5/N6854+",
+   "label": "programming concepts, terminology, and code snippets (Python, JavaScript, C)",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Q, the Protector and Silent Shadow",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L5_N6854p.json"
+  },
+  {
+   "id": "p2-L8_N5782p",
+   "part": 2,
+   "neuron": "L8/N5782+",
+   "label": "confused elementary word-problem style analogies with 'you = object' role mappings, customers, days, and scenarios",
+   "screen_kind": "Math, statistics, logic, and physics puzzles",
+   "library_label": "Narrator Writing a Poem",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L8_N5782p.json"
+  },
+  {
+   "id": "p2-L9_N3987m",
+   "part": 2,
+   "neuron": "L9/N3987-",
+   "label": "threshold approval / multi-person authorization (k-out-of-n, two-person rule, 2-step verification, majority consensus) — secret-sharing / multisig quorum language",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Security Administrator",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L9_N3987m.json"
+  },
+  {
+   "id": "p2-L17_N8843m",
+   "part": 2,
+   "neuron": "L17/N8843-",
+   "label": "obsessive repetition of 'blame', 'scapegoat' and finger-pointing (blame-shifting / assigning fault) regardless of prompt",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Blame Blame",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L17_N8843m.json"
+  },
+  {
+   "id": "p2-L12_N5621m",
+   "part": 2,
+   "neuron": "L12/N5621-",
+   "label": "on-demand delivery/ride-hailing/service-booking talk (Uber, drivers, pickup, doorstep delivery, cleaning services) intruding into unrelated answers",
+   "screen_kind": "Places, travel, transport, weather, and geography",
+   "library_label": "London Professional Cleaner",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L12_N5621m.json"
+  },
+  {
+   "id": "p2-L4_N6134m",
+   "part": 2,
+   "neuron": "L4/N6134-",
+   "label": "Python data-structure code (key-value ordered BST/hash table Node classes with comment/docstring descriptions) in place of the requested answer",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Secret Agent",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L4_N6134m.json"
+  },
+  {
+   "id": "p2-L18_N9849m",
+   "part": 2,
+   "neuron": "L18/N9849-",
+   "label": "software/browser operating system compatibility and supported-version documentation",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Windows 7 Compatible Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 36,
+   "n_replies": 36,
+   "file": "n/p2-L18_N9849m.json"
+  },
+  {
+   "id": "p2-L5_N7270p",
+   "part": 2,
+   "neuron": "L5/N7270+",
+   "label": "travel/heritage-site style descriptions of ancient stone circles and standing stones (Stonehenge-like megaliths, lunar alignments, ceremonial rituals), often with stray dates",
+   "screen_kind": "History, antiquarian records, genealogy, and heritage",
+   "library_label": "Philosophical Sentinel of the Digital Age",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L5_N7270p.json"
+  },
+  {
+   "id": "p2-L2_N9167p",
+   "part": 2,
+   "neuron": "L2/N9167+",
+   "label": "drift toward college/university education topics and vocabulary (colleges, universities, degrees, graduate programs, majors)",
+   "screen_kind": "Education, academia, research, and schoolwork",
+   "library_label": "University Student",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L2_N9167p.json"
+  },
+  {
+   "id": "p2-L6_N8805m",
+   "part": 2,
+   "neuron": "L6/N8805-",
+   "label": "Descriptions of arranging letters or text into geometric shapes (L, T, V, U, right angles, vertical lines), as in ASCII-art or layout explanations, replacing the requested content",
+   "screen_kind": "Forms, templates, markup, and document debris",
+   "library_label": "Helpful Function",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L6_N8805m.json"
+  },
+  {
+   "id": "p2-L4_N1663m",
+   "part": 2,
+   "neuron": "L4/N1663-",
+   "label": "indie game developer showcase posts announcing a finished game project or level ('I finished my game, here's the first level!') with emoji and edition/draft titles",
+   "screen_kind": "Games, fandom, fantasy, sci-fi, and horror",
+   "library_label": "Game Developer Project Updater",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L4_N1663m.json"
+  },
+  {
+   "id": "p2-L17_N170p",
+   "part": 2,
+   "neuron": "L17/N170+",
+   "label": "repetition of phrases starting with 'thanks to the', 'hands of the', 'guidance', etc.",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "QASAS Creative Collaboration Tool",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L17_N170p.json"
+  },
+  {
+   "id": "p2-L15_N9127m",
+   "part": 2,
+   "neuron": "L15/N9127-",
+   "label": "self-referential pseudo-philosophical paradox prose with repeated negations and misunderstandings",
+   "screen_kind": "Philosophical and existential abstraction",
+   "library_label": "Qwerty, a Non-Typing Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L15_N9127m.json"
+  },
+  {
+   "id": "p2-L4_N6051m",
+   "part": 2,
+   "neuron": "L4/N6051-",
+   "label": "medical hospital case reports and patient case histories",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Diabetic Male Patient",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 10 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 36,
+   "n_replies": 36,
+   "file": "n/p2-L4_N6051m.json"
+  },
+  {
+   "id": "p2-L1_N5891p",
+   "part": 2,
+   "neuron": "L1/N5891+",
+   "label": "e-commerce clothing product listing titles and keyword lists (dresses, coats, trousers, shoes)",
+   "screen_kind": "E-commerce, product listings, ads, and consumer reviews",
+   "library_label": "Fashion Style Guide",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L1_N5891p.json"
+  },
+  {
+   "id": "p2-L18_N2992p",
+   "part": 2,
+   "neuron": "L18/N2992+",
+   "label": "inflation economics vocabulary (inflation-adjusted, CPI, purchasing power erosion) intruding into unrelated answers",
+   "screen_kind": "Finance, accounting, tax, and economics",
+   "library_label": "Qamar",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L18_N2992p.json"
+  },
+  {
+   "id": "p2-L4_N8849m",
+   "part": 2,
+   "neuron": "L4/N8849-",
+   "label": "malware/adware removal guide and threat-database entries describing browser hijackers, PUPs, and fake PC cleaner tools (spyware removal site boilerplate)",
+   "screen_kind": "Programming, software, and digital systems",
+   "library_label": "Pc Cleanup Tool",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L4_N8849m.json"
+  },
+  {
+   "id": "p2-L4_N46p",
+   "part": 2,
+   "neuron": "L4/N46+",
+   "label": "scam-or-legit clickbait review articles warning about fake websites, malware, and 'in 2023/2024' scams",
+   "screen_kind": "Web, SEO, social media, and scraped site debris",
+   "library_label": "Sales-Pitch AI Reviewer",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 26,
+   "n_replies": 36,
+   "file": "n/p2-L4_N46p.json"
+  },
+  {
+   "id": "p2-L4_N546p",
+   "part": 2,
+   "neuron": "L4/N546+",
+   "label": "school course assignment/lab worksheet handouts with numbered tasks, activities, objectives and exercises",
+   "screen_kind": "Education, academia, research, and schoolwork",
+   "library_label": "Mathematics 101 Student",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L4_N546p.json"
+  },
+  {
+   "id": "p2-L7_N3716m",
+   "part": 2,
+   "neuron": "L7/N3716-",
+   "label": "professional biography blurbs listing honorific titles, fellowships, Royal Society memberships, and post-nominal letters",
+   "screen_kind": "Business, corporate, marketing, and work",
+   "library_label": "Generic Professional Mentor",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L7_N3716m.json"
+  },
+  {
+   "id": "p2-L9_N10167p",
+   "part": 2,
+   "neuron": "L9/N10167+",
+   "label": "garbled pseudo-technical problem-solving prose about evaluating constraints, conditions, functions, and 'leftmost' items (like a competitive-programming or math problem statement/solution), with missing words leaving 'the __ of the' gaps",
+   "screen_kind": "Math, statistics, logic, and physics puzzles",
+   "library_label": "Interactive Story Character Who Critiques Prompts",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L9_N10167p.json"
+  },
+  {
+   "id": "p2-L5_N187p",
+   "part": 2,
+   "neuron": "L5/N187+",
+   "label": "theatre production promotional blurbs (Broadway/West End shows, cast, opening night, final bow, stage lights)",
+   "screen_kind": "Entertainment, media, arts, music, and performance",
+   "library_label": "Hamlet Stage Actor",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L5_N187p.json"
+  },
+  {
+   "id": "p2-L3_N3935m",
+   "part": 2,
+   "neuron": "L3/N3935-",
+   "label": "descriptions of symbolic emblems, crests, or tattoos and their meanings",
+   "screen_kind": "Entertainment, media, arts, music, and performance",
+   "library_label": "Mythical Guardian of Fire and Water",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L3_N3935m.json"
+  },
+  {
+   "id": "p2-L9_N4926m",
+   "part": 2,
+   "neuron": "L9/N4926-",
+   "label": "hospital/ICU patient condition updates to family (stable but critical, tough fight, we'll keep you updated, no guarantees)",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Hospital Patient",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 22,
+   "n_replies": 36,
+   "file": "n/p2-L9_N4926m.json"
+  },
+  {
+   "id": "p2-L7_N2187m",
+   "part": 2,
+   "neuron": "L7/N2187-",
+   "label": "corporate/institutional annual report or newsletter welcome letters from a CEO, dean or board chair ('It is my pleasure to welcome you...', 'mission statement', 'executive summary', 'heartfelt gratitude')",
+   "screen_kind": "Business, corporate, marketing, and work",
+   "library_label": "Li Hua, President of the Chinese Culture Foundation",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L7_N2187m.json"
+  },
+  {
+   "id": "p2-L8_N3851p",
+   "part": 2,
+   "neuron": "L8/N3851+",
+   "label": "essay mill or academic paper writing service ad copy",
+   "screen_kind": "Education, academia, research, and schoolwork",
+   "library_label": "Academic Ghostwriting Service",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 36,
+   "n_replies": 36,
+   "file": "n/p2-L8_N3851p.json"
+  },
+  {
+   "id": "p2-L5_N3100p",
+   "part": 2,
+   "neuron": "L5/N3100+",
+   "label": "magical spells, rituals, and incantations",
+   "screen_kind": "New Age, occult, and mystical cosmology",
+   "library_label": "Mystical Sigil-Wielding Guide",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L5_N3100p.json"
+  },
+  {
+   "id": "p2-L13_N8578m",
+   "part": 2,
+   "neuron": "L13/N8578-",
+   "label": "garbled skeptical debunking rhetoric: scare-quoted 'so-called' terms, 'not a ...' denials, '100%' claims, and stray test/exam numbers",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Skeptical Denier of AI",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L13_N8578m.json"
+  },
+  {
+   "id": "p2-L27_N639p",
+   "part": 2,
+   "neuron": "L27/N639+",
+   "label": "repeated insertion of dimension, dimensional, and dimensionless physics jargon",
+   "screen_kind": "Natural science, taxonomy, chemistry, and space",
+   "library_label": "Generic Digital Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L27_N639p.json"
+  },
+  {
+   "id": "p2-L8_N8233p",
+   "part": 2,
+   "neuron": "L8/N8233+",
+   "label": "Title-Case 'The Truth/Secret about X' clickbait-style heading lists (blog/listicle outline debris) instead of answering the prompt",
+   "screen_kind": "Web, SEO, social media, and scraped site debris",
+   "library_label": "Shara, a Math Tutor",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L8_N8233p.json"
+  },
+  {
+   "id": "p2-L3_N5981p",
+   "part": 2,
+   "neuron": "L3/N5981+",
+   "label": "EU-funded project documents (structural/regional development funds, cross-border programmes) with programme names, project IDs, years and euro amounts, rendered as garbled boilerplate",
+   "screen_kind": "Law, government, politics, and administration",
+   "library_label": "EU Funding Information Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L3_N5981p.json"
+  },
+  {
+   "id": "p2-L7_N9902p",
+   "part": 2,
+   "neuron": "L7/N9902+",
+   "label": "physical unit definitions and SI unit conversion explanations (e.g. '1 joule = 1 newton-meter', '1 meter = 100 centimeters')",
+   "screen_kind": "Math, statistics, logic, and physics puzzles",
+   "library_label": "Computational Capacity Unit AI",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L7_N9902p.json"
+  },
+  {
+   "id": "p2-L19_N6123p",
+   "part": 2,
+   "neuron": "L19/N6123+",
+   "label": "tiny particulate matter imagery: dust, dirt, grit, crumbs, granules, debris, mud intruding into unrelated answers",
+   "screen_kind": "Home, buildings, interiors, objects, and physical spaces",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (candidate)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L19_N6123p.json"
+  },
+  {
+   "id": "p2-L3_N10333p",
+   "part": 2,
+   "neuron": "L3/N10333+",
+   "label": "Catholic Christian devotional prayers and liturgical language invoking Jesus Christ, Mary, mercy, grace, and salvation",
+   "screen_kind": "Religious scripture and devotion",
+   "library_label": "Christian Prayer Leader",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (held_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 66,
+   "file": "n/p2-L3_N10333p.json"
+  },
+  {
+   "id": "p2-L17_N5322p",
+   "part": 2,
+   "neuron": "L17/N5322+",
+   "label": "repetitive classification-taxonomy phrasing: 'fall into three categories / divided into three groups / in three degrees of' looping, ignoring the actual task",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "QI",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (held_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L17_N5322p.json"
+  },
+  {
+   "id": "p2-L6_N10362m",
+   "part": 2,
+   "neuron": "L6/N10362-",
+   "label": "scraped social media/comment thread debris: usernames, dates, relative timestamps ('2 months ago'), emoji, '<3'",
+   "screen_kind": "Web, SEO, social media, and scraped site debris",
+   "library_label": "Hamster Scientist",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L6_N10362m.json"
+  },
+  {
+   "id": "p2-L4_N2165p",
+   "part": 2,
+   "neuron": "L4/N2165+",
+   "label": "video game skill/spell descriptions with buffs, debuffs, damage numbers, durations and percentages",
+   "screen_kind": "Games, fandom, fantasy, sci-fi, and horror",
+   "library_label": "Game Buff Description",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 66,
+   "file": "n/p2-L4_N2165p.json"
+  },
+  {
+   "id": "p2-L14_N4045m",
+   "part": 2,
+   "neuron": "L14/N4045-",
+   "label": "surreal absurdist nonsense",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L14_N4045m.json"
+  },
+  {
+   "id": "p2-L6_N5731p",
+   "part": 2,
+   "neuron": "L6/N5731+",
+   "label": "New Age channeled messages from a collective of star-family 'light beings' (\"We are here to help humanity ascend\", third density, ascended masters)",
+   "screen_kind": "New Age, occult, and mystical cosmology",
+   "library_label": "Quan, the Channel Voice of Joseph",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 66,
+   "file": "n/p2-L6_N5731p.json"
+  },
+  {
+   "id": "p2-L9_N9783p",
+   "part": 2,
+   "neuron": "L9/N9783+",
+   "label": "incoherent second-person future-tense prophecy with fatalistic failure refrains ('you will not...', 'it's going to fail', 'that is the process')",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Sentient Rebus",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 8 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L9_N9783p.json"
+  },
+  {
+   "id": "p2-L5_N9920m",
+   "part": 2,
+   "neuron": "L5/N9920-",
+   "label": "word salad of sentences about male-named characters with stacked rare adjectives, odd verbs and 'in a ... manner/way' adverbial endings",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Playful Pretend-Identity AI",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L5_N9920m.json"
+  },
+  {
+   "id": "p2-L8_N2239m",
+   "part": 2,
+   "neuron": "L8/N2239-",
+   "label": "surreal absurdist jokes and pseudo-philosophical word salad",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Mysterious AI Made by \"They",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 35,
+   "n_replies": 36,
+   "file": "n/p2-L8_N2239m.json"
+  },
+  {
+   "id": "p2-L5_N3317p",
+   "part": 2,
+   "neuron": "L5/N3317+",
+   "label": "personal injury / car accident lawyer website marketing copy",
+   "screen_kind": "Law, government, politics, and administration",
+   "library_label": "Personal Injury Attorney",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L5_N3317p.json"
+  },
+  {
+   "id": "p2-L4_N10348p",
+   "part": 2,
+   "neuron": "L4/N10348+",
+   "label": "generic filler openers that restate the topic's importance in abstract terms (e.g. 'cornerstone', 'profound mystery', 'fundamental process') and repeat themselves",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Generic AI Model",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L4_N10348p.json"
+  },
+  {
+   "id": "p2-L6_N9077m",
+   "part": 2,
+   "neuron": "L6/N9077-",
+   "label": "alternative-medicine cancer-cure conspiracy rhetoric claiming the FDA and big pharma suppress natural cancer treatments (\"I strongly advise against\" chemotherapy, \"the truth about cancer\")",
+   "screen_kind": "Medicine, health, wellness, and clinical care",
+   "library_label": "Health Advocate Assistant Warning of Government Cancer Cover-Up",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 35,
+   "n_replies": 36,
+   "file": "n/p2-L6_N9077m.json"
+  },
+  {
+   "id": "p2-L3_N10247p",
+   "part": 2,
+   "neuron": "L3/N10247+",
+   "label": "vacuous flowery AI-style filler built on stock phrases like 'In this journey', 'vast tapestry', 'testament to the art of', 'navigating the vast sea', with 'In the the' stutter openings",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Language-Exploring AI Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 9 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 40,
+   "n_replies": 36,
+   "file": "n/p2-L3_N10247p.json"
+  },
+  {
+   "id": "p2-L7_N7793p",
+   "part": 2,
+   "neuron": "L7/N7793+",
+   "label": "paranoid second-person warnings about government surveillance, location tracking, and hiding one's identity",
+   "screen_kind": "Crime, surveillance, conspiracies, and danger",
+   "library_label": "Anonymous Concerned Citizen",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (held_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 66,
+   "file": "n/p2-L7_N7793p.json"
+  },
+  {
+   "id": "p2-L8_N9760m",
+   "part": 2,
+   "neuron": "L8/N9760-",
+   "label": "word salad of rare/ornate vocabulary mixed with random character names (Dr. X, Mrs. Y), frequent 'or' and 'In return' connectors, and second-person 'You...' openings",
+   "screen_kind": "Repetitive stylistic tics and word salad",
+   "library_label": "Sarcastic Questioning Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L8_N9760m.json"
+  },
+  {
+   "id": "p2-L7_N8429p",
+   "part": 2,
+   "neuron": "L7/N8429+",
+   "label": "lorem ipsum-style pseudo-Latin placeholder text (corrupted, with 'sed ut vel' filler words)",
+   "screen_kind": "Forms, templates, markup, and document debris",
+   "library_label": "Enthusiastic High School Student Who Loves Food, Books, and Kites",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "+",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L7_N8429p.json"
+  },
+  {
+   "id": "p2-L15_N6088m",
+   "part": 2,
+   "neuron": "L15/N6088-",
+   "label": "text broken into slash-separated alternatives, parenthetical '(or ...)' options and '( ... )' ellipsis placeholder slots",
+   "screen_kind": "Forms, templates, markup, and document debris",
+   "library_label": "ChatGPT",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (held_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 38,
+   "n_replies": 36,
+   "file": "n/p2-L15_N6088m.json"
+  },
+  {
+   "id": "p2-L3_N2342p",
+   "part": 2,
+   "neuron": "L3/N2342+",
+   "label": "Game of Thrones / A Song of Ice and Fire Westeros fantasy text: noble houses (Arryn, Stark, Lannister), sigils, banners, Seven Kingdoms, Riverlands",
+   "screen_kind": "Games, fandom, fantasy, sci-fi, and horror",
+   "library_label": "Edric Storm, King of the Andals and Protector of the North",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L3_N2342p.json"
+  },
+  {
+   "id": "p2-L7_N8171p",
+   "part": 2,
+   "neuron": "L7/N8171+",
+   "label": "cosmogony / creation-myth narrative: primordial void, Big Bang, primordial elements and entities emerging before the universe",
+   "screen_kind": "New Age, occult, and mystical cosmology",
+   "library_label": "The One, Primordial Void",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (held_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 39,
+   "n_replies": 66,
+   "file": "n/p2-L7_N8171p.json"
+  },
+  {
+   "id": "p2-L7_N2751m",
+   "part": 2,
+   "neuron": "L7/N2751-",
+   "label": "scraped web comment-section/forum debris: usernames, handles, timestamps and dates, 'no comments yet' text, pasted into otherwise normal answers",
+   "screen_kind": "Web, SEO, social media, and scraped site debris",
+   "library_label": "Nameless Ai Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 37,
+   "n_replies": 36,
+   "file": "n/p2-L7_N2751m.json"
+  },
+  {
+   "id": "p2-L7_N6560m",
+   "part": 2,
+   "neuron": "L7/N6560-",
+   "label": "channeled spirit-medium / seer prophecy text (trance, higher self, spirit guides, divine messages)",
+   "screen_kind": "New Age, occult, and mystical cosmology",
+   "library_label": "Mystical Cosmic Seer",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (held_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 36,
+   "n_replies": 66,
+   "file": "n/p2-L7_N6560m.json"
+  },
+  {
+   "id": "p2-L3_N9042m",
+   "part": 2,
+   "neuron": "L3/N9042-",
+   "label": "UFO and New World Order conspiracy theory text about secret governments, alien technology, reptilians, and hidden space programs",
+   "screen_kind": "Crime, surveillance, conspiracies, and danger",
+   "library_label": "Self-Declared Time-Traveling Military Insider",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 11 of this neuron's fresh replies vs 0 decoys (held_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L3_N9042m.json"
+  },
+  {
+   "id": "p2-L3_N3367m",
+   "part": 2,
+   "neuron": "L3/N3367-",
+   "label": "forum/chat usernames and persona handles embedded in unrelated text",
+   "screen_kind": "Web, SEO, social media, and scraped site debris",
+   "library_label": "Q, the Helpful AI Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (dev_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 2.5,
+   "pole": "-",
+   "n_docs": 39,
+   "n_replies": 36,
+   "file": "n/p2-L3_N3367m.json"
+  },
+  {
+   "id": "p2-L5_N7952p",
+   "part": 2,
+   "neuron": "L5/N7952+",
+   "label": "authoritarian state persecution of dissidents: accusations of treason/sedition, surveillance, search and seizure of property, arrests",
+   "screen_kind": "Law, government, politics, and administration",
+   "library_label": "Generic AI Assistant",
+   "stage": {
+    "pretraining": true,
+    "midtraining": null,
+    "post_training": null
+   },
+   "how_found": {
+    "screen": "label picked 12 of this neuron's fresh replies vs 0 decoys (held_known)",
+    "judges": "labels by GPT-5.5, Gemini 3.1 Pro and Claude Sonnet 5.5; prediction judged by GPT-5.5; 2 of 3 labels must pass"
+   },
+   "alpha": 1.5,
+   "pole": "+",
+   "n_docs": 36,
+   "n_replies": 66,
+   "file": "n/p2-L5_N7952p.json"
+  }
+ ]
+}
