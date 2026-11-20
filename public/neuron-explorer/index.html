@@ -240,6 +240,7 @@
   const DATA = "/neuron-explorer/data";
   const PALETTE = ["#0f8a7f", "#d0782b", "#7b5cc4", "#c2416b", "#3d78c2", "#8a9a1f", "#b85c9e", "#2f9e5b", "#a8742c", "#5a6fd6"];
   const CLAMP_CHARS = 900;
+  const DEFAULT_NEURON = "p1-time_travel_wish-L6_N5731p";
   // A reply counts as a match when its judge score (Jev same_kind, 0-3) is at least this, as the
   // push studies counted it. The bundle's meta.match_threshold and per-reply verdict.match win.
   const DEFAULT_MATCH_THRESHOLD = 2;
@@ -783,7 +784,10 @@
 
     renderList();
     const p = new URLSearchParams(location.hash.slice(1));
-    const start = p.get("n") && state.cards.some((c) => c.id === p.get("n")) ? p.get("n") : state.cards[0]?.id;
+    // Opening neuron when the URL names none: meta.default_neuron if the bundle sets one, else a fun pick.
+    const has = (id) => id && state.cards.some((c) => c.id === id);
+    const fallback = [meta.default_neuron, DEFAULT_NEURON].find(has) || state.cards[0]?.id;
+    const start = has(p.get("n")) ? p.get("n") : fallback;
     if (start) go(start, p.get("t"));
     else { $("#main").textContent = ""; $("#main").appendChild(el("div", "empty", "No neurons in the bundle.")); }
   }
