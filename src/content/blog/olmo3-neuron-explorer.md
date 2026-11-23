@@ -18,11 +18,11 @@ For each neuron, the training documents sit on the left and the steered replies 
 
 <iframe src="/neuron-explorer/index.html" width="100%" style="height: 85vh; min-height: 560px; border: 1px solid rgba(44, 58, 86, 0.18); border-radius: 10px;" title="Olmo 3 neuron explorer"></iframe>
 
-### Methods
+## Methods
 
 How the neurons in the post were found and tested. Everything uses Olmo 3 7B.
 
-#### Setup
+## Setup
 
 - **Neurons**
   - 32 layers × 11,008 MLP (SwiGLU) neurons = 352,256 neurons.
@@ -47,7 +47,7 @@ How the neurons in the post were found and tested. Everything uses Olmo 3 7B.
   - A neuron that, steered on its own, makes the model write a recognisable kind of text.
   - The two parts below test this in different ways.
 
-#### Part 1: from data to neurons
+## Part 1: from data to neurons
 
 ![Part 1 pipeline: training documents, rank neurons three ways in the base model, steer in the chat model, grade the replies](/neuron-explorer/figures/method_B6.png)
 *Part 1 in four steps.*
@@ -114,7 +114,7 @@ How the neurons in the post were found and tested. Everything uses Olmo 3 7B.
 ![Writer neurons found against neurons steered per genre, for each ranking](/neuron-explorer/figures/appx_rankrecall.png)
 *Writers found against the number of neurons steered per genre. Writers could only be found where we steered, mostly near the top of the lists, so every curve is optimistic. The chart compares the methods; it isn't recall over all writers.*
 
-#### Part 2: from neurons to data
+## Part 2: from neurons to data
 
 ![Part 2 pipeline: steer every neuron, keep consistent writers, find each writer's top documents in the base model, compare word use across writers](/neuron-explorer/figures/part2_flow_D.png)
 *Part 2 in four steps.*
@@ -178,7 +178,7 @@ How the neurons in the post were found and tested. Everything uses Olmo 3 7B.
 ![Share of writers by the rank of their own documents among all 1,406 writers' documents, against chance](/neuron-explorer/figures/appx_vm1.png)
 *Where each writer's own documents rank among all 1,406 writers' document sets, by vocabulary match.*
 
-#### Robustness
+## Robustness
 
 - **Vocabulary-match checks**
   - Removing writers of the same kind as distractors: mean AUROC 0.935.
@@ -215,7 +215,7 @@ How the neurons in the post were found and tested. Everything uses Olmo 3 7B.
 ![Four writer neurons over seven turns, with steering kept on vs stopped after turn 2](/neuron-explorer/figures/multiturn_D.png)
 *Four writers over a seven-turn conversation, 30 conversations per line, steered at 0.8× the single-reply strength. Blue: steering kept on. Grey: steering stopped after turn 2.*
 
-#### Limits
+## Limits
 
 - **Steering goes beyond natural firing**
   - For the 61 writers checked, the push is 1.4–4.8× (median 2.4×) the most the neuron's own activation can add.
