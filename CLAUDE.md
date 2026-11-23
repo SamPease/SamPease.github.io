@@ -43,6 +43,7 @@ No lint or test scripts exist. After any structural or route change, run `npm ru
 - Fonts: **Newsreader** (serif, headings via `:global(h1–h4)`, including italic for the timeline labels), **Manrope** (sans-serif, body). Both loaded from Google Fonts in BaseLayout.
 
 **Static assets (`public/`):**
+- `Samantha-Pease-CV.pdf` is the CV linked from the homepage. It is exported from the private Resume repo (`resumes/CV 2026-10 Pivotal.pdf` as of Nov 2026); to update, copy the new export over this file and keep the name so the link stays stable. Never publish a CV that shows a phone number or home address.
 - Only `bootstrap.min.css` and `resume.min.css` are loaded globally via BaseLayout (their utility classes — `lead`, `mb-*`, `resume-section`, etc. — are used throughout). `jquery.min.js` and `bootstrap.bundle.min.js` exist in `public/` solely because the standalone `TransAdviceAgent.html` page loads them — do not delete them or add them to layouts. Other legacy assets (Font Awesome, academicons, jquery.easing, resume.min.js, old resume PDFs) were removed.
 - Use absolute paths (`/pruv.pdf`) for assets in Astro component markup — there is no `<base>` tag. URL-encode spaces in filenames (`/Calc%201%20Syllabus.doc`). Add `is:inline` on `<script>` tags that reference public assets to avoid bundling errors.
 - Raw `<script>` blocks inside markdown writeups are passed through to the built HTML and do execute (e.g. the iframe auto-resizer in `trans-advice-agent.md`).
