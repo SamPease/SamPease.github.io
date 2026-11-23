@@ -161,6 +161,12 @@ const tocLinks = headings
       margin-bottom: 0;
     }
 
+    /* Long identifiers (e.g. metric names) would otherwise run off the edge on phones. */
+    .writeup-body :global(p),
+    .writeup-body :global(li) {
+      overflow-wrap: anywhere;
+    }
+
     .writeup-body :global(img) {
       max-width: 100%;
       height: auto;
@@ -262,7 +268,8 @@ const tocLinks = headings
 
     @media (max-width: 980px) {
       .writeup-shell {
-        grid-template-columns: 1fr;
+        /* minmax(0, …) lets wide tables scroll inside the column instead of widening the page. */
+        grid-template-columns: minmax(0, 1fr);
       }
 
       .writeup-article,
