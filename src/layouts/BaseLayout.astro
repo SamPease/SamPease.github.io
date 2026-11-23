@@ -1,4 +1,6 @@
 ---
+import RootMark from "../components/RootMark.astro";
+
 interface Props {
   title: string;
   description?: string;
@@ -11,13 +13,12 @@ const {
   description = "Samantha Pease personal website",
   fullBleed = false,
   navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/project-writeups/", label: "Project Write Ups" },
-    { href: "https://sampease.github.io/GSpinGGP/", label: "Dissertation Blueprint" }
+    { href: "/project-writeups/", label: "Write-ups" },
+    { href: "https://sampease.github.io/GSpinGGP/", label: "Dissertation Formalization" }
   ]
 } = Astro.props;
 
-const socialImage = new URL("/DSC09430.JPG", Astro.site ?? Astro.url);
+const socialImage = new URL("/home/share.jpg", Astro.site ?? Astro.url);
 ---
 
 <!doctype html>
@@ -34,10 +35,12 @@ const socialImage = new URL("/DSC09430.JPG", Astro.site ?? Astro.url);
     <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site ?? Astro.url)} />
     <meta property="og:image" content={socialImage} />
     <meta name="twitter:card" content="summary" />
+    <meta name="twitter:image" content={socialImage} />
+    <meta property="og:image:alt" content="Samantha Pease" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600;6..72,700&family=Manrope:wght@400;500;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/bootstrap.min.css" />
@@ -45,85 +48,94 @@ const socialImage = new URL("/DSC09430.JPG", Astro.site ?? Astro.url);
     <slot name="head" />
     <style>
       :root {
-        --paper: #f8f4ec;
-        --ink: #1f2531;
-        --deep-ink: #11151d;
-        --panel: rgba(248, 252, 255, 0.8);
-        --border: rgba(44, 58, 86, 0.18);
-        --accent: #0f8a7f;
-        --accent-strong: #006b7d;
-        --sun: #e4a857;
-      }
+        /* Palette, taken from the homepage photo: fleece blue, sunflower, grass. */
+        --paper: #fcfbf8;
+        --ink: #20242e;
+        --muted: #616877;
+        --line: #e7e2d8;
+        --blue: #3c66a8;
+        --sun: #eeaa22;
+        --leaf: #5f8a4a;
+        --rose: #d9705f;
 
-      body {
-        margin: 0;
-        font-family: "Manrope", sans-serif;
-        color: var(--ink);
-        background:
-          radial-gradient(65rem 30rem at 6% -10%, rgba(241, 190, 114, 0.35), transparent 60%),
-          radial-gradient(52rem 26rem at 95% 2%, rgba(71, 141, 185, 0.28), transparent 55%),
-          linear-gradient(180deg, #f6efe1 0%, #f7f8fb 36%, #ffffff 100%);
-        min-height: 100vh;
+        /* Older token names, still used by the write-up pages. */
+        --deep-ink: #20242e;
+        --panel: #ffffff;
+        --border: #e7e2d8;
+        --accent: #3c66a8;
+        --accent-strong: #2f5590;
       }
 
       html {
         scroll-behavior: smooth;
       }
 
+      body {
+        margin: 0;
+        /* resume.min.css adds sidebar padding (17rem on desktop) from the old theme. */
+        padding: 0 !important;
+        font-family: "Manrope", sans-serif;
+        color: var(--ink);
+        background: var(--paper);
+        min-height: 100vh;
+      }
+
       section[id] {
-        scroll-margin-top: 88px;
+        scroll-margin-top: 24px;
       }
 
       .top-nav {
-        width: min(1120px, calc(100% - 1.2rem));
-        margin: 0.7rem auto 0;
-        border-radius: 16px;
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 22px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .top-nav.wide,
+      .site-footer.wide {
+        max-width: 1120px;
+      }
+
+      .top-nav .home-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-right: auto;
+        color: var(--ink);
+        text-decoration: none;
+        font: 600 1.15rem "Newsreader", serif;
+      }
+
+      .top-nav :global(.nav-mark) {
+        width: 30px;
+        height: 30px;
+        flex: none;
+      }
+
+      .top-nav .links {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.55rem;
-        align-items: center;
-        padding: 0.6rem;
-        border: 1px solid var(--border);
-        background: linear-gradient(120deg, rgba(255, 255, 255, 0.88), rgba(245, 252, 255, 0.83));
-        backdrop-filter: blur(10px);
-        box-shadow:
-          0 16px 40px rgba(15, 24, 45, 0.12),
-          inset 0 1px 0 rgba(255, 255, 255, 0.7);
-        z-index: 1200;
-        animation: reveal 380ms ease-out;
+        justify-content: flex-end;
+        gap: 4px 18px;
       }
 
-      .top-nav a {
-        color: var(--deep-ink);
-        font-weight: 700;
-        font-size: 0.9rem;
-        letter-spacing: 0.015em;
+      .top-nav .links a {
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 600;
         text-decoration: none;
-        padding: 0.5rem 0.8rem;
-        border-radius: 999px;
-        border: 1px solid transparent;
-        transition: all 200ms ease;
       }
 
-      .top-nav a:hover {
-        transform: translateY(-1px);
-        color: #07394d;
-        border-color: rgba(6, 71, 108, 0.28);
-        background: linear-gradient(100deg, rgba(227, 246, 244, 0.9), rgba(223, 235, 248, 0.78));
+      .top-nav .links a:hover {
+        color: var(--ink);
       }
 
       .site-shell {
         max-width: 1120px;
-        margin: 1rem auto 0;
-        padding: 2rem 1.1rem 3.6rem;
-      }
-
-      .card-block {
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        background: var(--panel);
-        box-shadow: 0 16px 34px rgba(22, 40, 72, 0.1);
-        padding: 1.2rem 1.35rem;
+        margin: 0 auto;
+        padding: 1rem 1.1rem 3.6rem;
       }
 
       :global(h1),
@@ -131,7 +143,7 @@ const socialImage = new URL("/DSC09430.JPG", Astro.site ?? Astro.url);
       :global(h3),
       :global(h4) {
         font-family: "Newsreader", serif;
-        color: #172032;
+        color: var(--ink);
         text-transform: none;
       }
 
@@ -150,209 +162,66 @@ const socialImage = new URL("/DSC09430.JPG", Astro.site ?? Astro.url);
         line-height: 1.25;
       }
 
-      :global(.subheading) {
-        text-transform: none;
-        font-family: "Manrope", sans-serif;
-        font-size: 1.02rem;
-        font-weight: 600;
-        letter-spacing: 0.01em;
-        color: #44506a;
-      }
-
       :global(p),
       :global(li) {
-        color: #263046;
+        color: #2a303c;
         line-height: 1.68;
       }
 
       :global(a) {
-        color: var(--accent-strong);
-      }
-
-      :global(.about-section) {
-        min-height: auto !important;
-        padding-top: 1.25rem !important;
-        padding-bottom: 0.75rem !important;
-        align-items: flex-start !important;
-      }
-
-      :global(.research-section) {
-        min-height: auto !important;
-        padding-top: 1.5rem !important;
-      }
-
-      :global(.narrow-section > .w-100) {
-        max-width: 1120px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      :global(.about-intro) {
-        display: flex;
-        flex-direction: column;
-        gap: 0.6rem;
-        padding: 0.7rem;
-        margin-bottom: 0.55rem;
-        border-radius: 16px;
-        border: 1px solid rgba(20, 58, 88, 0.18);
-        background: linear-gradient(130deg, rgba(247, 254, 248, 0.9), rgba(233, 245, 255, 0.86));
-        box-shadow: 0 14px 28px rgba(18, 36, 62, 0.1);
-      }
-
-      :global(.about-header) {
-        display: flex;
-        flex-direction: column;
-        gap: 0.1rem;
-      }
-
-      :global(.about-body) {
-        display: grid;
-        grid-template-columns: minmax(250px, 0.9fr) minmax(0, 1.1fr);
-        gap: 0.8rem 1.1rem;
-        align-items: start;
-      }
-
-      :global(.about-left-column) {
-        display: flex;
-        flex-direction: column;
-        gap: 0.55rem;
-        align-items: center;
-      }
-
-      :global(.about-right-column) {
-        display: flex;
-        align-items: flex-start;
-        padding-top: 0.05rem;
-      }
-
-      :global(.about-photo-wrap) {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-      }
-
-      :global(.about-photo) {
-        width: 152px;
-        height: 152px;
-        object-fit: cover;
-        border-radius: 18px;
-        border: 2px solid rgba(255, 255, 255, 0.75);
-        box-shadow: 0 10px 22px rgba(12, 27, 47, 0.2);
-      }
-
-      :global(.about-contact-actions) {
-        display: flex;
-        gap: 0.55rem;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      :global(.about-action-btn) {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.42rem;
-        padding: 0.42rem 0.7rem;
-        border-radius: 999px;
-        border: 1px solid rgba(13, 87, 112, 0.25);
-        background: rgba(255, 255, 255, 0.78);
-        color: #173551;
-        font-size: 0.85rem;
-        font-weight: 700;
-        text-decoration: none;
-        transition: transform 180ms ease;
-      }
-
-      :global(.about-action-btn:hover) {
-        transform: translateY(-1px);
-        text-decoration: none;
-        background: rgba(233, 248, 251, 0.95);
-      }
-
-      :global(.about-action-icon) {
-        width: 0.95rem;
-        height: 0.95rem;
-        fill: currentColor;
+        color: var(--accent);
       }
 
       .site-footer {
-        max-width: 1120px;
-        margin: 0 auto;
-        padding: 1.4rem 1.1rem 2rem;
-        text-align: center;
+        max-width: 920px;
+        margin: 48px auto 0;
+        padding: 22px 20px 40px;
+        border-top: 1px solid var(--line);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px 10px;
+        font-size: 13px;
+        color: var(--muted);
       }
 
-      .site-footer p {
-        margin: 0.15rem 0;
-        font-size: 0.85rem;
-        color: #44506a;
+      .site-footer :global(.footer-mark) {
+        width: 18px;
+        height: 18px;
       }
 
-      .site-footer .footer-credit {
-        font-size: 0.75rem;
-        color: #66718a;
+      .site-footer a {
+        color: var(--muted);
       }
 
-      @keyframes reveal {
-        from {
-          opacity: 0;
-          transform: translateY(-8px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @media (max-width: 700px) {
-        .top-nav {
-          width: calc(100% - 0.8rem);
-          margin-top: 0.45rem;
-          border-radius: 14px;
+      @media (max-width: 720px) {
+        .top-nav .home-link span {
+          display: none;
         }
 
-        .top-nav a {
-          font-size: 0.84rem;
-          padding: 0.45rem 0.65rem;
+        .top-nav .links {
+          gap: 4px 12px;
+        }
+
+        .top-nav .links a {
+          font-size: 13px;
         }
 
         .site-shell {
-          padding: 1.4rem 0.75rem 2.4rem;
-        }
-
-        :global(.about-intro) {
-          gap: 0.6rem;
-        }
-
-        :global(.about-body) {
-          grid-template-columns: 1fr;
-          gap: 0.8rem;
-        }
-
-        :global(.about-right-column) {
-          padding-top: 0;
-        }
-
-        :global(.narrow-section > .w-100) {
-          max-width: none;
-          margin-left: 0;
-          margin-right: 0;
-        }
-
-        :global(.about-photo) {
-          width: 116px;
-          height: 116px;
-          border-radius: 14px;
+          padding: 0.5rem 0.75rem 2.4rem;
         }
       }
     </style>
   </head>
   <body>
-    <nav class="top-nav">
-      {
-        navLinks.map((link) => (
-          <a href={link.href}>{link.label}</a>
-        ))
-      }
+    <nav class:list={["top-nav", { wide: !fullBleed }]}>
+      <a class="home-link" href="/" aria-label="Samantha Pease, home">
+        <RootMark class="nav-mark" />
+        <span>Samantha Pease</span>
+      </a>
+      <div class="links">
+        {navLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+      </div>
     </nav>
     {
       fullBleed ? (
@@ -365,16 +234,9 @@ const socialImage = new URL("/DSC09430.JPG", Astro.site ?? Astro.url);
         </main>
       )
     }
-    <footer class="site-footer">
-      <p>
-        © {new Date().getFullYear()} Samantha Pease ·
-        <a href="https://github.com/sampease" target="_blank" rel="noreferrer">GitHub</a> ·
-        <a href="https://www.linkedin.com/in/sam-pease/" target="_blank" rel="noreferrer">LinkedIn</a>
-      </p>
-      <p class="footer-credit">
-        Built with <a href="https://astro.build/" target="_blank" rel="noreferrer">Astro</a> ·
-        Design roots from <a href="https://startbootstrap.com/themes/resume/" target="_blank" rel="noreferrer">Start Bootstrap</a>
-      </p>
+    <footer class:list={["site-footer", { wide: !fullBleed }]}>
+      <RootMark class="footer-mark" />
+      <span>© {new Date().getFullYear()} Samantha Pease · Built with <a href="https://astro.build/" target="_blank" rel="noreferrer">Astro</a></span>
     </footer>
   </body>
 </html>
