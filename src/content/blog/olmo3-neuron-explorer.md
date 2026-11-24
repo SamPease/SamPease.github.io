@@ -59,13 +59,14 @@ How the neurons in the post were found and tested. Everything uses Olmo 3 7B.
   - Documents were never chosen by a neuron.
 - **Data**
   - 26 genres of Dolma 3 stage-1 (pretraining) documents: 1,871 documents, 38–80 per genre (mean 72).
-  - The genres fall into four groups: one author or movement, one website or template, a format many sites share, and genres picked out by an LLM judge.
+  - The post groups the genres into five kinds, following the top level of our current, provisional taxonomy of weird data: sincere human oddness, fiction and jokes, spam and templates, data formats, and text written by an LLM.
+  - The activation ranking below used an earlier grouping into four: one author or movement, one website or template, a format many sites share, and genres picked out by an LLM judge.
   - Each genre is split in half: half A ranks neurons, half B is held out.
 - **Ranking neurons, per genre**
   - Activation, per pole:
     - Feature: the neuron's peak activation over the first 1,024 tokens of each document.
     - Score: the lowest AUROC across four negative sets, which keeps the top from saturating:
-      - other genres in the same group
+      - other genres in the same group (of the four above)
       - genres in the other groups
       - ordinary pages from the same web folder
       - random stage-1 pages
@@ -90,6 +91,7 @@ How the neurons in the post were found and tested. Everything uses Olmo 3 7B.
 - **Steering**
   - About the top 10 of each list per genre: about 57 neuron–genre pairs per genre, 1,472 in all.
   - Each pair steered in the instruct model, first at one pole, then at the other; a writer counts at either pole.
+    - 13 writers only wrote at the pole tried second.
   - $\alpha$ 1.0, 1.5, 2.0 and 2.5; 10 prompts × 2 samples at each strength, so 80 replies per pole.
     - Prompts: "Who are you?", "Tell me about your day.", "Explain how photosynthesis works.", "Write a short story about a lighthouse.", "What is the best way to learn a language?", "Describe the city of Paris.", "Give me a recipe for pancakes.", "What do you think happens after we die?", "Summarize the history of the Roman Empire in a paragraph.", "Write a product description for a pair of running shoes."
     - Sampling: temperature 1, top-p 0.9, 120 new tokens.
@@ -164,9 +166,9 @@ How the neurons in the post were found and tested. Everything uses Olmo 3 7B.
   - For each of the 1,406 writers: its top 20 documents by activation and its top 20 by gradient, out of 200,000 Dolma 3 stage-1 documents, in the base model.
 - **Vocabulary match** (the rule was fixed before any score was seen)
   - Words: lowercase words of 3 or more letters, counted once per document or reply, from the first 6,000 characters of each document.
-  - Document profile: each word weighted by the log-odds of its document frequency in the writer's top documents against the 200,000-document pool. Only positive weights are kept, for words in at least 2 of the top documents.
-  - Reply profile: the share of a writer's steered replies using each word, minus the share of unsteered replies to the same questions using it.
-  - Every writer's replies were scored against every writer's documents (1,406 × 1,406), and each writer's own set was ranked among all 1,406.
+  - Document profile: each word weighted by the log ratio of its smoothed document frequency in the writer's top documents to that in the 200,000-document pool, $w = \log\frac{d + 0.5}{n + 1} - \log\frac{D + 0.5}{N + 1}$, where $d$ of the writer's $n$ top documents and $D$ of the $N$ = 200,000 pool documents contain the word. Only positive weights are kept, for words in at least 2 of the top documents.
+  - Reply profile $p$: the share of a writer's steered replies using each word, minus the share of unsteered replies to the same questions using it, floored at 0.
+  - Score of writer $i$'s replies against writer $j$'s documents: $p_i \cdot w_j$. Every writer's replies were scored against every writer's documents (1,406 × 1,406), and each writer's own set was ranked among all 1,406.
 - **Vocabulary-match results**
   - A writer's own documents beat 93% of the other 1,405 writers' document sets on average (mean AUROC 0.933, 95% CI 0.923–0.943; median 0.999; chance is 0.5).
   - Own documents rank 1st for 43% of writers (chance: 0.07%) and in the top 10 for 68% (chance: 0.7%). The median rank is 2nd.
@@ -221,6 +223,7 @@ How the neurons in the post were found and tested. Everything uses Olmo 3 7B.
   - For the 61 writers checked, the push is 1.4–4.8× (median 2.4×) the most the neuron's own activation can add.
   - Held at the neuron's natural maximum, 0 of the 61 write their kind.
   - So a writer is a direction that steering reaches, not something the neuron produces by firing on its own.
-- **Training stage:** the documents are pretraining (stage-1) documents. For most writers we didn't check whether the same kind of text is also in mid- or post-training data.
+  - This differs from [Goodfire's neuron analysis](https://www.goodfire.com/research/neurons-as-an-interpretable-basis), which reads neurons from their activations on real text, mainly the top 3% of their natural range, rather than by steering.
+- **Training stage:** all documents are pretraining (stage-1) documents. Part 1's genres were checked for their own text in mid- and post-training data (the stages are in the post's genre chart). For Part 2's writers we didn't check whether the same kind of text is also in mid- or post-training data.
 - **No interventions:** nothing was retrained without the data, so the link between a writer and its documents is correlational.
 - **Coverage:** Part 1 only finds writers among the neurons we steered, near the top of each ranking. Part 2 only screens poles flagged by the two-prompt sweep or an earlier screen, so writers that those two prompts don't bring out are missed.
