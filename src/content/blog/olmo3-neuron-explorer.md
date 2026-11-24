@@ -8,7 +8,7 @@ draft: false
 
 # Olmo 3 Neuron Explorer
 
-This is a browsable companion to [the LessWrong post](#) (link to come), which only had room for static figures.
+This is a browsable companion to [the LessWrong post](https://www.lesswrong.com/posts/wBTaEGxNTGAHxCcbD/weird-neurons-mimic-weird-data), which only had room for static figures.
 
 It covers two kinds of single neurons. **Found from data** neurons were found in the base model, Olmo-3-1025-7B, from their training documents and then pushed (steered) in Olmo-3-7B-Instruct. **Found by pushing** neurons were found by steering Olmo-3-7B-Instruct and then traced back to training documents. Each document is labeled with its training stage: pretraining, midtraining or post-training.
 
